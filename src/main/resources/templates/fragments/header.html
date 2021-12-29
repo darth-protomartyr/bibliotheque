@@ -9,10 +9,10 @@
                     <button class="nav__button" onclick="nav-action()">MENÚ</button>
                     <a th:href="@{/inicio}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Inicio</a>
                     <a th:href="@{/libros/libro(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Libros</a>
-                    <a th:href="@{/socio/editar-perfil(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Autores</a>
-                    <a th:href="@{/socio/editar-perfil(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Editoriales</a>
-                    <a th:href="@{/socio/editar-perfil(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Prestamos</a>
-                    <a th:href="@{/socio/editar-perfil(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Socios</a>
+                    <a th:href="@{/autores/autor(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Autores</a>
+                    <a th:href="@{/editoriales/editorial(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Editoriales</a>
+                    <a th:href="@{/prestamos/prestamo(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Prestamos</a>
+                    <a th:href="@{/socios/socio(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}" class="header__nav__enlace link--disappear">Socios</a>
                 </nav>
             </div>
             <div class="header__session">
