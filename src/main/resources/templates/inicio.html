@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+    
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class = "main">
+            <div class= "main__card">
+                <p>Inicio</p>
+                <div class="pic-square"> 
+                    <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-square" alt="user">
+                    <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-square" alt="user">
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

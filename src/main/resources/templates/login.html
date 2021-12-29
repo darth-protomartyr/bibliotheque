@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">
+            <div class= "main__card">
+                <h2>Login</h2>
+                <form th:action="@{/logincheck}" method="POST">
+                    <p th:if="${error != null}" th:text="${error}" class="warn"></p>                
+                    <p th:if="${logout != null}" th:text="${logout}" class="ok"></p>
+                    <div class="form__container">
+                        <input type="text" placeholder="Mail del Usuario" name="username" required>
+                        <input type="password" placeholder="Password" name="password" required>
+                        <button type="submit">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+        
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

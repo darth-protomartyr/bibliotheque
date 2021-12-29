@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">        
+                <div class="main__card">
+                    <p class ="tit" th:text = "${codigo}"></p> 
+                    <p class ="sub-tit" th:text = "${mensaje == null ? 'Intenta nuevamente' : mensaje}"></p> 
+                    <a th:if="${session.adminsession == null}" th:href="@{/inicio}" class ="btn">Volver a Inicio</a>
+                </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

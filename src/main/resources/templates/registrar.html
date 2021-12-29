@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">
+            <div class ="main__card">
+            <h2>Crear cuenta</h2>
+            <form th:action="@{/proceso-registro}" method="post" enctype="multipart/form-data">                     
+                <div class="form__container">
+                    <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                    <p th:if="${logout != null}" th:text="${error}" class="ok"></p>
+                    <input type="text" placeholder="Nombre de Usuario" name="nom" th:value="${nom}"  required>
+                    <input type="password" placeholder="Ingrese su Password" name="pass1" th:value="${pass1}" required>
+                    <input type="password" placeholder="Confirme su Password" name="pass2" th:value="${pass2}" required>
+                    <p>Seleccione su género:</p>
+                    <select name="sexoId" required>
+                        <option th:each="sexo : ${sexos}" th:value="${sexo.id}" th:text="${sexo.gen}"></option>
+                    </select>
+                    <input class ="input-f"  name="archivo" type="file" accept="image/png, image/jpeg" th:value="${archivo}" required>
+                    <input type="email" placeholder="Ingrese su mail" name="mail" th:value="${mail}" required>
+                    <button type="submit">Sign In</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

@@ -1,0 +1,434 @@
+body {
+    background-color: rgba(242, 4, 68, 1);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:#affff0;
+    font-size: 1em;
+    background-attachment: scroll;
+    line-height: 1;
+}
+
+a {
+    text-decoration: none;
+    color:#fff;
+}
+
+a:visited {
+    color: #05F2C7;
+}
+
+a:hover {
+    color: #05a7f2;
+    transition: color 0.5s;
+}
+
+.pic-square {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:300px;
+    height: 300px;
+    overflow: hidden;
+    object-fit: cover;
+    box-shadow: 0 0 3px 2px rgba(0,0,0,.3);
+}
+
+
+/*------------------------- HEADER -------------------------*/
+header {
+    min-height: 15vh;
+    width: 80%;
+    padding: 0% 10%;
+   /*  background-color:black; */
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header {
+
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+   /*  margin: 0% 8%; */
+}
+
+.header__title > a {
+    font-size: 1.2em;
+    color: #4ED9CB;
+   /*  background-color:#730217; */
+    /* margin: 0px 5px */
+}
+
+
+.header__nav {
+    display: flex;
+    align-items: center;
+    /* margin: 0px 5px */
+}
+
+
+nav {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header__nav__enlace {
+    background-color:#05F2C7;
+    text-transform: uppercase;
+    font-size: 1em;
+    padding: 15px 20px;
+    margin: 0px 1px;
+    display: inline-block;
+}
+
+nav > a {
+    color: #F20544;
+    font-weight: bold;
+}
+
+nav > a:visited {
+    color: #F20544;
+    background-color: #4ED9CB;;
+
+}
+
+nav > a:hover {
+    background-color: #F20544;
+    color:#05F2C7;
+    transition: background-color 1s;
+}
+
+.nav__button {
+    display:none;
+}
+
+.header__session {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+   /*  background-color:#fff; */
+    /* width: 450px; */
+    /* margin: 0px 5px; */
+}
+
+.header__session__name > p {
+    font-weight: 700;
+}
+
+.header__session__link {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+    position: relative;
+    bottom:15px;
+}
+
+/*------------------------- MAIN -------------------------*/
+
+main {
+    background-image: url(../img/library.jpeg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 64vh;
+    width: 100%;
+}
+
+.main {
+    text-align: center;
+    height: 100%;
+    padding: 3em 0;
+}
+
+.main__card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 15px;
+    background-color: rgba(242, 4, 24, 0.5);
+    padding: 2% 2%;
+    margin: auto;
+    max-width: 450px;
+    justify-content: center;
+    align-items: center;
+}
+
+.main__card > p {
+    font-size: 4em;
+}
+
+.tit {
+    font-size: 3em;
+    font-weight: 700;
+}
+
+.sub-tit {
+    font-size: 1.5em;
+    font-weight: 400;
+}
+
+.warn {
+    font-weight: 500;
+    color: white;
+    text-transform: uppercase;
+    background-color: #F20519;
+    padding: 0.5em;
+    border-radius: 15px;
+}
+
+.ok {
+    font-weight: 500;
+    color: #F20544;
+    text-transform: uppercase;
+    background-color: rgb(2, 196, 105);
+    padding: 0.5em;
+    border-radius: 15px;
+}
+
+/*------------------------- MAIN INDEX */
+
+.main__card__index {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;   
+    /* height: 250px; */
+}
+
+.main__card__index__left {
+    height: 250px;
+    width: 200px;
+}
+
+.main__card__index__left > h2 {
+    font-size: 2em;
+    position: relative;
+    bottom: 3%;
+}
+
+.main__card__index__left > img {
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
+}
+
+.main__card__index__right {
+    display: flex;
+    flex-direction: column;
+    justify-content:center;
+    border-radius: 10px;
+    height: 250px;
+    width: 200px;
+}
+
+.main__card__index__right__half > p {
+    font-size: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.main__card__index__right__half > .btn {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    position: relative;
+    bottom: 10px;
+}
+
+.btn > a {
+    display: block;
+    background-color: #05F2C7;
+    color: #F20544;
+    border-radius: 5px;
+    font-size:1.1em;
+    font-weight: 600;
+    padding: 8px 12px;
+    /* margin: 8px 0; */
+    border: none;
+    cursor: pointer;
+    width: 8vw;
+}
+
+.btn > a:visited {
+    color: #f205bf;
+}
+
+.btn > a:hover {
+    color: #ff000d;
+    background-color: #00d9ff;
+    transition: color, background-color 1s;
+}
+
+
+/*------------------------- MAIN FORMS */
+
+.form__container {
+    display: flex;
+    flex-direction: column;
+}
+
+.form__container > label, input {
+    display: block;   
+}
+
+.form__container > p {
+    font-size: 1em;
+    font-weight: 400;
+}
+
+input {
+    border-radius: 5px;
+    background-color: rgb(185, 255, 241);
+    border: none;
+    margin: 10px 0px;
+    height: 25px;
+}
+
+input::placeholder {
+    color:#F20544;
+    font-weight: 500;
+    padding-left: 0.5em;
+}
+
+.input-f {
+    background-color: #05F2C7;
+    margin: 10px 0px;
+}
+
+.input-f::before {
+    color:#F20544;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    content: 'Presione y seleccione una imagen';
+    font-size: 1em;
+    font-weight: 500;
+    height: 25px;
+}
+
+button {
+    display: block;
+    background-color: #05F2C7;
+    color: #F20544;
+    border-radius: 5px;
+    font-size:1.1em;
+    font-weight: 600;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 10vw;
+    margin: auto;
+}
+
+
+/*------------------------- FOOTER FORMS */
+
+
+.footer {
+    max-height: 10hv;
+    text-align: left;
+    font-size: 1.5em;
+    padding: 0% 10%;
+}
+
+/* footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    height: 15vh;
+    margin: auto;
+} */
+
+.pie {
+    text-align: center;
+}
+
+.pie > p {
+    align-content: center;
+}
+/*
+.link--disappear {
+    display: none;
+}*/
+
+
+/* 
+RRRR  EEEEE  SSSS PPPP   OOO  N   N  SSSS I V   V EEEEE
+R   R E     S     P   P O   O NN  N S     I V   V E
+RRRR  EEE    SSS  PPPP  O   O N N N  SSS  I V   V EEE
+R R   E         S P     O   O N  NN     S I  V V  E
+R   R EEEEE SSSS  P      OOO  N   N SSSS  I   V   EEEEE
+*/
+
+@media (max-width: 599px) {
+    * {
+        font-size: 0.75em;
+    }
+
+    /* Header */
+    nav {
+        flex-direction: column;
+    }
+    .header__nav__enlace {
+        margin: 5px 0px;
+        display: block;
+    }
+
+    .nav__button {
+        display: inline-block;
+        background-color: #05F2C7;
+        color: #F20544;
+        border-radius: 3px;
+        /* font-size:0.em; */
+        /* font-weight: 00; */
+        padding: 8px 12px;
+        /*  margin: 8px 0; */
+        border: none;
+        width: 90vw;
+        margin: auto;
+    }
+
+    .nav__button > a:visited {
+        color: #f205bf;
+    }
+    
+    .nav__button > a:hover {
+        color: #ff000d;
+        background-color: #00d9ff;
+        transition: color, background-color 1s;
+    }
+    
+    .link--disappear {
+    display: none;
+}
+    
+}
+
+
+
+
+/* Color Theme Swatches in Hex */
+.Ilustración-1-hex { color: #F20519; }
+.Ilustración-2-hex { color: #730217; }
+.Ilustración-3-hex { color: #F20544; }
+.Ilustración-4-hex { color: #4ED9CB; }
+.Ilustración-5-hex { color: #05F2C7; }
+
+/* Color Theme Swatches in RGBA */
+.Ilustración-1-rgba { color: rgba(242, 4, 24, 1); }
+.Ilustración-2-rgba { color: rgba(114, 2, 22, 1); }
+.Ilustración-3-rgba { color: rgba(242, 4, 68, 1); }
+.Ilustración-4-rgba { color: rgba(78, 216, 202, 1); }
+.Ilustración-5-rgba { color: rgba(4, 242, 198, 1); }
+
+/* Color Theme Swatches in HSLA */
+.Ilustración-1-hsla { color: hsla(354, 96, 48, 1); }
+.Ilustración-2-hsla { color: hsla(348, 96, 22, 1); }
+.Ilustración-3-hsla { color: hsla(343, 96, 48, 1); }
+.Ilustración-4-hsla { color: hsla(174, 64, 57, 1); }
+.Ilustración-5-hsla { color: hsla(168, 96, 48, 1); }

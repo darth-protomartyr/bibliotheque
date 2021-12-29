@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class = "main">
+            <div class= "main__card">
+                <div class = "main__card__index">
+                    <p th:if="${logout != null}" th:text="${logout}" class="msg--ok"></p>
+                    <div class = "main__card__index__left">
+                        <img src="/img/avatar.jpg" alt="Avatar" class="avatar">
+                        <h2>BIBLIOTECA</h2>
+                    </div>
+                    <div class = "main__card__index__right">
+                        <div class = "main__card__index__right__half">
+                            <p>Ingresar</p>
+                            <div class="btn">
+                                <a th:if="${session.adminsession == null}" th:href="@{/login}">Log in</a>
+                                <h2 class="name" th:if="${session.adminsession != null}" th:text="${session.adminsession.nombre + ' ' +session.adminsession.apellido}"></h2>
+                            </div>
+                        </div>
+                        <div class = "main__card__index__right__half">
+                            <p>Crear Cuenta</p>
+                            <div class="btn">
+                                <a th:href="@{/registrar}" th:if="${session.adminsession == null}">Sign in</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+        
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>
