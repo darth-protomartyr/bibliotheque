@@ -89,12 +89,10 @@ public class PortalControlador {
             modelo.put("mail", mail);
             modelo.put("sexo", sexoId);
             modelo.put("archivo", archivo);
-
             return "registrar.html";
         }
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
-
         return "succes.html";
     }
 }

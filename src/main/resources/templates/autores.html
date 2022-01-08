@@ -4,28 +4,43 @@
 <head th:replace="/fragments/head :: head"></head>
 
 <body>
-    
+
     <header th:replace="/fragments/header :: header"> </header>
     
     <main>
         <div class = "main">
             <div class= "main__card">
-                <p>Autores</p>
-                <div class ="main__object--execute">
+                <p>Libros</p>
+                <div class="main__object__button">
                     <div class="btn">
-                        <a href="#">Registrar Autor</a>
+                        <a th:href="@{/libros/ingresar-libro(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Actualizar Perfil</a>
+                        <a href="#">Registrar Libro</a>
                     </div>
                     <div class="btn">
-                        <a href="#">Consultar Autor</a>
-                    </div>
+                        <a href="#">Consultar Libro</a>
+                    </div>   
                 </div>
-                <div class="pic-square"> 
-<!--                    <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-square" alt="user">
-                    <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-square" alt="user">-->
+                <div class ="main__object__container">
+                    <div th:each="texto : ${textos}"   class="main__object__object">
+                        
+                        <div class="pic-square"> 
+<!--                        <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-square" alt="user">
+                            <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-square" alt="user">-->
+                        </div>
+                        <div class = "object__data">
+                            <p></p>
+                            <p></p>
+                            <div class="btn">
+                                <a th:href="@{/libros/modificar-libro(id=__${session.adminsession.id}__ , libroId=__${texto.id}__)}" th:if="${session.adminsession != null}">Actualizar Libro</a>
+                                <a href="#">Administrar Libro</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+    
     <footer th:replace="/fragments/footer :: footer"></footer>
     
 </body>

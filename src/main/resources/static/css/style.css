@@ -32,6 +32,21 @@ a:hover {
     box-shadow: 0 0 3px 2px rgba(0,0,0,.3);
 }
 
+button {
+    display: block;
+    background-color: #05F2C7;
+    color: #F20544;
+    border-radius: 5px;
+    font-size:1.1em;
+    font-weight: 600;
+    padding: 8px 12px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 10vw;
+    margin: auto;
+}
+
 
 /*------------------------- HEADER -------------------------*/
 header {
@@ -139,6 +154,7 @@ main {
     text-align: center;
     height: 100%;
     padding: 3em 0;
+    /* width: 80vw; */
 }
 
 .main__card {
@@ -149,13 +165,9 @@ main {
     background-color: rgba(242, 4, 24, 0.5);
     padding: 2% 2%;
     margin: auto;
-    max-width: 450px;
+    max-width: 800px;
     justify-content: center;
     align-items: center;
-}
-
-.main__card > p {
-    font-size: 4em;
 }
 
 .tit {
@@ -186,18 +198,25 @@ main {
     border-radius: 15px;
 }
 
+.main__card__h3 {
+    font-size: 3em;
+
+}
+
 /*------------------------- MAIN INDEX */
 
 .main__card__index {
     display: flex;
     flex-direction: row;
-    justify-content:space-around;   
+    justify-content:space-around;
+    margin: 0px 80px; 
     /* height: 250px; */
 }
 
 .main__card__index__left {
     height: 250px;
     width: 200px;
+    margin: 0px 20px; 
 }
 
 .main__card__index__left > h2 {
@@ -219,6 +238,7 @@ main {
     border-radius: 10px;
     height: 250px;
     width: 200px;
+    margin: 0px 80px; 
 }
 
 .main__card__index__right__half > p {
@@ -322,7 +342,116 @@ button {
     cursor: pointer;
     width: 10vw;
     margin: auto;
+    
 }
+
+
+/*------------------------- MAIN OBJECTS */
+.main__card__h3 {
+    font-size: 3em;
+}
+
+.main__card__object {
+    width:80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+
+
+.main__object--buscador {
+    display: flex;
+    justify-content: center;
+}
+
+.form__container__buscar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color:rgba(66, 65, 65, 0.5);
+    width: 100%;
+    padding: 3px;
+    border-radius: 4px;
+    margin: 2px;
+}
+
+
+.form__container__buscar > input {
+    margin: 2px;
+    border-radius: 3px 0px 0px 3px;
+    width: 500px;
+}
+
+.form__container__buscar > button {
+    display: inline-block;
+    background-color: #FFF;
+    color: #F20544;
+    border-radius: 0px 3px 3px 0px ;
+    font-size:1em;
+    /* font-weight: 600; */
+    padding:3px;
+    border: none;
+    cursor: pointer;
+    width: 70px;
+    margin: 2px;
+    position:relative;
+    top: -0.8px;
+}
+
+.object__button__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+    width:90%;
+}
+
+.object__btn > a, button {
+    display: inline-block;
+    background-color: #05F2C7;
+    color: #F20544;
+    border-radius: 5px;
+    font-size:1em;
+    font-weight: 500;
+    padding: 8px 8px;
+    /* margin: 8px 0; */
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin: 5px 0px;
+    position: relative;
+    top: 3px;
+}
+
+.object__btn > a:visited, button:visited {
+    background-color: #05F2C7;
+}
+
+.object__btn > a:hover, button:hover {
+    background-color: #05a7f2;
+    transition: background-color 0.5s;
+}
+
+.object--single {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+}
+
+.object__button__container-2 {
+    flex-direction: row;   
+}
+
+.object__btn-2 > a, button {
+    width: 200px;
+    margin: 0px 30px;
+    border-radius: 20px;
+}
+
+
+/*------------------------- MAIN SINGLE OBJECT */
 
 
 /*------------------------- FOOTER FORMS */

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+
+    <header th:replace="/fragments/header :: header"> </header>
+
+    <main>
+        <div class= "main">
+            <div class ="main__card">
+                <h2>Modificar Libro</h2>
+                <form th:action="@{/libros/proceso-alta}" method="post" enctype="multipart/form-data">
+                    <div class="form__container">
+                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+<!--                        <input type="hidden" name="id" th:value="${perfil.id}"/>-->
+                        <input type="text" placeholder="Título del Libro" name="titulo" th:value="${titulo}">
+                        <input type="number" placeholder="Número de ISBN" name=isbn th:value="${isbn}">
+                        <input type="number" placeholder="Cantidad de ejemplares" name=ejemplaresTotales th:value="${ejemplaresTotales}">
+                        <p>Seleccione el Autor:</p>
+                        <select name="autor">
+                            <option th:each="writer : ${writers}" th:value="${writer.nombre}" th:text="${writer.nombre}" th:value="${writer.nombre}"></option>
+                            <!--th:selected="${perfil.sexo !=null && sexo.id == perfil.sexo.id}"-->
+                        </select>
+                        
+                        <p>Seleccione la Editorial:</p>
+                        <select name="editorial">
+                            <option th:each="pub : ${pubs}" th:value="${pub.nombre}" th:text="${pub.nombre}" th:value="${pub.nombre}"></option>
+                        </select>
+                        
+                        <input class ="input-f"  name="archivo" type="file" accept="image/png, image/jpeg">
+<!--                        th:value="${perfil.foto}"-->
+                        <button type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="/fragments/footer :: footer"></footer>
+
+</body>
+</html>

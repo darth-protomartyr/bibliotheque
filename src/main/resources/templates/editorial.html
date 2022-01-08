@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">            
+            <div class="main__card">
+                <p class ="tit">Editorial</p>
+                <div class="main__card__object">
+                    <div class = "object--single">
+                        <p class ="sub-tit">Nombre: <span th:text="${edi.nombre}"></span></p>
+                        <div class="object__button__container object__button__container-2">
+                            <div class="object__btn object__btn-2">
+                                <a th:href="@{/editoriales/modificar(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" th:if="${session.adminsession != null}">Modificar Editorial</a>
+                            </div>
+                            <div class="object__btn object__btn-2" th:if="${edi.alta == true}">
+                                <form th:action="@{/editoriales/proceso-baja(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Baja Editorial</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="object__btn object__btn-2" th:if="${edi.alta == false}">
+                                <form th:action="@{/editoriales/proceso-alta(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Alta Editorial</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

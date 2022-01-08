@@ -122,7 +122,7 @@ public class AutorServicio {
     }
     
     @Transactional(readOnly = true)
-    public List<Autor> ListarAutor() {
+    public List<Autor> listarAutor() {
         List<Autor>wrs = wrRepo.listarAutor();
         return wrs;
     }

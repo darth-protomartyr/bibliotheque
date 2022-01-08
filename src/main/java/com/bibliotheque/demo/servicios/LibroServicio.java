@@ -8,6 +8,7 @@ package com.bibliotheque.demo.servicios;
 
 import com.bibliotheque.demo.entidades.Autor;
 import com.bibliotheque.demo.entidades.Editorial;
+import com.bibliotheque.demo.entidades.Foto;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.AutorRepositorio;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -37,9 +39,11 @@ public class LibroServicio {
     private AutorServicio wrServ;
     @Autowired
     private EditorialServicio edServ;
+    @Autowired
+    private FotoServicio picServ;
 
     @Transactional
-    public Libro crearLibro(Long ISBN, String titulo, Integer ejemplaresTotales, String autor, String editorial) throws ErrorServicio, NullPointerException {
+    public Libro crearLibro(Long ISBN, String titulo, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio, NullPointerException {
         
         if (ISBN == null) {
             throw new ErrorServicio("Falta ingresar el ISBN");
@@ -70,9 +74,79 @@ public class LibroServicio {
         book.setEjemplaresRestantes(ejemplaresTotales);
         book.setEjemplaresPrestados(0);
         book.setAutor(wrServ.consultaAutor(autor));
-        book.setEditorial(edServ.consultaEditorial(editorial));
+        book.setEditorial(edServ.consultaEditorialNom(editorial));
+        Foto foto = picServ.guardar(archivo);
+        book.setFoto(foto);
         return bookRepo.save(book);
     }
+    
+    @Transactional
+    public void modificar(String id, Long ISBN, String titulo, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio {
+        
+        Libro book = null;
+        Optional<Libro> rta1 = bookRepo.findById(id);
+        if(rta1.isPresent()) {
+            book = rta1.get();
+            
+            if (ISBN == null) {
+                book.setIsbn(book.getIsbn());
+            } else {
+                book.setIsbn(ISBN);
+            }
+            
+            if (titulo == null || titulo.isEmpty()) {
+                book.setTitulo(book.getTitulo());
+            } else {
+                book.setTitulo(titulo);
+            }
+            
+            if (ejemplaresTotales == null) {
+                book.setEjemplaresTotales(book.getEjemplaresTotales());
+            } else {
+                book.setEjemplaresTotales(ejemplaresTotales);
+            }
+            
+            if (autor == null || autor.isEmpty()) {
+                book.setAutor(book.getAutor());
+            } else {
+                Autor wri= null;
+                Optional<Autor> writer = wrRepo.buscaAutorNom(autor);
+                if (writer.isPresent()) {
+                    wri = writer.get();
+                    book.setAutor(wri);
+                } else {
+                    throw new ErrorServicio("El Autor ingresado no se encuentra listado en la base de datos");
+                }
+            }
+            
+            if (editorial == null || editorial.isEmpty()) {
+                book.setEditorial(book.getEditorial());
+            } else {
+                Editorial ed= null;
+                Optional<Editorial> edito = edRepo.buscaEditorialNom(autor);
+                if (edito.isPresent()) {
+                    ed = edito.get();
+                    book.setEditorial(ed);
+                } else {
+                    throw new ErrorServicio("La editorial ingresada no se encuentra listada en la base de datos");
+                }
+            }
+            
+            if (archivo == null || archivo.isEmpty()) {
+                book.setFoto(book.getFoto());
+            } else {
+                String idFoto = null;
+                if (book.getFoto() != null){
+                    idFoto = book.getFoto().getId();
+                }
+                Foto foto = picServ.actualizar(idFoto, archivo);
+                book.setFoto(foto);
+            }
+        } else {
+            throw new ErrorServicio("No hay un socio registrado con ese nombre.");
+        }
+    }
+    
         
     @Transactional
     public void darBajaLibro(String tit) throws ErrorServicio {
@@ -108,94 +182,94 @@ public class LibroServicio {
         }
     }
     
-    @Transactional
-    public void modificarISBN(String tit, long ISBN) throws ErrorServicio {
-        Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
-        if (rta.isPresent()) {
-            book = rta.get();
-        } else {
-            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
-        }
-        
-        book.setIsbn(ISBN);
-    }
+//    @Transactional
+//    public void modificarISBN(String tit, long ISBN) throws ErrorServicio {
+//        Libro book = null;
+//        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+//        if (rta.isPresent()) {
+//            book = rta.get();
+//        } else {
+//            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+//        }
+//        
+//        book.setIsbn(ISBN);
+//    }
+//    
+//    @Transactional
+//    public void modificarTitulo(String tit, String newTit) throws ErrorServicio {
+//        Libro book = null;
+//        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+//        if (rta.isPresent()) {
+//            book = rta.get();
+//        } else {
+//            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+//        }
+//        book.setTitulo(newTit);
+//    }
     
-    @Transactional
-    public void modificarTitulo(String tit, String newTit) throws ErrorServicio {
-        Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
-        if (rta.isPresent()) {
-            book = rta.get();
-        } else {
-            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
-        }
-        book.setTitulo(newTit);
-    }
-    
-    @Transactional
-    public void modificarEjemplaresTotales(String tit, int updEjempl) throws ErrorServicio {
-        Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
-        if (rta.isPresent()) {
-            book = rta.get();
-        } else {
-            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
-        }
-        book.setEjemplaresTotales(book.getEjemplaresTotales() + updEjempl);
-        book.setEjemplaresRestantes(book.getEjemplaresRestantes() + updEjempl);
-    }
-    
-    @Transactional
-    public void modificarAutor(String tit, String aut) throws ErrorServicio {
-        Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
-        if (rta.isPresent()) {
-            book = rta.get();
-        } else {
-            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
-        }
-        
-        Autor wr = null;
-        Optional<Autor> rta1 = wrRepo.buscaAutorNom(aut);
-        if (rta.isPresent()) {
-            wr = rta1.get();
-        } else {
-            throw new ErrorServicio("El nombre ingresado no pertenece a un Autor listado en la base de datos");
-        }
-        
-        book.setAutor(wr);
-    }
-    
-    @Transactional
-    public void modificarEditorial(String tit, String ed) throws ErrorServicio {
-        Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
-        if (rta.isPresent()) {
-            book = rta.get();
-        } else {
-            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
-        }
-        
-        Editorial edi = null;
-        Optional<Editorial> rta1 = edRepo.buscaEditorialNom(ed);
-        if (rta.isPresent()) {
-            edi = rta1.get();
-        } else {
-            throw new ErrorServicio("El nombre ingresado no pertenece a una Editorial listada en la base de datos");
-        }
-        
-        book.setEditorial(edi);
-    }
+//    @Transactional
+//    public void modificarEjemplaresTotales(String tit, int updEjempl) throws ErrorServicio {
+//        Libro book = null;
+//        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+//        if (rta.isPresent()) {
+//            book = rta.get();
+//        } else {
+//            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+//        }
+//        book.setEjemplaresTotales(book.getEjemplaresTotales() + updEjempl);
+//        book.setEjemplaresRestantes(book.getEjemplaresRestantes() + updEjempl);
+//    }
+//    
+//    @Transactional
+//    public void modificarAutor(String tit, String aut) throws ErrorServicio {
+//        Libro book = null;
+//        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+//        if (rta.isPresent()) {
+//            book = rta.get();
+//        } else {
+//            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+//        }
+//        
+//        Autor wr = null;
+//        Optional<Autor> rta1 = wrRepo.buscaAutorNom(aut);
+//        if (rta.isPresent()) {
+//            wr = rta1.get();
+//        } else {
+//            throw new ErrorServicio("El nombre ingresado no pertenece a un Autor listado en la base de datos");
+//        }
+//        
+//        book.setAutor(wr);
+//    }
+//    
+//    @Transactional
+//    public void modificarEditorial(String tit, String ed) throws ErrorServicio {
+//        Libro book = null;
+//        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+//        if (rta.isPresent()) {
+//            book = rta.get();
+//        } else {
+//            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+//        }
+//        
+//        Editorial edi = null;
+//        Optional<Editorial> rta1 = edRepo.buscaEditorialNom(ed);
+//        if (rta.isPresent()) {
+//            edi = rta1.get();
+//        } else {
+//            throw new ErrorServicio("El nombre ingresado no pertenece a una Editorial listada en la base de datos");
+//        }
+//        
+//        book.setEditorial(edi);
+//    }
     
     @Transactional(readOnly = true)
-    public Libro buscarLibroISBN(long ISBN) throws ErrorServicio {
+    public Libro buscarLibroId(String id) throws ErrorServicio {
         Libro book = new Libro();
-        Optional<Libro> rta = bookRepo.buscaLibroISBN(ISBN);
+        Optional<Libro> rta = bookRepo.buscaLibroId(id);
         if (rta.isPresent()){
             book = rta.get();
         } else {
-            throw new ErrorServicio("El código ingresado no pertenece a un libro listado en la base de datos.");
+            throw new ErrorServicio("El libro solicitado no se encuentra listado en la base de datos.");
         }
         return book;
     }
@@ -264,4 +338,18 @@ public class LibroServicio {
         }
         bookRepo.save(book);
     }
+    
+    @Transactional
+    public void modificarFoto(String tit, String newTit) throws ErrorServicio {
+        Libro book = null;
+        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+        if (rta.isPresent()) {
+            book = rta.get();
+        } else {
+            throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
+        }
+        book.setTitulo(newTit);
+    }
+    
+    
 }

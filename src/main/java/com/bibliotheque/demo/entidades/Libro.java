@@ -33,11 +33,13 @@ public class Libro {
     private Autor autor;
     @ManyToOne
     private Editorial editorial;
+    @OneToOne
+    private Foto foto;
 
     public Libro() {
     }
 
-    public Libro(String id, Long isbn, String titulo, Integer ejemplaresTotales, Integer ejemplaresPrestados, Integer ejemplaresRestantes, Boolean alta, Autor autor, Editorial editorial) {
+    public Libro(String id, Long isbn, String titulo, Integer ejemplaresTotales, Integer ejemplaresPrestados, Integer ejemplaresRestantes, Boolean alta, Autor autor, Editorial editorial, Foto foto) {
         this.id = id;
         this.isbn = isbn;
         this.titulo = titulo;
@@ -45,8 +47,9 @@ public class Libro {
         this.ejemplaresPrestados = ejemplaresPrestados;
         this.ejemplaresRestantes = ejemplaresRestantes;
         this.alta = true;
-        this.autor = autor;
+        this.autor = autor;        
         this.editorial = editorial;
+        this.foto = foto;
     }
 
     public Long getIsbn() {
@@ -111,6 +114,14 @@ public class Libro {
 
     public void setEditorial(Editorial editorial) {
         this.editorial = editorial;
+    }
+    
+    public Foto getFoto() {
+        return foto;
+    }
+
+    public void setFoto(Foto foto) {
+        this.foto = foto;
     }
 
     @Override

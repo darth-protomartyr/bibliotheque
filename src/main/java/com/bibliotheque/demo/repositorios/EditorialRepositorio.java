@@ -20,6 +20,19 @@ public interface EditorialRepositorio extends JpaRepository<Editorial, String> {
     @Query("SELECT e FROM Editorial e WHERE e.nombre = :nombre AND e.alta = true")
     public Optional<Editorial> buscaEditorialNom (@Param("nombre") String nombre);
     
-    @Query("SELECT s FROM Editorial s WHERE s.alta = true")
-    public List<Editorial> listarEditorial();
+    @Query("SELECT e FROM Editorial e WHERE e.nombre = :nombre")
+    public Optional<Editorial> buscaEditorialNomCompl (@Param("nombre") String nombre);
+    
+    @Query("SELECT e FROM Editorial e WHERE e.id = :id AND e.alta = true")
+    public Optional<Editorial> buscaEditorialId (@Param("id") String id);
+    
+    @Query("SELECT e FROM Editorial e WHERE e.id = :id")
+    public Optional<Editorial> buscaEditorialIdCompl (@Param("id") String id);
+    
+    @Query("SELECT e FROM Editorial e WHERE e.alta = true")
+    public List<Editorial> listarEditorialActiva();
+    
+    @Query("SELECT e FROM Editorial e")
+    public List<Editorial> listarEditorialCompleta();
+    
 }

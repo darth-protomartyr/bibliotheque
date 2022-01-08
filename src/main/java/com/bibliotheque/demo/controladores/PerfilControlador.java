@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Gonzalo
  */
 @Controller
+@PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
 @RequestMapping("/perfiles")
 public class PerfilControlador {
 
@@ -38,7 +39,7 @@ public class PerfilControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/perfil")
-    public String editarPerfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
+    public String perfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
         List<Genero> sexos = genRepo.findAll();
         modelo.put("sexos", sexos);
         
@@ -71,11 +72,12 @@ public class PerfilControlador {
             admin = adminServ.buscarPorId(id);
             adminServ.modificar(id, name, pass1, pass2, sexoId, mail, archivo);
             session.setAttribute("adminsession", admin);
-            return "redirect:/inicio";
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
+            return "succes.html";
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
             modelo.put("perfil", admin);
-
             return "perfil.html";
         }
     }        

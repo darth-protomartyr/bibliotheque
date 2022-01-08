@@ -5,13 +5,16 @@
  */
 package com.bibliotheque.demo.controladores;
 
-import com.bibliotheque.demo.entidades.Genero;
 import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Autor;
+import com.bibliotheque.demo.entidades.Editorial;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.GeneroRepositorio;
+import com.bibliotheque.demo.repositorios.AutorRepositorio;
+import com.bibliotheque.demo.repositorios.EditorialRepositorio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.LibroServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,12 @@ public class LibroControlador {
     private AdminServicio adminServ;    
     @Autowired
     private LibroRepositorio bookRepo;
-    
+    @Autowired
+    private LibroServicio bookServ;
+    @Autowired
+    private AutorRepositorio wrRepo;
+    @Autowired
+    private EditorialRepositorio ediRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/libro")
@@ -47,7 +55,6 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-
         try {
             Admin admin = adminServ.buscarPorId(id);
             modelo.addAttribute("perfil", admin);
@@ -56,8 +63,92 @@ public class LibroControlador {
         }
         return "libros.html";
     }
-    
 
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/ingresar")
+    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
+        List<Autor> writers = wrRepo.findAll();
+        List<Editorial> pubs = ediRepo.findAll();
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("writers", writers);
+        modelo.put("pubs", pubs);
+        return "libro-ingresar.html";
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-ingresar")
+    public String procesoIngresar( ModelMap modelo, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio {
+        try {
+            bookServ.crearLibro(isbn, titulo, ejemplaresTotales, autor, editorial, archivo);
+        } catch (ErrorServicio e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("titulo", titulo);
+            modelo.put("isbn", isbn);
+            modelo.put("ejemplaresTotales", ejemplaresTotales);
+            modelo.put("autor", autor);
+            modelo.put("archivo", archivo);
+
+            return "libro-ingresar.html";
+        }
+        modelo.put("tit", "Operación Exitosa");
+        modelo.put("subTit", "La información fue ingresada a la base de datos correctamente.");
+
+        return "succes.html";
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/modificar")
+    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String idLibro,  ModelMap modelo){
+        List<Autor> writers = wrRepo.findAll();
+        List<Editorial> pubs = ediRepo.findAll();
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("writers", writers);
+        modelo.put("pubs", pubs);
+        return "modificar-libro.html";
+    }
+
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-modificar")
+    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio {
+        Libro book = null;
+        try {
+
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            
+
+            book = bookServ.buscarLibroId(libroId);
+            bookServ.modificar(libroId, isbn, titulo, ejemplaresTotales, autor, editorial, archivo);
+            //session.setAttribute("adminsession", admin);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
+            return "succes.html";
+            
+            
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            modelo.put("perfil", book);
+            return "modificar-libro.html";
+        }
+    }
+
+    
+    
+    
+    
 //
 //    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
 //    @GetMapping("/editar-perfil")

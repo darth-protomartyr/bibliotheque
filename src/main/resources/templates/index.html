@@ -21,7 +21,6 @@
                             <p>Ingresar</p>
                             <div class="btn">
                                 <a th:if="${session.adminsession == null}" th:href="@{/login}">Log in</a>
-                                <h2 class="name" th:if="${session.adminsession != null}" th:text="${session.adminsession.nombre + ' ' +session.adminsession.apellido}"></h2>
                             </div>
                         </div>
                         <div class = "main__card__index__right__half">
