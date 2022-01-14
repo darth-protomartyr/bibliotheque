@@ -32,6 +32,18 @@ a:hover {
     box-shadow: 0 0 3px 2px rgba(0,0,0,.3);
 }
 
+.pic-rect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:185px;
+    height: 300px;
+    overflow: hidden;
+    object-fit: cover;
+    box-shadow: 0 0 3px 2px rgba(0,0,0,.3);
+    margin: 20px;
+}
+
 button {
     display: block;
     background-color: #05F2C7;
@@ -329,21 +341,6 @@ input::placeholder {
     height: 25px;
 }
 
-button {
-    display: block;
-    background-color: #05F2C7;
-    color: #F20544;
-    border-radius: 5px;
-    font-size:1.1em;
-    font-weight: 600;
-    padding: 8px 12px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 10vw;
-    margin: auto;
-    
-}
 
 
 /*------------------------- MAIN OBJECTS */
@@ -358,6 +355,22 @@ button {
     justify-content: center;
     margin-bottom: 10px;
 }
+
+
+.object--single {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+}
+
+.object--single--pic {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+    display:flex;
+    flex-direction: row;
+}
+
 
 
 
@@ -404,8 +417,8 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin: auto;
-    width:90%;
+    /* margin: auto;
+    width:90%; */
 }
 
 .object__btn > a, button {
@@ -434,22 +447,77 @@ button {
     transition: background-color 0.5s;
 }
 
+
+
+
 .object--single {
     background-color: rgba(255,255,255,0.3);
     border-radius: 5px;
     padding: 10px 0px;
 }
 
+.object--single--pic {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
+}
+
+.object__data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+   /*  background-color: rgba(2,200,255,0.5); */
+    width: 250px;
+    /* align-items:center; */
+}
+
+
+
 .object__button__container-2 {
     flex-direction: row;   
 }
 
 .object__btn-2 > a, button {
-    width: 200px;
-    margin: 0px 30px;
+    width: 230px;
+    margin: 10px;
     border-radius: 20px;
+    padding: 5px;
 }
 
+
+
+
+
+.object--single {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+}
+
+.object--single--pic {
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 10px 0px;
+    display:flex;
+    flex-direction: row;
+    margin: 5px;
+}
+
+.main__card__list {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 15px;
+    background-color: rgba(242, 4, 24, 0.5);
+    padding: 2% 2%;
+    margin: auto;
+    max-width: 800px;
+    justify-content: center;
+    align-items: center;
+}
 
 /*------------------------- MAIN SINGLE OBJECT */
 

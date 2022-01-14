@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">            
+            <div class="main__card__list">
+                <p class ="tit">Lista Autores</p>
+                <div th:each="wri:${wris}" class = "object--single--pic">
+                    <div>
+                        <img th:if="${wri.foto != null}" th:src="${'/foto/wri/' + wri.id}" class="pic-rect" alt="writer">
+                        <img th:if="${wri.foto == null}" src="/img/escritor.jpg" class="pic-rect" alt="user">
+                    </div>
+                    <div class="object__data">
+                        <div>
+                            <p class ="sub-tit">Nombre: <span th:text="${wri.nombre}"></span></p>
+                        </div>
+                        <div class="object__button__container">
+                            <div class="object__btn object__btn-2">
+                                <a th:href="@{/autores/modificar(id=__${session.adminsession.id}__, wriId=__${wri.id}__)}" th:if="${session.adminsession != null}">Modificar Autor</a>
+                            </div>
+                            <div th:if="${wri.alta == true}">
+                                <form th:action="@{/autores/proceso-baja(id=__${session.adminsession.id}__, wriId=__${wri.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Baja Autor</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div th:if="${wri.alta == false}">
+                                <form th:action="@{/autores/proceso-alta(id=__${session.adminsession.id}__, wriId=__${wri.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Alta Autor</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

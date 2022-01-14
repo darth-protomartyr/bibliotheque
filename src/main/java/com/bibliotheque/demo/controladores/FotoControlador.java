@@ -6,8 +6,10 @@
 package com.bibliotheque.demo.controladores;
 
 import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Autor;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.AutorServicio;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class FotoControlador {
    
     @Autowired
     private AdminServicio adminServ;
+    @Autowired
+    private AutorServicio autorServ;
 
     @GetMapping("/perfil/{id}")
     public ResponseEntity<byte[]> fotoPartner(@PathVariable String id) {
@@ -44,11 +48,25 @@ public class FotoControlador {
             Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    } 
+    }
+
+
+    @GetMapping("/wri/{id}")
+    public ResponseEntity<byte[]> fotoWriter(@PathVariable String id) {
+        try {
+            Autor wri = autorServ.consultaAutorId(id);
+            if (wri.getFoto() == null) {
+                throw new ErrorServicio("El usuario no tiene una foto asignada.");
+            }
+            byte[] foto = wri.getFoto().getContenido();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+
+            return new ResponseEntity<>(foto, headers, HttpStatus.OK);
+        } catch (ErrorServicio ex) {
+            Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
-
-
-
-
-
-

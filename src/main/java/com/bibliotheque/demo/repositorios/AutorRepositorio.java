@@ -17,9 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AutorRepositorio extends JpaRepository<Autor, String>{
     
-    @Query("SELECT a FROM Autor a WHERE a.nombre = :nombre AND a.alta = true")
+    @Query("SELECT e FROM Autor e WHERE e.nombre = :nombre AND e.alta = true")
     public Optional<Autor> buscaAutorNom (@Param("nombre") String nombre);
     
-    @Query("SELECT s FROM Autor s WHERE s.alta = true")
-    public List<Autor> listarAutor();
+    @Query("SELECT e FROM Autor e WHERE e.nombre = :nombre")
+    public Optional<Autor> buscaAutorNomCompl (@Param("nombre") String nombre);
+    
+    @Query("SELECT e FROM Autor e WHERE e.id = :id AND e.alta = true")
+    public Optional<Autor> buscaAutorId (@Param("id") String id);
+    
+    @Query("SELECT e FROM Autor e WHERE e.id = :id")
+    public Optional<Autor> buscaAutorIdCompl (@Param("id") String id);
+    
+    @Query("SELECT e FROM Autor e WHERE e.alta = true")
+    public List<Autor> listarAutorActiva();
+    
+    @Query("SELECT e FROM Autor e")
+    public List<Autor> listarAutorCompleta();
 }

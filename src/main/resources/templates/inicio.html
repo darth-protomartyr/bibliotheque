@@ -11,13 +11,14 @@
         <div class = "main">
             <div class= "main__card">
                 <h3 class="main__card__h3">Inicio</h3>
-                <div class="pic-square"> 
+                <div> 
                     <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-square" alt="user">
                     <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-square" alt="user">
                 </div>
             </div>
         </div>
     </main>
+    
     <footer th:replace="/fragments/footer :: footer"></footer>
     
 </body>

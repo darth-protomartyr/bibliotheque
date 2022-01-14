@@ -25,33 +25,39 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class AutorServicio {
     @Autowired
-    AutorRepositorio wrRepo;
+    AutorRepositorio autorRepo;
     @Autowired
     FotoServicio picServ;
     
     @Transactional
-    public Autor crearAutor(String name, MultipartFile archivo) throws ErrorServicio {
-        if (name == null || name.isEmpty()) {
-            throw new ErrorServicio("Falta el nombre del usuario");
+    public Autor crearAutor(String nombre, MultipartFile archivo) throws ErrorServicio {
+        if (nombre == null || nombre.isEmpty()) {
+            throw new ErrorServicio("Falta el nombre del autor");
         }
+        
+        if (archivo == null || archivo.isEmpty()) {
+            throw new ErrorServicio("Falta la imagen del autor");
+        }
+        
         Autor buk = new Autor();
-        buk.setNombre(name);
+        buk.setNombre(nombre);
         buk.setAlta(true);
         Foto foto = picServ.guardar(archivo);
-        buk.setRetrato(foto);
-        return wrRepo.save(buk);
+        buk.setFoto(foto);
+        return autorRepo.save(buk);
     }
     
     @Transactional
-    public void modificarAutor(String nombre, MultipartFile archivo) throws ErrorServicio {
+    public void modificarAutor(String nombre, MultipartFile archivo, String id) throws ErrorServicio {
         Autor buk = null;
-        Optional <Autor> rta = wrRepo.buscaAutorNom(nombre);
+        Optional <Autor> rta = autorRepo.buscaAutorId(id);
         
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
             throw new ErrorServicio("El autor seleccionado no está en la base de datos");
         }
+        
         
         if (nombre == null) {
             buk.setNombre(buk.getNombre());
@@ -60,23 +66,23 @@ public class AutorServicio {
         }
         
         if (archivo == null) {
-            buk.setRetrato(buk.getRetrato());
+            buk.setFoto(buk.getFoto());
         }
         
         String idFoto = null;
-        if (buk.getRetrato() != null){
-            idFoto = buk.getRetrato().getId();
+        if (buk.getFoto() != null){
+            idFoto = buk.getFoto().getId();
         }
 
         Foto foto = picServ.actualizar(idFoto, archivo);
-        buk.setRetrato(foto);
-        wrRepo.save(buk);
+        buk.setFoto(foto);
+        autorRepo.save(buk);
     }
 
     @Transactional
-    public void bajaAutor(String nombre) throws ErrorServicio{
+    public void bajaAutor(String id) throws ErrorServicio{
         Autor buk = null;
-        Optional <Autor> rta = wrRepo.buscaAutorNom(nombre);
+        Optional <Autor> rta = autorRepo.buscaAutorIdCompl(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
@@ -85,16 +91,16 @@ public class AutorServicio {
         
         if (buk.getAlta().equals(true)) {
             buk.setAlta(false);
-            wrRepo.save(buk);
+            autorRepo.save(buk);
         } else {
             System.out.println("El autor seleccionado ya se encuenstra dado de baja.");
         }
     }
 
     @Transactional
-    public void altaAutor(String nombre) throws ErrorServicio {
+    public void altaAutor(String id) throws ErrorServicio {
         Autor buk = null;
-        Optional <Autor> rta = wrRepo.buscaAutorNom(nombre);
+        Optional <Autor> rta = autorRepo.buscaAutorIdCompl(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
@@ -103,27 +109,76 @@ public class AutorServicio {
         
         if (buk.getAlta().equals(false)) {
             buk.setAlta(true);
-            wrRepo.save(buk);
+            autorRepo.save(buk);
         } else {
            throw new ErrorServicio("El autor seleccionado ya se encuenstra dado de baja.");
         }
     }
     
     
-    public Autor consultaAutor(String nombre) throws ErrorServicio {
+    
+    
+    
+    
+    @Transactional(readOnly = true)
+    public Autor consultaAutorId(String id) throws ErrorServicio {
         Autor buk = null;
-        Optional <Autor> rta = wrRepo.buscaAutorNom(nombre);
+        Optional <Autor> rta = autorRepo.buscaAutorId(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
-            throw new ErrorServicio("El nombre seleccionado no pertenece a un autor listado en la base de datos");
+            throw new ErrorServicio("El Autor consultado no pertenece a una Autor listado en la base de datos");
         }
         return buk;
     }
     
     @Transactional(readOnly = true)
-    public List<Autor> listarAutor() {
-        List<Autor>wrs = wrRepo.listarAutor();
+    public Autor consultaAutorIdCompl(String id) throws ErrorServicio {
+        Autor buk = null;
+        Optional <Autor> rta = autorRepo.buscaAutorIdCompl(id);
+        if (rta.isPresent()) {
+            buk = rta.get();
+        } else {
+            throw new ErrorServicio("El Autor consultado no pertenece a una Autor listado en la base de datos");
+        }
+        return buk;
+    }
+    
+    
+    @Transactional(readOnly = true)
+    public Autor consultaAutorNom(String nombre) throws ErrorServicio {
+        Autor buk = null;
+        Optional <Autor> rta = autorRepo.buscaAutorNom(nombre);
+        if (rta.isPresent()) {
+            buk = rta.get();
+        } else {
+            throw new ErrorServicio("El nombre seleccionado no pertenece a un Autor listado en la base de datos");
+        }
+        return buk;
+    }
+    
+    @Transactional(readOnly = true)
+    public Autor consultaAutorNomCompl(String nombre) throws ErrorServicio {
+        Autor buk = null;
+        Optional <Autor> rta = autorRepo.buscaAutorNomCompl(nombre);
+        if (rta.isPresent()) {
+            buk = rta.get();
+        } else {
+            throw new ErrorServicio("El nombre seleccionado no pertenece a un Autor listado en la base de datos");
+        }
+        return buk;
+    }
+    
+    
+    @Transactional(readOnly = true)
+    public List<Autor> listarAutoresActivas() {
+        List<Autor>wrs = autorRepo.listarAutorActiva();
+        return wrs;
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Autor> listarAutoresCompletas() {
+        List<Autor>wrs = autorRepo.listarAutorCompleta();
         return wrs;
     }
 }

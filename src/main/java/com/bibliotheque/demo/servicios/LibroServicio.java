@@ -73,7 +73,7 @@ public class LibroServicio {
         book.setEjemplaresTotales(ejemplaresTotales);
         book.setEjemplaresRestantes(ejemplaresTotales);
         book.setEjemplaresPrestados(0);
-        book.setAutor(wrServ.consultaAutor(autor));
+        book.setAutor(wrServ.consultaAutorNom(autor));
         book.setEditorial(edServ.consultaEditorialNom(editorial));
         Foto foto = picServ.guardar(archivo);
         book.setFoto(foto);

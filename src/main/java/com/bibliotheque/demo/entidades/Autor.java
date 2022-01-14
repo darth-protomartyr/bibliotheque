@@ -24,15 +24,16 @@ public class Autor {
     private String nombre;
     private Boolean alta;
     @OneToOne
-    private Foto retrato;
+    private Foto foto;
 
     public Autor() {
     }
    
-    public Autor(String id, String nombre, Boolean alta) {
+    public Autor(String id, String nombre, Boolean alta, Foto foto) {
         this.id = id;
         this.nombre = nombre;
         this.alta = alta;
+        this.foto = foto;
     }
 
     public String getId() {
@@ -68,16 +69,16 @@ public class Autor {
     }
 
     /**
-     * @return the retrato
+     * @return the foto
      */
-    public Foto getRetrato() {
-        return retrato;
+    public Foto getFoto() {
+        return foto;
     }
 
     /**
-     * @param retrato the retrato to set
+     * @param foto the foto to set
      */
-    public void setRetrato(Foto retrato) {
-        this.retrato = retrato;
+    public void setFoto(Foto foto) {
+        this.foto = foto;
     }
 }

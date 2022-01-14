@@ -5,15 +5,17 @@
  */
 package com.bibliotheque.demo.controladores;
 
-
 import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.entidades.Autor;
+import com.bibliotheque.demo.entidades.Editorial;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.AutorRepositorio;
-import com.bibliotheque.demo.repositorios.GeneroRepositorio;
+import com.bibliotheque.demo.repositorios.EditorialRepositorio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.AutorServicio;
+import com.bibliotheque.demo.servicios.EditorialServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,16 +37,15 @@ import org.springframework.web.multipart.MultipartFile;
 public class AutorControlador {
 
     @Autowired
-    private AdminServicio adminServ;    
+    private AdminServicio adminServ;
     @Autowired
-    private AutorRepositorio wrRepo;
-    
+    private AutorRepositorio autorRepo;
+    @Autowired
+    private AutorServicio autorServ;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/autor")
     public String autores(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Autor> writers = wrRepo.findAll();
-        modelo.put("writers", writers);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -59,49 +60,167 @@ public class AutorControlador {
         return "autores.html";
     }
     
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-buscar")
+    public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qautor, ModelMap modelo) throws ErrorServicio{
+        Autor wri= null;
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            wri = autorServ.consultaAutorNomCompl(qautor);
+            modelo.put("wri", wri);
+            return "autor.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autores.html";
+        }
+    }
+    
+    
+    
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/ingresar")
+    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        return "autor-ingresar.html";
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-ingresar")
+    public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, @RequestParam MultipartFile archivo, ModelMap modelo) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            autorServ.crearAutor(nombre, archivo);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "El Autor fue ingresada a la base de datos correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("nombre", nombre);
+            modelo.put("archivo", archivo);
+            return "autor-ingresar.html";
+        }
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/listar-activas")
+    public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
+        List<Autor> wris = autorRepo.listarAutorActiva();
+        modelo.put("wris", wris);
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
 
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @GetMapping("/editar-perfil")
-//    public String editarPerfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
-//        List<Genero> sexos = genRepo.findAll();
-//        modelo.put("sexos", sexos);
-//        
-//        Admin login = (Admin) session.getAttribute("adminsession");
-//        if (login == null || !login.getId().equals(id)) {
-//            return "redirect:/inicio";
-//        }
-//
-//        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
-//        } catch (ErrorServicio e) {
-//            modelo.addAttribute("error", e.getMessage());
-//        }
-//        return "libros.html";
-//    }
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @PostMapping("/proceso-actualizar-perfil")
-//    public String modificarAdmin(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, byte sexoId, String mail, MultipartFile archivo) {
-//        
-//        Admin admin = null;
-//        try {
-//
-//            Admin login = (Admin) session.getAttribute("adminsession");
-//            if (login == null || !login.getId().equals(id)) {
-//                return "redirect:/inicio";
-//            }
-//
-//            admin = adminServ.buscarPorId(id);
-//            adminServ.modificar(id, name, pass1, pass2, sexoId, mail, archivo);
-//            session.setAttribute("adminsession", admin);
-//            return "redirect:/inicio";
-//        } catch (ErrorServicio ex) {
-//            modelo.put("error", ex.getMessage());
-//            modelo.put("perfil", admin);
-//
-//            return "perfil.html";
-//        }
-//   }        
+        return "autores-lista-activos.html";
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/listar-todas")
+    public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
+        List<Autor> wris = autorRepo.listarAutorCompleta();
+        modelo.put("wris", wris);
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+
+        return "autores-lista-completa.html";
+    }
+    
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/modificar")
+    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String wriId,  ModelMap modelo) throws ErrorServicio{
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        Autor wri = autorServ.consultaAutorId(wriId);
+        modelo.put("wri", wri);
+        
+        
+        return "autor-actualizar.html";
+    }
+    
+    
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-modificar")
+    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId, @RequestParam String nombre, @RequestParam MultipartFile archivo) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            
+            autorServ.modificarAutor(nombre, archivo, wriId);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue modificada correctamente.");
+            return "succes.html";
+
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autor-actualizar.html";
+        }
+    }
+    
+
+    
+    
+
+
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-baja")
+    public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }       
+            autorServ.bajaAutor(wriId);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue modificada correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autores.html";
+        }
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-alta")
+    public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }       
+            autorServ.altaAutor(wriId);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue modificada correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autores.html";
+        }
+    }
 }

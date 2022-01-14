@@ -98,17 +98,17 @@ public class Admin {
     }
 
     /**
-     * @return the retrato
+     * @return the foto
      */
     public Foto getFoto() {
         return foto;
     }
 
     /**
-     * @param retrato the retrato to set
+     * @param foto the foto to set
      */
-    public void setFoto(Foto retrato) {
-        this.foto = retrato;
+    public void setFoto(Foto foto) {
+        this.foto = foto;
     }
 
     /**
