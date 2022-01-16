@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">            
+            <div class="main__card__list">
+                <p class ="tit">Lista Libros</p>
+                <div th:each="book:${books}" class = "object--single--pic">
+                    <div>
+                            <img th:if="${book.foto != null}" th:src="${'/foto/book/' + book.id}" class="pic-rect" alt="book">
+                            <img th:if="${book.foto == null}" src="/img/bookicon.jpg" class="pic-rect" alt="book">
+                        </div>
+                        <div class="object__data">
+                            <div>
+                                <p class ="sub-tit">Titulo: <span th:text="${book.titulo}"></span></p>
+                            </div>
+                            <div>
+                                <p class ="sub-tit"> Autor: <span th:text="${book.autor.nombre}"></span></p>
+                            </div>
+                            <div>
+                                <p class ="sub-tit">Editotial: <span th:text="${book.editorial.nombre}"></span></p>
+                            </div>
+                            <div>
+                                <p class ="sub-tit">Ejemplares disponibles: <span th:text="${book.ejemplaresRestantes}"></span></p>
+                            </div>
+                            <div class="object__button__container">
+                                <div class="object__btn object__btn-2">
+                                    <a th:href="@{/libros/modificar(id=__${session.adminsession.id}__, bookId=__${book.id}__)}" th:if="${session.adminsession != null}">Modificar Libro</a>
+                                </div>
+                                <div th:if="${book.alta == true}">
+                                    <form th:action="@{/libros/proceso-baja(id=__${session.adminsession.id}__, bookId=__${book.id}__)}" method="post" enctype="multipart/form-data">
+                                        <div class="form__container object__btn object__btn-2">
+                                            <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                            <button type="submit">Baja Libro</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div th:if="${book.alta == false}">
+                                    <form th:action="@{/libros/proceso-alta(id=__${session.adminsession.id}__, bookId=__${book.id}__)}" method="post" enctype="multipart/form-data">
+                                        <div class="form__container object__btn object__btn-2">
+                                            <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                            <button type="submit">Alta Libro</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

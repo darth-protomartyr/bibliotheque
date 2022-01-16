@@ -20,14 +20,20 @@ public interface LibroRepositorio extends JpaRepository<Libro, String> {
     @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo AND l.alta = true")
     public Optional<Libro> buscaLibroNom (@Param("titulo") String titulo);
     
-    @Query("SELECT l FROM Libro l WHERE l.isbn = :isbn AND l.alta = true")
-    public Optional<Libro> buscaLibroISBN (@Param("isbn") Long isbn);
-    
+    @Query("SELECT l FROM Libro l WHERE l.titulo = :titulo")
+    public Optional<Libro> buscaLibroNomCompl (@Param("titulo") String titulo);
+   
     @Query("SELECT l FROM Libro l WHERE l.id = :id AND l.alta = true")
     public Optional<Libro> buscaLibroId (@Param("id") String id);
+    
+    @Query("SELECT l FROM Libro l WHERE l.id = :id")
+    public Optional<Libro> buscaLibroIdCompl (@Param("id") String id);
 
     @Query("SELECT l FROM Libro l WHERE l.alta = true")
-    public List<Libro> listarLibros();
+    public List<Libro> listarLibrosActivos();
+    
+    @Query("SELECT l FROM Libro l")
+    public List<Libro> listarLibrosCompleta();
     
     @Query("SELECT l FROM Libro l WHERE l.autor = :autor AND l.alta = true")
     public Optional<List<Libro>> listarLibrosAutor(@Param("autor") String autor);

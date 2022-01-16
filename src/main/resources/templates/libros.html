@@ -10,34 +10,32 @@
     <main>
         <div class = "main">
             <div class= "main__card">
-                <p>Libros</p>
-                <div class="main__object__button">
-                    <div class="btn">
-                        <a th:href="@{/libros/ingresar-libro(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Actualizar Perfil</a>
-                        <a href="#">Registrar Libro</a>
-                    </div>
-                    <div class="btn">
-                        <a href="#">Consultar Libro</a>
-                    </div>   
-                </div>
-                <div class ="main__object__container">
-                    <div th:each="texto : ${textos}"   class="main__object__object">
-                        
-                        <div class="pic-square"> 
-<!--                        <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-square" alt="user">
-                            <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-square" alt="user">-->
-                        </div>
-                        <div class = "object__data">
-                            <p></p>
-                            <p></p>
-                            <div class="btn">
-                                <a th:href="@{/libros/modificar-libro(id=__${session.adminsession.id}__ , libroId=__${texto.id}__)}" th:if="${session.adminsession != null}">Actualizar Libro</a>
-                                <a href="#">Administrar Libro</a>
+                <h3 class="main__card__h3">Libros</h3>
+                <div class="main__card__object">
+                    <div class="main__object--buscador">
+                        <form th:action="@{/libros/proceso-buscar(id=__${session.adminsession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                            <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                            <div class="form__container__buscar">
+                                <input type="text" placeholder="Ingrese nombre del libro" name="qlibro" required>
+                                <button type="submit">Buscar</button>
                             </div>
+                        </form>
+                    </div>
+                    <div class="object__button__container">
+                        <div class="object__btn">
+                            <a th:href="@{/libros/ingresar(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Registrar Libro</a>
+                        </div>
+                        
+                        <div class="object__btn">
+                            <a th:href="@{/libros/listar-activas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Libros Activos</a>
+                        </div>
+                        
+                        <div class="object__btn">
+                            <a th:href="@{/libros/listar-todas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Lista Libros</a>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>    
         </div>
     </main>
     

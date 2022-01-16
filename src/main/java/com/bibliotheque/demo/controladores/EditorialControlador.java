@@ -43,19 +43,18 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/editorial")
     public String editoriales(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-//        List<Editorial> publish = pubRepo.findAll();
-//        modelo.put("publish", publish);
+
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
 
-        try {
-            Admin admin = adminServ.buscarPorId(id);
-            modelo.addAttribute("perfil", admin);
-        } catch (ErrorServicio e) {
-            modelo.addAttribute("error", e.getMessage());
-        }
+//        try {
+//            Admin admin = adminServ.buscarPorId(id);
+//            modelo.addAttribute("perfil", admin);
+//        } catch (ErrorServicio e) {
+//            modelo.addAttribute("error", e.getMessage());
+//        }
         return "editoriales.html";
     }
     

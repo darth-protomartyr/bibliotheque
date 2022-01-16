@@ -38,43 +38,54 @@ public class LibroControlador {
     @Autowired
     private AdminServicio adminServ;    
     @Autowired
-    private LibroRepositorio bookRepo;
+    private LibroRepositorio libroRepo;
     @Autowired
-    private LibroServicio bookServ;
+    private LibroServicio libroServ;
     @Autowired
-    private AutorRepositorio wrRepo;
+    private AutorRepositorio autorRepo;
     @Autowired
     private EditorialRepositorio ediRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/libro")
     public String libros(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Libro> textos = bookRepo.findAll();
-        modelo.put("textos", textos);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        try {
-            Admin admin = adminServ.buscarPorId(id);
-            modelo.addAttribute("perfil", admin);
-        } catch (ErrorServicio e) {
-            modelo.addAttribute("error", e.getMessage());
-        }
         return "libros.html";
     }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-buscar")
+    public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
+        Libro book= null;
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            book = libroServ.buscarLibroTitCompl(qlibro);
+            modelo.put("book", book);
+            return "libro.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "libros.html";
+        }
+    }
+    
 
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/ingresar")
-    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
-        List<Autor> writers = wrRepo.findAll();
+    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo) {
+        List<Autor> wris = autorRepo.findAll();
         List<Editorial> pubs = ediRepo.findAll();
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        modelo.put("writers", writers);
+        modelo.put("wris", wris);
         modelo.put("pubs", pubs);
         return "libro-ingresar.html";
     }
@@ -82,45 +93,50 @@ public class LibroControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-ingresar")
-    public String procesoIngresar( ModelMap modelo, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio {
+    public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
         try {
-            bookServ.crearLibro(isbn, titulo, ejemplaresTotales, autor, editorial, archivo);
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            libroServ.crearLibro(isbn, titulo, ejemplaresTotales, wriId, pubId, archivo);
+            
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "El Autor fue ingresada a la base de datos correctamente.");
+            return "succes.html";
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
             modelo.put("titulo", titulo);
             modelo.put("isbn", isbn);
             modelo.put("ejemplaresTotales", ejemplaresTotales);
-            modelo.put("autor", autor);
             modelo.put("archivo", archivo);
 
             return "libro-ingresar.html";
         }
-        modelo.put("tit", "Operación Exitosa");
-        modelo.put("subTit", "La información fue ingresada a la base de datos correctamente.");
-
-        return "succes.html";
     }
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/modificar")
-    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String idLibro,  ModelMap modelo){
-        List<Autor> writers = wrRepo.findAll();
+    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String bookId,  ModelMap modelo){
+        List<Autor> wris = autorRepo.findAll();
         List<Editorial> pubs = ediRepo.findAll();
+        Libro book = libroRepo.getById(bookId);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        modelo.put("writers", writers);
+        modelo.put("book", book);
+        modelo.put("wris", wris);
         modelo.put("pubs", pubs);
-        return "modificar-libro.html";
+        return "libro-actualizar.html";
     }
 
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
-    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autor, String editorial, MultipartFile archivo) throws ErrorServicio {
+    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String bookId, String titulo, Long isbn, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
         Libro book = null;
         try {
 
@@ -130,8 +146,8 @@ public class LibroControlador {
             }
             
 
-            book = bookServ.buscarLibroId(libroId);
-            bookServ.modificar(libroId, isbn, titulo, ejemplaresTotales, autor, editorial, archivo);
+            book = libroServ.buscarLibroId(bookId);
+            libroServ.modificar(bookId, isbn, titulo, ejemplaresTotales, wriId, pubId, archivo);
             //session.setAttribute("adminsession", admin);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
@@ -140,57 +156,74 @@ public class LibroControlador {
             
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
-            modelo.put("perfil", book);
-            return "modificar-libro.html";
+            modelo.put("book", book);
+            return "libro-actualizar.html";
         }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/listar-activas")
+    public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
+        List<Libro> books = libroServ.listarLibrosActivos();
+        modelo.put("books", books);
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+
+        return "libros-lista-activos.html";
+    }
     
     
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/listar-todas")
+    public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
+        List<Libro> books = libroRepo.listarLibrosCompleta();
+        modelo.put("books", books);
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+
+        return "libros-lista-completa.html";
+    }
     
     
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @GetMapping("/editar-perfil")
-//    public String editarPerfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
-//        List<Genero> sexos = genRepo.findAll();
-//        modelo.put("sexos", sexos);
-//        
-//        Admin login = (Admin) session.getAttribute("adminsession");
-//        if (login == null || !login.getId().equals(id)) {
-//            return "redirect:/inicio";
-//        }
-//
-//        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
-//        } catch (ErrorServicio e) {
-//            modelo.addAttribute("error", e.getMessage());
-//        }
-//        return "libros.html";
-//    }
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @PostMapping("/proceso-actualizar-perfil")
-//    public String modificarAdmin(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, byte sexoId, String mail, MultipartFile archivo) {
-//        
-//        Admin admin = null;
-//        try {
-//
-//            Admin login = (Admin) session.getAttribute("adminsession");
-//            if (login == null || !login.getId().equals(id)) {
-//                return "redirect:/inicio";
-//            }
-//
-//            admin = adminServ.buscarPorId(id);
-//            adminServ.modificar(id, name, pass1, pass2, sexoId, mail, archivo);
-//            session.setAttribute("adminsession", admin);
-//            return "redirect:/inicio";
-//        } catch (ErrorServicio ex) {
-//            modelo.put("error", ex.getMessage());
-//            modelo.put("perfil", admin);
-//
-//            return "perfil.html";
-//        }
-//   }        
+        
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-baja")
+    public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String bookId) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }       
+            libroServ.darBajaLibro(bookId);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue modificada correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autores.html";
+        }
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-alta")
+    public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String bookId) throws ErrorServicio {
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }       
+            libroServ.darAltaLibro(bookId);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue modificada correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            return "autores.html";
+        }
+    }
 }

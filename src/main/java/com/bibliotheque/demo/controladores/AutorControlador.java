@@ -51,12 +51,12 @@ public class AutorControlador {
             return "redirect:/inicio";
         }
 
-        try {
-            Admin admin = adminServ.buscarPorId(id);
-            modelo.addAttribute("perfil", admin);
-        } catch (ErrorServicio e) {
-            modelo.addAttribute("error", e.getMessage());
-        }
+//        try {
+//            Admin admin = adminServ.buscarPorId(id);
+//            modelo.addAttribute("perfil", admin);
+//        } catch (ErrorServicio e) {
+//            modelo.addAttribute("error", e.getMessage());
+//        }
         return "autores.html";
     }
     
