@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class LibroServicio {
     @Autowired
-    private LibroRepositorio bookRepo;
+    private LibroRepositorio libroRepo;
     @Autowired
     private AutorRepositorio wrRepo;
     @Autowired
@@ -43,10 +43,10 @@ public class LibroServicio {
     private FotoServicio picServ;
 
     @Transactional
-    public Libro crearLibro(Long ISBN, String titulo, Integer ejemplaresTotales, String idWri, String idPub, MultipartFile archivo) throws ErrorServicio, NullPointerException {
+    public Libro crearLibro(Long isbn, String titulo, Integer ejemplaresTotales, String idWri, String idPub, MultipartFile archivo) throws ErrorServicio, NullPointerException {
         
-        if (ISBN == null) {
-            throw new ErrorServicio("Falta ingresar el ISBN");
+        if (isbn == null) {
+            throw new ErrorServicio("Falta ingresar el isbn");
         }
         
         if (titulo == null || titulo.isEmpty()) {
@@ -68,7 +68,11 @@ public class LibroServicio {
         
         Libro book = new Libro();
         book.setAlta(Boolean.TRUE);
-        book.setIsbn(ISBN);
+        Optional<Libro> rta = libroRepo.buscaLibroIsbnCompl(isbn);
+        if (rta.isPresent()) {
+            throw new ErrorServicio("El título ya se encuentra registrado en la base de datos");
+        }
+        book.setIsbn(isbn);
         book.setTitulo(titulo);
         book.setEjemplaresTotales(ejemplaresTotales);
         book.setEjemplaresRestantes(ejemplaresTotales);
@@ -77,21 +81,26 @@ public class LibroServicio {
         book.setEditorial(edServ.consultaEditorialIdCompl(idPub));
         Foto foto = picServ.guardar(archivo);
         book.setFoto(foto);
-        return bookRepo.save(book);
+        return libroRepo.save(book);
     }
     
     @Transactional
-    public void modificar(String id, Long ISBN, String titulo, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
+    public void modificar(String id, Long isbn, String titulo, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
         
-        Libro book = null;
-        Optional<Libro> rta1 = bookRepo.findById(id);
-        if(rta1.isPresent()) {
+            Libro book = null;
+                Optional<Libro> rta1 = libroRepo.findById(id);
+            if(rta1.isPresent()) {
             book = rta1.get();
             
-            if (ISBN == null) {
+            Optional<Libro> rta = libroRepo.buscaLibroIsbnCompl(isbn);
+            if (rta.isPresent() && !isbn.equals(book.getIsbn())) {
+                throw new ErrorServicio("El ISBN del libro ya se encuentra registrado en la base de datos");
+            }
+            
+            if (isbn == null) {
                 book.setIsbn(book.getIsbn());
             } else {
-                book.setIsbn(ISBN);
+                book.setIsbn(isbn);
             }
             
             if (titulo == null || titulo.isEmpty()) {
@@ -151,7 +160,7 @@ public class LibroServicio {
     @Transactional
     public void darBajaLibro(String id) throws ErrorServicio {
         Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroId(id);
+        Optional<Libro> rta = libroRepo.buscaLibroId(id);
         if (rta.isPresent()) {
             book = rta.get();
         } else {
@@ -168,7 +177,7 @@ public class LibroServicio {
     @Transactional
     public void darAltaLibro(String id) throws ErrorServicio {
         Libro book = null;
-        Optional<Libro> rta = bookRepo.buscaLibroIdCompl(id);
+        Optional<Libro> rta = libroRepo.buscaLibroIdCompl(id);
         if (rta.isPresent()) {
             book = rta.get();
         } else {
@@ -185,14 +194,14 @@ public class LibroServicio {
     
     @Transactional(readOnly = true)
     public List<Libro> listarLibrosActivos() {
-        List<Libro>wrs = bookRepo.listarLibrosActivos();
+        List<Libro>wrs = libroRepo.listarLibrosActivos();
         return wrs;
     }
     
     
     @Transactional(readOnly = true)
     public List<Libro> listarLibrosCompletas() {
-        List<Libro>wrs = bookRepo.listarLibrosCompleta();
+        List<Libro>wrs = libroRepo.listarLibrosCompleta();
         return wrs;
     }
     
@@ -200,7 +209,7 @@ public class LibroServicio {
     @Transactional(readOnly = true)
     public Libro buscarLibroId(String id) throws ErrorServicio {
         Libro book = new Libro();
-        Optional<Libro> rta = bookRepo.buscaLibroId(id);
+        Optional<Libro> rta = libroRepo.buscaLibroId(id);
         if (rta.isPresent()){
             book = rta.get();
         } else {
@@ -213,7 +222,7 @@ public class LibroServicio {
     @Transactional(readOnly = true)
     public Libro buscarLibroTit(String tit) throws ErrorServicio {
         Libro book = new Libro();
-        Optional<Libro> rta = bookRepo.buscaLibroNom(tit);
+        Optional<Libro> rta = libroRepo.buscaLibroNom(tit);
         if (rta.isPresent()){
             book = rta.get();
         } else {
@@ -226,7 +235,7 @@ public class LibroServicio {
     @Transactional(readOnly = true)
     public Libro buscarLibroTitCompl(String tit) throws ErrorServicio {
         Libro book = new Libro();
-        Optional<Libro> rta = bookRepo.buscaLibroNomCompl(tit);
+        Optional<Libro> rta = libroRepo.buscaLibroNomCompl(tit);
         if (rta.isPresent()){
             book = rta.get();
         } else {
@@ -239,7 +248,7 @@ public class LibroServicio {
     @Transactional(readOnly = true)    
     public List <Libro> buscarLibroAut(String aut) throws ErrorServicio {
         List <Libro> books = new ArrayList();
-        Optional<List<Libro>> rta = bookRepo.listarLibrosAutor(aut);
+        Optional<List<Libro>> rta = libroRepo.listarLibrosAutor(aut);
         if (rta.isPresent()){
             books = rta.get();
         } else {
@@ -251,7 +260,7 @@ public class LibroServicio {
     @Transactional(readOnly = true)
     public List <Libro> buscarLibroEd(String ed) throws ErrorServicio {
         List <Libro> books = new ArrayList();
-        Optional<List<Libro>> rta = bookRepo.listarLibrosEditorial(ed);
+        Optional<List<Libro>> rta = libroRepo.listarLibrosEditorial(ed);
         if (rta.isPresent()){
             books = rta.get();
         } else {
@@ -264,7 +273,7 @@ public class LibroServicio {
     public List <Libro> listarLibroEd(String ed) throws ErrorServicio {
         
         List <Libro> books = null;
-        Optional<List<Libro>> rta = bookRepo.listarLibrosEditorial(ed);
+        Optional<List<Libro>> rta = libroRepo.listarLibrosEditorial(ed);
         if (rta.isPresent()) {
             books = rta.get();
         }
@@ -280,7 +289,7 @@ public class LibroServicio {
         } else {
             System.out.println("No hay ejemplares para prestar");
         }
-        bookRepo.save(book);
+        libroRepo.save(book);
     }
     
     @Transactional
@@ -291,7 +300,7 @@ public class LibroServicio {
         } else {
             System.out.println("No hay ejemplares para prestar");
         }
-        bookRepo.save(book);
+        libroRepo.save(book);
     }
 
 }

@@ -7,10 +7,9 @@ package com.bibliotheque.demo.servicios;
 
 
 import com.bibliotheque.demo.entidades.Foto;
-import com.bibliotheque.demo.entidades.Genero;
 import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.GeneroRepositorio;
 import com.bibliotheque.demo.repositorios.AdminRepositorio;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +42,10 @@ public class AdminServicio implements UserDetailsService {
     @Autowired
     private FotoServicio picServ;
     @Autowired
-    private GeneroRepositorio genRepo;
-    @Autowired
     private NotificacionServicio notServ;
 //-----------------------------------------------Admin y Admin
     @Transactional
-    public Admin registrarAdmin(String nombre, String pass1, String pass2, byte sexoId, MultipartFile archivo, String mail) throws ErrorServicio {
+    public Admin registrarAdmin(String nombre, String pass1, String pass2, int generoId, MultipartFile archivo, String mail) throws ErrorServicio {
         if (nombre == null || nombre.isEmpty()) {
             throw new ErrorServicio("Falta el nombre del usuario");
         }
@@ -72,8 +69,13 @@ public class AdminServicio implements UserDetailsService {
             throw new ErrorServicio("El password ingresado posee menos de 4 caracteres");
         }
         
-        if (sexoId != 1 && sexoId != 2 && sexoId != 3) {
+        if (generoId != 1 && generoId != 2 && generoId != 3) {
             throw new ErrorServicio("Falta ingresar el sexo del usuario");
+        }
+        
+        Optional<Admin> rta = adminRepo.buscaAdminMail(mail);
+        if (rta.isPresent()) {
+            throw new ErrorServicio("El mail ya se encuentra registrado en la base de datos");
         }
         
         if (mail == null || mail.isEmpty()) {
@@ -84,7 +86,7 @@ public class AdminServicio implements UserDetailsService {
         admin.setNombre(nombre);
         String passCrypt = new BCryptPasswordEncoder().encode(pass);
         admin.setPass(passCrypt);
-        admin.setSexo(genRepo.buscaGenId(sexoId));
+        admin.setGenero(validateGenero(generoId));
         Foto foto = picServ.guardar(archivo);
         admin.setFoto(foto);
         admin.setAlta(true);
@@ -94,7 +96,7 @@ public class AdminServicio implements UserDetailsService {
     }
     
     @Transactional
-    public void modificar(String id, String name, String pass1 , String pass2, byte sexoId, String mail, MultipartFile archivo) throws ErrorServicio {
+    public void modificar(String id, String name, String pass1 , String pass2, int generoId, String mail, MultipartFile archivo) throws ErrorServicio {
         
         Admin admin = null;
         Optional<Admin> rta1 = adminRepo.findById(id);
@@ -122,11 +124,17 @@ public class AdminServicio implements UserDetailsService {
                 }
             }
                       
-            if (sexoId != 1 && sexoId != 2 && sexoId != 3) {
-                admin.setSexo(admin.getSexo());
+            if (generoId != 1 && generoId != 2 && generoId != 3) {
+                admin.setGenero(admin.getGenero());
             } else {
-                admin.setSexo(genRepo.buscaGenId(sexoId));
+                admin.setGenero(validateGenero(generoId));
             }
+            
+            Optional<Admin> rta = adminRepo.buscaAdminMail(mail);
+            if (rta.isPresent() && !mail.equals(admin.getMail())) {
+                throw new ErrorServicio("El mail ya se encuentra registrado en la base de datos");
+            }
+            
 
             if (mail == null || mail.isEmpty()) {
                 admin.setMail(admin.getMail());
@@ -202,26 +210,17 @@ public class AdminServicio implements UserDetailsService {
         return admins;
     }
 
-    static Genero validateSex(byte sexoId) throws ErrorServicio {
-        
-        Genero sex = null;
-        switch (sexoId) {
+    static Genero validateGenero(int generoId) throws ErrorServicio {
+        switch (generoId) {
             case 1:
-                sex.setId(sexoId);
-                sex.setGen("hombre");
-                break;
+                return Genero.HOMBRE;
             case 2:
-                sex.setId(sexoId);
-                sex.setGen("mujer");
-                break;
+                return Genero.MUJER;
             case 3:
-                sex.setId(sexoId);
-                sex.setGen("otro");
-                break;
+                return Genero.OTRO;
             default:
                 throw new ErrorServicio("No ingresó un dato válido en la categoria género");
         }
-        return sex;
     }
     
     private static String validarMail(String mail) throws ErrorServicio {

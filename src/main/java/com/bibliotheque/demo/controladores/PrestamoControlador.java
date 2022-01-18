@@ -5,12 +5,10 @@
  */
 package com.bibliotheque.demo.controladores;
 
-import com.bibliotheque.demo.entidades.Genero;
 import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.GeneroRepositorio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;

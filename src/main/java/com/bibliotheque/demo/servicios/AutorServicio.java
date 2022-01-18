@@ -40,6 +40,12 @@ public class AutorServicio {
         }
         
         Autor buk = new Autor();
+        
+        Optional<Autor> rta = autorRepo.buscaAutorNomCompl(nombre);
+        if (rta.isPresent()) {
+            throw new ErrorServicio("El autor ya se encuentra registrado en la base de datos");
+        }
+        
         buk.setNombre(nombre);
         buk.setAlta(true);
         Foto foto = picServ.guardar(archivo);
@@ -58,6 +64,10 @@ public class AutorServicio {
             throw new ErrorServicio("El autor seleccionado no está en la base de datos");
         }
         
+        Optional<Autor> rta1 = autorRepo.buscaAutorNomCompl(nombre);
+        if (rta1.isPresent() && !nombre.equals(buk.getNombre())) {
+            throw new ErrorServicio("El autor ya se encuentra registrado en la base de datos");
+        }
         
         if (nombre == null) {
             buk.setNombre(buk.getNombre());

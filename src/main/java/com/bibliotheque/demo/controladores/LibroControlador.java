@@ -94,6 +94,8 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
+        List<Autor> wris = autorRepo.findAll();
+        List<Editorial> pubs = ediRepo.findAll();
         try {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
@@ -102,13 +104,16 @@ public class LibroControlador {
             libroServ.crearLibro(isbn, titulo, ejemplaresTotales, wriId, pubId, archivo);
             
             modelo.put("tit", "Operación Exitosa");
-            modelo.put("subTit", "El Autor fue ingresada a la base de datos correctamente.");
+            modelo.put("subTit", "El Libro fue ingresado a la base de datos correctamente.");
             return "succes.html";
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
             modelo.put("titulo", titulo);
             modelo.put("isbn", isbn);
-            modelo.put("ejemplaresTotales", ejemplaresTotales);
+            modelo.put("wris", wris);
+            modelo.put("pubs", pubs);
+            modelo.put("wriId", wriId);
+            modelo.put("pubId", pubId);
             modelo.put("archivo", archivo);
 
             return "libro-ingresar.html";
@@ -137,6 +142,8 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String bookId, String titulo, Long isbn, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
+        List<Autor> wris = autorRepo.findAll();
+        List<Editorial> pubs = ediRepo.findAll();
         Libro book = null;
         try {
 
@@ -157,6 +164,10 @@ public class LibroControlador {
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
             modelo.put("book", book);
+            modelo.put("wris", wris);
+            modelo.put("pubs", pubs);
+            modelo.put("wriId", wriId);
+            modelo.put("pubId", pubId);
             return "libro-actualizar.html";
         }
     }

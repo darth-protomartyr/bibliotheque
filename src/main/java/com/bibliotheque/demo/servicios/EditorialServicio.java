@@ -22,37 +22,49 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EditorialServicio {
     @Autowired
-    EditorialRepositorio edRepo;
+    EditorialRepositorio editorialRepo;
 
     @Transactional
-    public Editorial crearEditorial(String name) throws ErrorServicio {
-        if (name == null || name.isEmpty()) {
+    public Editorial crearEditorial(String nombre) throws ErrorServicio {
+        if (nombre == null || nombre.isEmpty()) {
             throw new ErrorServicio("Falta el nombre de la Editorial");
         }
         
         Editorial buk = new Editorial();
-        buk.setNombre(name);
+        
+        Optional<Editorial> rta = editorialRepo.buscaEditorialNomCompl(nombre);
+        if (rta.isPresent()) {
+            throw new ErrorServicio("La Editorial ya se encuentra registrado en la base de datos");
+        }
+        
+        buk.setNombre(nombre);
         buk.setAlta(true);
-        return edRepo.save(buk);
+        return editorialRepo.save(buk);
     }
     
     @Transactional
     public void modificarEditorial(String id, String nombre) throws ErrorServicio {
         Editorial buk = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialIdCompl(id);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialIdCompl(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
             throw new ErrorServicio("La editorial seleccionada no está en la base de datos");
         }
+        
+        Optional<Editorial> rta1 = editorialRepo.buscaEditorialNomCompl(nombre);
+        if (rta1.isPresent() && !nombre.equals(buk.getNombre())) {
+            throw new ErrorServicio("La Editorial ya se encuentra registrada en la base de datos");
+        }
+        
         buk.setNombre(nombre);
-        edRepo.save(buk);
+        editorialRepo.save(buk);
     }
    
     @Transactional
     public void bajaEditorial(String id) throws ErrorServicio{
         Editorial buk = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialIdCompl(id);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialIdCompl(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
@@ -61,7 +73,7 @@ public class EditorialServicio {
         
         if (buk.getAlta().equals(true)) {
             buk.setAlta(false);
-            edRepo.save(buk);
+            editorialRepo.save(buk);
         } else {
             System.out.println("La editorial seleccionada ya se encuentra dada de baja.");
         }
@@ -70,7 +82,7 @@ public class EditorialServicio {
     @Transactional
     public void altaEditorial(String id) throws ErrorServicio {
         Editorial buk = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialIdCompl(id);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialIdCompl(id);
         if (rta.isPresent()) {
             buk = rta.get();
         } else {
@@ -79,7 +91,7 @@ public class EditorialServicio {
         
         if (buk.getAlta().equals(false)) {
             buk.setAlta(true);
-            edRepo.save(buk);
+            editorialRepo.save(buk);
         } else {
            throw new ErrorServicio("La editorial seleccionada ya se encuentra dada de alta.");
         }
@@ -89,7 +101,7 @@ public class EditorialServicio {
     @Transactional(readOnly = true)
     public Editorial consultaEditorialId(String id) throws ErrorServicio {
         Editorial ed = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialId(id);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialId(id);
         if (rta.isPresent()) {
             ed = rta.get();
         } else {
@@ -101,7 +113,7 @@ public class EditorialServicio {
     @Transactional(readOnly = true)
     public Editorial consultaEditorialIdCompl(String id) throws ErrorServicio {
         Editorial ed = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialIdCompl(id);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialIdCompl(id);
         if (rta.isPresent()) {
             ed = rta.get();
         } else {
@@ -114,7 +126,7 @@ public class EditorialServicio {
     @Transactional(readOnly = true)
     public Editorial consultaEditorialNom(String nombre) throws ErrorServicio {
         Editorial ed = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialNom(nombre);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialNom(nombre);
         if (rta.isPresent()) {
             ed = rta.get();
         } else {
@@ -126,7 +138,7 @@ public class EditorialServicio {
     @Transactional(readOnly = true)
     public Editorial consultaEditorialNomCompl(String nombre) throws ErrorServicio {
         Editorial ed = null;
-        Optional <Editorial> rta = edRepo.buscaEditorialNomCompl(nombre);
+        Optional <Editorial> rta = editorialRepo.buscaEditorialNomCompl(nombre);
         if (rta.isPresent()) {
             ed = rta.get();
         } else {
@@ -138,13 +150,13 @@ public class EditorialServicio {
 
     @Transactional(readOnly = true)
     public List<Editorial> listarEditorialesActivas() {
-        List<Editorial>wrs = edRepo.listarEditorialActiva();
+        List<Editorial>wrs = editorialRepo.listarEditorialActiva();
         return wrs;
     }
     
     @Transactional(readOnly = true)
     public List<Editorial> listarEditorialesCompletas() {
-        List<Editorial>wrs = edRepo.listarEditorialCompleta();
+        List<Editorial>wrs = editorialRepo.listarEditorialCompleta();
         return wrs;
     }
 }

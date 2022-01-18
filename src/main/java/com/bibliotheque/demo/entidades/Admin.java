@@ -6,9 +6,11 @@
 package com.bibliotheque.demo.entidades;
 
 
+import com.bibliotheque.demo.enumeraciones.Genero;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
@@ -25,9 +27,10 @@ public class Admin {
    private String id;
    private String nombre;
    private String pass;
+   @Column(unique = true)
    private String mail;
-   @OneToOne
-   private Genero sexo;
+   @Enumerated(EnumType.ORDINAL)
+   private Genero genero;
    private Boolean alta;
    @OneToOne
    private Foto foto;
@@ -36,12 +39,12 @@ public class Admin {
    
    }
 
-    public Admin(String id, String nombre, String pass, Boolean alta, Genero sexo, String mail, Foto foto) {
+    public Admin(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Foto foto) {
         this.id = id;
         this.nombre = nombre;
         this.pass = pass;
         this.alta = alta;
-        this.sexo = sexo;
+        this.genero = genero;
         this.mail = mail;
         this.foto = foto;
     }
@@ -78,12 +81,12 @@ public class Admin {
         this.alta = alta;
     }
     
-    public Genero getSexo() {
-        return sexo;
+    public Genero getGenero() {
+        return genero;
     }
 
-    public void setSexo(Genero sexo) {
-        this.sexo = sexo;
+    public void setGenero(Genero genero) {
+        this.genero = genero;
     }
 
     @Override
@@ -91,7 +94,7 @@ public class Admin {
         return "Admin:\n"
                 + "     Id: " + id + "\n"
                 + "     Nombre: " + nombre + "\n"
-                + "     Sexo: " + sexo + "\n"
+                + "     Sexo: " + genero + "\n"
                 + "     Password: " + pass + "\n"
                 + "     Mail: " + mail + "\n"
                 + "     Alta: " + alta;

@@ -7,11 +7,13 @@ package com.bibliotheque.demo.controladores;
 
 
 
-import com.bibliotheque.demo.entidades.Genero;
+
 import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.GeneroRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class PortalControlador {
     @Autowired
     private AdminServicio adminServ;
-    
-    @Autowired
-    private GeneroRepositorio genRepo;
 
     @GetMapping("/")
     public String index(ModelMap modelo) throws ErrorServicio{    
@@ -72,23 +71,26 @@ public class PortalControlador {
 
     @GetMapping("/registrar")
     public String registrar(ModelMap modelo){
-        List<Genero> sexos = genRepo.findAll();
-        modelo.put("sexos", sexos);
+        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+        modelo.put("generos", generos);
         return "registrar.html";
     }
     
     @PostMapping("/proceso-registro")
-    public String registro(ModelMap modelo, @RequestParam String nom, @RequestParam String pass1, @RequestParam String pass2, @RequestParam byte sexoId, MultipartFile archivo,@RequestParam String mail) throws ErrorServicio {
+    public String registro(ModelMap modelo, @RequestParam String nom, @RequestParam String pass1, @RequestParam String pass2, @RequestParam int generoId, MultipartFile archivo,@RequestParam String mail) throws ErrorServicio {
+        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         try {
-            adminServ.registrarAdmin(nom, pass1, pass2, sexoId, archivo, mail);
+            adminServ.registrarAdmin(nom, pass1, pass2, generoId, archivo, mail);
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
             modelo.put("nom", nom);
             modelo.put("pass1", pass1);
             modelo.put("pass2", pass2);
             modelo.put("mail", mail);
-            modelo.put("sexo", sexoId);
+            modelo.put("generos", generos);
+            modelo.put("generoId", generoId);
             modelo.put("archivo", archivo);
+            
             return "registrar.html";
         }
         modelo.put("tit", "Operación Exitosa");

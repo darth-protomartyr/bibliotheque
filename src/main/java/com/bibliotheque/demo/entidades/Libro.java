@@ -6,6 +6,7 @@
 package com.bibliotheque.demo.entidades;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,6 +24,7 @@ public class Libro {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
+    @Column(unique = true)
     private Long isbn;
     private String titulo;
     private Integer ejemplaresTotales; 
