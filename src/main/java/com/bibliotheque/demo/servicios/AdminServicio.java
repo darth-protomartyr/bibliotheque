@@ -91,7 +91,7 @@ public class AdminServicio implements UserDetailsService {
         admin.setFoto(foto);
         admin.setAlta(true);
         admin.setMail(validarMail(mail));
-        //notServ.enviar("Bienvenido a Bookdepository", "Bookdepository", admin.getMail());
+        //notServ.enviar("Bienvenido a Librodepository", "Librodepository", admin.getMail());
         return adminRepo.save(admin);
     }
     
@@ -156,20 +156,20 @@ public class AdminServicio implements UserDetailsService {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
         adminRepo.save(admin);
-        //notServ.enviar("LA modificación ha sido realizada", "Bookdepository", admin.getMail());
+        //notServ.enviar("LA modificación ha sido realizada", "Librodepository", admin.getMail());
     }
     
     @Transactional
     public void BajaDeAdmin(String name, String pass) throws ErrorServicio {
-        Admin memberLoan = null;
+        Admin adminPrestamo = null;
         Optional<Admin> rta1 = adminRepo.buscaAdminNom(name);
         if(rta1.isPresent()) {
-            memberLoan = rta1.get();
-            if (memberLoan.getAlta().equals(false)) {
+            adminPrestamo = rta1.get();
+            if (adminPrestamo.getAlta().equals(false)) {
                 throw new ErrorServicio("El usuario se encuentra dado de baja.");
             } else {
-                 memberLoan.setAlta(Boolean.TRUE);
-                 adminRepo.save(memberLoan);
+                 adminPrestamo.setAlta(Boolean.TRUE);
+                 adminRepo.save(adminPrestamo);
             }
         } else {
             throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");

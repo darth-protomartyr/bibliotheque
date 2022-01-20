@@ -11,7 +11,7 @@
         <div class= "main">
             <div class ="main__card">
                 <h2>Modificar Autor</h2>
-                <form th:action="@{/autores/proceso-modificar(id=__${session.adminsession.id}__, wriId=__${wri.id}__)}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/autores/proceso-modificar(id=__${session.adminsession.id}__, autorId=__${autor.id}__)}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                         <input type="text" placeholder="Nombre del Autor" name="nombre" th:value="${nombre}">

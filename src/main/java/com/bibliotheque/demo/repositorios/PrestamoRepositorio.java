@@ -21,7 +21,7 @@ public interface PrestamoRepositorio extends JpaRepository<Prestamo, String> {
     public Optional<List<Prestamo>> buscaPrestamoNom (@Param("nombre") String nombre);
     
     @Query("SELECT p FROM Prestamo p WHERE p.libro.titulo = :titulo AND p.alta = true")
-    public Optional<List<Prestamo>> buscaPrestamoBook (@Param("titulo") String titulo);
+    public Optional<List<Prestamo>> buscaPrestamoLibro (@Param("titulo") String titulo);
     
     @Query("SELECT s FROM Prestamo s WHERE s.alta = true")
     public List<Prestamo> listarPrestamo(); 

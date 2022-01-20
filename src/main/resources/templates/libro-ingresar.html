@@ -18,12 +18,12 @@
                         <input type="number" placeholder="ISBN del Libro" name="isbn" th:value="${isbn}" required>
                         <input type="number" placeholder="Cantidad de Ejemplares" name="ejemplaresTotales" th:value="${ejemplaresTotales}" required>
                         <p>Seleccione un Autor</p>
-                        <select name="wriId">
-                            <option th:each="wri : ${wris}" th:value="${wri.id}" th:text="${wri.nombre}" th:selected="${wriId}"></option>
+                        <select name="autorId">
+                            <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nombre}" th:selected="${autorId}"></option>
                         </select>
                         <p>Seleccione una Editorial</p>
-                        <select name="pubId">
-                            <option th:each="pub : ${pubs}" th:value="${pub.id}" th:text="${pub.nombre}" th:selected="${pubId}"></option>
+                        <select name="editorialId">
+                            <option th:each="editorial : ${editoriales}" th:value="${editorial.id}" th:text="${editorial.nombre}" th:selected="${editorialId}"></option>
                         </select>
                         <input name="archivo" th:value="${archivo}" type="file" accept="image/png, image/jpeg" class ="input-f"  required>
                         <button type="submit">Registrar</button>

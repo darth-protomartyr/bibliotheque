@@ -97,8 +97,8 @@ public class Prestamo {
 
     @Override
     public String toString() {
-        return "Prestamo:"
-                + "     Id del préstamo: " + id + "\n"
+        return "Préstamo:"
+                + "     Id de la Préstamo: " + id + "\n"
                 + "     Libro: " + libro + "\n"
                 + "     Admin:" + admin + "\n"
                 + "     Fecha de Entraga: " + fechaAlta + "\n"

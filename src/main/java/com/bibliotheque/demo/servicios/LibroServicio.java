@@ -43,7 +43,7 @@ public class LibroServicio {
     private FotoServicio picServ;
 
     @Transactional
-    public Libro crearLibro(Long isbn, String titulo, Integer ejemplaresTotales, String idWri, String idPub, MultipartFile archivo) throws ErrorServicio, NullPointerException {
+    public Libro crearLibro(Long isbn, String titulo, Integer ejemplaresTotales, String autorId, String idEditorial, MultipartFile archivo) throws ErrorServicio, NullPointerException {
         
         if (isbn == null) {
             throw new ErrorServicio("Falta ingresar el isbn");
@@ -57,99 +57,99 @@ public class LibroServicio {
             throw new ErrorServicio("Falta ingresar la cantidad de Ejemplares");
         }
         
-        if (idWri == null || idWri.isEmpty()) {
+        if (autorId == null || autorId.isEmpty()) {
             throw new ErrorServicio("Falta ingresar el autor");
         }
         
-        if (idPub == null || idPub.isEmpty()) {
+        if (idEditorial == null || idEditorial.isEmpty()) {
             throw new ErrorServicio("Falta ingresar la editorial");
         }
         
         
-        Libro book = new Libro();
-        book.setAlta(Boolean.TRUE);
+        Libro libro = new Libro();
+        libro.setAlta(Boolean.TRUE);
         Optional<Libro> rta = libroRepo.buscaLibroIsbnCompl(isbn);
         if (rta.isPresent()) {
             throw new ErrorServicio("El título ya se encuentra registrado en la base de datos");
         }
-        book.setIsbn(isbn);
-        book.setTitulo(titulo);
-        book.setEjemplaresTotales(ejemplaresTotales);
-        book.setEjemplaresRestantes(ejemplaresTotales);
-        book.setEjemplaresPrestados(0);
-        book.setAutor(wrServ.consultaAutorIdCompl(idWri));
-        book.setEditorial(edServ.consultaEditorialIdCompl(idPub));
+        libro.setIsbn(isbn);
+        libro.setTitulo(titulo);
+        libro.setEjemplaresTotales(ejemplaresTotales);
+        libro.setEjemplaresRestantes(ejemplaresTotales);
+        libro.setEjemplaresPrestados(0);
+        libro.setAutor(wrServ.consultaAutorIdCompl(autorId));
+        libro.setEditorial(edServ.consultaEditorialIdCompl(idEditorial));
         Foto foto = picServ.guardar(archivo);
-        book.setFoto(foto);
-        return libroRepo.save(book);
+        libro.setFoto(foto);
+        return libroRepo.save(libro);
     }
     
     @Transactional
-    public void modificar(String id, Long isbn, String titulo, Integer ejemplaresTotales, String wriId, String pubId, MultipartFile archivo) throws ErrorServicio {
+    public void modificar(String id, Long isbn, String titulo, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         
-            Libro book = null;
+            Libro libro = null;
                 Optional<Libro> rta1 = libroRepo.findById(id);
             if(rta1.isPresent()) {
-            book = rta1.get();
+            libro = rta1.get();
             
             Optional<Libro> rta = libroRepo.buscaLibroIsbnCompl(isbn);
-            if (rta.isPresent() && !isbn.equals(book.getIsbn())) {
+            if (rta.isPresent() && !isbn.equals(libro.getIsbn())) {
                 throw new ErrorServicio("El ISBN del libro ya se encuentra registrado en la base de datos");
             }
             
             if (isbn == null) {
-                book.setIsbn(book.getIsbn());
+                libro.setIsbn(libro.getIsbn());
             } else {
-                book.setIsbn(isbn);
+                libro.setIsbn(isbn);
             }
             
             if (titulo == null || titulo.isEmpty()) {
-                book.setTitulo(book.getTitulo());
+                libro.setTitulo(libro.getTitulo());
             } else {
-                book.setTitulo(titulo);
+                libro.setTitulo(titulo);
             }
             
             if (ejemplaresTotales == null) {
-                book.setEjemplaresTotales(book.getEjemplaresTotales());
+                libro.setEjemplaresTotales(libro.getEjemplaresTotales());
             } else {
-                book.setEjemplaresTotales(ejemplaresTotales);
+                libro.setEjemplaresTotales(ejemplaresTotales);
             }
             
-            if (wriId == null || wriId.isEmpty()) {
-                book.setAutor(book.getAutor());
+            if (autorId == null || autorId.isEmpty()) {
+                libro.setAutor(libro.getAutor());
             } else {
-                Autor wri= null;
-                Optional<Autor> writer = wrRepo.buscaAutorId(wriId);
-                if (writer.isPresent()) {
-                    wri = writer.get();
-                    book.setAutor(wri);
+                Autor autor= null;
+                Optional<Autor> rta2 = wrRepo.buscaAutorId(autorId);
+                if (rta1.isPresent()) {
+                    autor = rta2.get();
+                    libro.setAutor(autor);
                 } else {
                     throw new ErrorServicio("El Autor ingresado no se encuentra listado en la base de datos");
                 }
             }
             
-            if (pubId == null || pubId.isEmpty()) {
-                book.setEditorial(book.getEditorial());
+            if (editorialId == null || editorialId.isEmpty()) {
+                libro.setEditorial(libro.getEditorial());
             } else {
                 Editorial ed= null;
-                Optional<Editorial> edito = edRepo.buscaEditorialId(pubId);
+                Optional<Editorial> edito = edRepo.buscaEditorialId(editorialId);
                 if (edito.isPresent()) {
                     ed = edito.get();
-                    book.setEditorial(ed);
+                    libro.setEditorial(ed);
                 } else {
                     throw new ErrorServicio("La editorial ingresada no se encuentra listada en la base de datos");
                 }
             }
             
             if (archivo == null || archivo.isEmpty()) {
-                book.setFoto(book.getFoto());
+                libro.setFoto(libro.getFoto());
             } else {
                 String idFoto = null;
-                if (book.getFoto() != null){
-                    idFoto = book.getFoto().getId();
+                if (libro.getFoto() != null){
+                    idFoto = libro.getFoto().getId();
                 }
                 Foto foto = picServ.actualizar(idFoto, archivo);
-                book.setFoto(foto);
+                libro.setFoto(foto);
             }
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
@@ -159,16 +159,16 @@ public class LibroServicio {
         
     @Transactional
     public void darBajaLibro(String id) throws ErrorServicio {
-        Libro book = null;
+        Libro libro = null;
         Optional<Libro> rta = libroRepo.buscaLibroId(id);
         if (rta.isPresent()) {
-            book = rta.get();
+            libro = rta.get();
         } else {
             throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
         }
         
-        if (book.getAlta().equals(true)) {
-            book.setAlta(Boolean.FALSE);
+        if (libro.getAlta().equals(true)) {
+            libro.setAlta(Boolean.FALSE);
         } else {
             throw new ErrorServicio("El libro consultado ya se encuentra dado de baja.");    
         }
@@ -176,16 +176,16 @@ public class LibroServicio {
     
     @Transactional
     public void darAltaLibro(String id) throws ErrorServicio {
-        Libro book = null;
+        Libro libro = null;
         Optional<Libro> rta = libroRepo.buscaLibroIdCompl(id);
         if (rta.isPresent()) {
-            book = rta.get();
+            libro = rta.get();
         } else {
             throw new ErrorServicio("El titulo ingresado no pertenece a un libro listado en la base de datos");
         }
         
-        if (book.getAlta().equals(false)) {
-            book.setAlta(Boolean.TRUE);
+        if (libro.getAlta().equals(false)) {
+            libro.setAlta(Boolean.TRUE);
         } else {
             throw new ErrorServicio("El libro consultado ya se encuentra dado de alta.");    
         }
@@ -208,99 +208,99 @@ public class LibroServicio {
     
     @Transactional(readOnly = true)
     public Libro buscarLibroId(String id) throws ErrorServicio {
-        Libro book = new Libro();
+        Libro libro = new Libro();
         Optional<Libro> rta = libroRepo.buscaLibroId(id);
         if (rta.isPresent()){
-            book = rta.get();
+            libro = rta.get();
         } else {
             throw new ErrorServicio("El libro solicitado no se encuentra listado en la base de datos.");
         }
-        return book;
+        return libro;
     }
 
     
     @Transactional(readOnly = true)
     public Libro buscarLibroTit(String tit) throws ErrorServicio {
-        Libro book = new Libro();
+        Libro libro = new Libro();
         Optional<Libro> rta = libroRepo.buscaLibroNom(tit);
         if (rta.isPresent()){
-            book = rta.get();
+            libro = rta.get();
         } else {
             throw new ErrorServicio("El nombre ingresado no pertenece a un libro listado en la base de datos.");
         }
-        return book;
+        return libro;
     }
     
     
     @Transactional(readOnly = true)
     public Libro buscarLibroTitCompl(String tit) throws ErrorServicio {
-        Libro book = new Libro();
+        Libro libro = new Libro();
         Optional<Libro> rta = libroRepo.buscaLibroNomCompl(tit);
         if (rta.isPresent()){
-            book = rta.get();
+            libro = rta.get();
         } else {
             throw new ErrorServicio("El nombre ingresado no pertenece a un libro listado en la base de datos.");
         }
-        return book;
+        return libro;
     }
     
     
     @Transactional(readOnly = true)    
     public List <Libro> buscarLibroAut(String aut) throws ErrorServicio {
-        List <Libro> books = new ArrayList();
+        List <Libro> libros = new ArrayList();
         Optional<List<Libro>> rta = libroRepo.listarLibrosAutor(aut);
         if (rta.isPresent()){
-            books = rta.get();
+            libros = rta.get();
         } else {
             throw new ErrorServicio("El nombre ingresado no pertenece a un libro listado en la base de datos.");
         }
-        return books;
+        return libros;
     }
     
     @Transactional(readOnly = true)
     public List <Libro> buscarLibroEd(String ed) throws ErrorServicio {
-        List <Libro> books = new ArrayList();
+        List <Libro> libros = new ArrayList();
         Optional<List<Libro>> rta = libroRepo.listarLibrosEditorial(ed);
         if (rta.isPresent()){
-            books = rta.get();
+            libros = rta.get();
         } else {
             throw new ErrorServicio("El nombre ingresado no pertenece a un libro listado en la base de datos.");
         }
-        return books;
+        return libros;
     }
     
     @Transactional(readOnly = true)
     public List <Libro> listarLibroEd(String ed) throws ErrorServicio {
         
-        List <Libro> books = null;
+        List <Libro> libros = null;
         Optional<List<Libro>> rta = libroRepo.listarLibrosEditorial(ed);
         if (rta.isPresent()) {
-            books = rta.get();
+            libros = rta.get();
         }
-        return books;
+        return libros;
     }
     
     
     @Transactional
-    public void modEjemplaresRet(Libro book) throws ErrorServicio {
-        if (book.getEjemplaresRestantes()>0) {
-            book.setEjemplaresRestantes(book.getEjemplaresRestantes() - 1);
-            book.setEjemplaresPrestados(book.getEjemplaresPrestados() + 1);
+    public void modEjemplaresRet(Libro libro) throws ErrorServicio {
+        if (libro.getEjemplaresRestantes()>0) {
+            libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() - 1);
+            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() + 1);
         } else {
             System.out.println("No hay ejemplares para prestar");
         }
-        libroRepo.save(book);
+        libroRepo.save(libro);
     }
     
     @Transactional
-    public void modEjemplaresDev(Libro book) throws ErrorServicio {
-        if (book.getEjemplaresTotales()>0) {
-            book.setEjemplaresRestantes(book.getEjemplaresRestantes() + 1);
-            book.setEjemplaresPrestados(book.getEjemplaresPrestados() - 1);
+    public void modEjemplaresDev(Libro libro) throws ErrorServicio {
+        if (libro.getEjemplaresTotales()>0) {
+            libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
+            libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
         } else {
             System.out.println("No hay ejemplares para prestar");
         }
-        libroRepo.save(book);
+        libroRepo.save(libro);
     }
 
 }

@@ -11,20 +11,20 @@
         <div class= "main">
             <div class ="main__card">
                 <h2>Modificar Libro</h2>
-                <form th:action="@{/libros/proceso-modificar(id=__${session.adminsession.id}__, bookId=__${book.id}__)}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/libros/proceso-modificar(id=__${session.adminsession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
-                        <input type="text" placeholder="Título del Libro" name="titulo" th:value="${book.titulo}">
-                        <input type="number" placeholder="ISBN del Libro" name="isbn" th:value="${book.isbn}">
-                        <input type="number" placeholder="Cantidad de Ejemplares" name="ejemplaresTotales" th:value="${book.ejemplaresTotales}">
+                        <input type="text" placeholder="Título del Libro" name="titulo" th:value="${libro.titulo}">
+                        <input type="number" placeholder="ISBN del Libro" name="isbn" th:value="${libro.isbn}">
+                        <input type="number" placeholder="Cantidad de Ejemplares" name="ejemplaresTotales" th:value="${libro.ejemplaresTotales}">
                         <p>Seleccione un Autor</p>
-                        <select name="wriId">
-                            <option th:each="wri : ${wris}" th:value="${wri.id}" th:text="${wri.nombre}" th:selected="${book.autor !=null && wri.id == book.autor.id}" ></option>
+                        <select name="autorId">
+                            <option th:each="autor : ${autores}" th:value="${autor.id}" th:text="${autor.nombre}" th:selected="${libro.autor !=null && autor.id == libro.autor.id}" ></option>
                         </select>                                                                        
                         
                         <p>Seleccione una Editorial</p>
-                        <select name="pubId">
-                            <option th:each="pub : ${pubs}" th:value="${pub.id}" th:text="${pub.nombre}"></option>
+                        <select name="editorialId">
+                            <option th:each="editorial : ${editoriales}" th:value="${editorial.id}" th:text="${editorial.nombre}"></option>
                         </select>
                         <input name="archivo" th:value="${archivo}" type="file" accept="image/png, image/jpeg" class ="input-f">
                         <button type="submit">Modificar</button>

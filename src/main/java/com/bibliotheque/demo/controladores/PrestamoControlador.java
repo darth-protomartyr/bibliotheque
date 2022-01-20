@@ -4,13 +4,11 @@
  * and open the template in the editor.
  */
 package com.bibliotheque.demo.controladores;
-
 import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 
 /**
  *
@@ -35,14 +34,14 @@ public class PrestamoControlador {
     @Autowired
     private AdminServicio adminServ;    
     @Autowired
-    private PrestamoRepositorio loanRepo;
+    private PrestamoRepositorio prestamoRepo;
     
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/prestamo")
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Prestamo> loans = loanRepo.findAll();
-        modelo.put("loans", loans);
+        List<Prestamo> prestamos = prestamoRepo.findAll();
+        modelo.put("prestamos", prestamos);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";

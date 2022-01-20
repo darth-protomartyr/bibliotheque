@@ -36,9 +36,9 @@ public class EditorialControlador {
     @Autowired
     private AdminServicio adminServ;    
     @Autowired
-    private EditorialRepositorio pubRepo;
+    private EditorialRepositorio editorialRepo;
     @Autowired
-    private EditorialServicio pubServ;
+    private EditorialServicio editorialServ;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/editorial")
@@ -62,14 +62,14 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qeditorial, ModelMap modelo) throws ErrorServicio{
-        Editorial edi= null;
+        Editorial editorial= null;
         try {
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        edi = pubServ.consultaEditorialNomCompl(qeditorial);
-        modelo.put("edi", edi);
+        editorial = editorialServ.consultaEditorialNomCompl(qeditorial);
+        modelo.put("editorial", editorial);
         
         return "editorial.html";
         } catch (ErrorServicio ex) {
@@ -101,7 +101,7 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
-            pubServ.crearEditorial(nombre);
+            editorialServ.crearEditorial(nombre);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La Editorial fue ingresada a la base de datos correctamente.");
             return "succes.html";
@@ -116,8 +116,8 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Editorial> publish = pubRepo.listarEditorialActiva();
-        modelo.put("publish", publish);
+        List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
+        modelo.put("editoriales", editoriales);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -136,8 +136,8 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Editorial> publish = pubRepo.listarEditorialCompleta();
-        modelo.put("publish", publish);
+        List<Editorial> editoriales = editorialRepo.listarEditorialCompleta();
+        modelo.put("editoriales", editoriales);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -161,8 +161,8 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        Editorial edi = pubServ.consultaEditorialId(ediId);
-        modelo.put("edi", edi);
+        Editorial editorial = editorialServ.consultaEditorialId(ediId);
+        modelo.put("editorial", editorial);
         
         
         return "editorial-actualizar.html";
@@ -180,8 +180,8 @@ public class EditorialControlador {
                 return "redirect:/inicio";
             }
             
-//            ed = pubServ.consultaEditorialId(ediId);
-            pubServ.modificarEditorial(ediId, nombre);
+//            ed = editorialServ.consultaEditorialId(ediId);
+            editorialServ.modificarEditorial(ediId, nombre);
             //session.setAttribute("adminsession", admin);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -203,7 +203,7 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }       
-            pubServ.bajaEditorial(ediId);
+            editorialServ.bajaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";
@@ -222,7 +222,7 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }       
-            pubServ.altaEditorial(ediId);
+            editorialServ.altaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";

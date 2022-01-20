@@ -11,7 +11,6 @@ import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.repositorios.AdminRepositorio;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 
 /**
  *
@@ -30,17 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PrestamoServicio {
     @Autowired
-    private PrestamoRepositorio loanRepo;
+    private PrestamoRepositorio prestamoRepo;
     @Autowired
-    private LibroRepositorio bookRepo;
+    private LibroRepositorio libroRepo;
     @Autowired
-    private LibroServicio bookServ;
+    private LibroServicio libroServ;
     @Autowired
     private AdminRepositorio adminRepo;
     
     @Transactional
-    public Prestamo altaPrestamo(String book, String idAdmin, String sexo) throws ErrorServicio {
-        if (book == null || book.isEmpty()) {
+    public Prestamo altaPrestamo(String libro, String idAdmin, String sexo) throws ErrorServicio {
+        if (libro == null || libro.isEmpty()) {
             throw new ErrorServicio("Falta el nombre del usuario");
         }
         
@@ -52,69 +52,69 @@ public class PrestamoServicio {
             throw new ErrorServicio("Falta ingresar el sexo del usuario");
         }
         
-        Libro bookLoan = null; 
-        Optional<Libro> rta = bookRepo.buscaLibroNom(book);
+        Libro libroPrestamo = null; 
+        Optional<Libro> rta = libroRepo.buscaLibroNom(libro);
         if(rta.isPresent()) {
-            bookLoan = rta.get();
+            libroPrestamo = rta.get();
         } else {
             throw new ErrorServicio("No hay un libro registrado con ese Título.");
         }
         
-        Admin memberLoan = null;
+        Admin adminPrestamo = null;
         Optional<Admin> rta1 = adminRepo.findById(idAdmin);
         if(rta1.isPresent()) {
-            memberLoan = rta1.get();
+            adminPrestamo = rta1.get();
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
         
-        Prestamo loan = new Prestamo();
+        Prestamo prestamo = new Prestamo();
         
-        loan.setAlta(Boolean.TRUE);
-        loan.setLibro(bookLoan);
-        loan.setAdmin(memberLoan);
-        loan.setFechaAlta(new Date());
-        bookServ.modEjemplaresRet(bookLoan);
-        return loanRepo.save(loan);
+        prestamo.setAlta(Boolean.TRUE);
+        prestamo.setLibro(libroPrestamo);
+        prestamo.setAdmin(adminPrestamo);
+        prestamo.setFechaAlta(new Date());
+        libroServ.modEjemplaresRet(libroPrestamo);
+        return prestamoRepo.save(prestamo);
     }
     
     /*
     @Transactional
-    public void bajaPrestamo(String member, String book ) throws ErrorServicio {
-        Admin memberLoan = null;
-        Optional<Admin> rta = adminRepo.buscaAdminNom(member);
+    public void bajaPrestamo(String admin, String libro ) throws ErrorServicio {
+        Admin adminPrestamo = null;
+        Optional<Admin> rta = adminRepo.buscaAdminNom(admin);
         if (rta.isPresent()) {
-            memberLoan = rta.get();
+            adminPrestamo = rta.get();
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
         
-        Libro bookLoan = null;
-        Optional<Libro> rta1 = bookRepo.buscaLibroNom(book);
+        Libro libroPrestamo = null;
+        Optional<Libro> rta1 = libroRepo.buscaLibroNom(libro);
         if (rta1.isPresent()) {
-            bookLoan = rta1.get();
+            libroPrestamo = rta1.get();
         } else {
             throw new ErrorServicio("No hay un libro registrado con ese título.");
         }
         
-        Optional<List<Prestamo>> loanOp1 = loanRepo.buscaPrestamoBook(bookLoan.getTitulo());
-        Optional<List<Prestamo>> loanOp2 = loanRepo.buscaPrestamoNom(memberLoan.getNombre());
-        List<Prestamo> loan1 = null;
-        List<Prestamo> loan2 = null;
+        Optional<List<Prestamo>> prestamoOp1 = prestamoRepo.buscaPrestamoLibro(libroPrestamo.getTitulo());
+        Optional<List<Prestamo>> prestamoOp2 = prestamoRepo.buscaPrestamoNom(adminPrestamo.getNombre());
+        List<Prestamo> prestamo1 = null;
+        List<Prestamo> prestamo2 = null;
         
-        if (loanOp1.isPresent()) {
-            loan1=loanOp1.get();
+        if (prestamoOp1.isPresent()) {
+            prestamo1=prestamoOp1.get();
         }
         
-        if (loanOp2.isPresent()) {
-            loan2=loanOp2.get();
+        if (prestamoOp2.isPresent()) {
+            prestamo2=prestamoOp2.get();
         }
         
-        if(loan1.getId().equals(loan2.getId())) {
-            loan1.setFechaBaja(new Date());
-            loan1.setAlta(Boolean.FALSE);
-            bookServ.modEjemplaresDev(bookLoan);
-            loanRepo.save(loan1);
+        if(prestamo1.getId().equals(prestamo2.getId())) {
+            prestamo1.setFechaBaja(new Date());
+            prestamo1.setAlta(Boolean.FALSE);
+            libroServ.modEjemplaresDev(libroPrestamo);
+            prestamoRepo.save(prestamo1);
         } else {
             throw new ErrorServicio("No hay ningún préstamo activo con esos datos.");
         }
@@ -123,7 +123,7 @@ public class PrestamoServicio {
     
     @Transactional(readOnly = true)
     public List<Prestamo> listarPrestamos(){
-        List<Prestamo> prestamos = loanRepo.listarPrestamo();
+        List<Prestamo> prestamos = prestamoRepo.listarPrestamo();
         return prestamos;
     }
     

@@ -23,7 +23,7 @@ public class NotificacionServicio {
     public void enviar (String cuerpo, String titulo, String mail) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
         mensaje.setTo(mail);
-        mensaje.setFrom("noreply@bookdepository.com");
+        mensaje.setFrom("noreply@librodepository.com");
         mensaje.setSubject(titulo);
         mensaje.setText(cuerpo);        
         mailSender.send(mensaje);

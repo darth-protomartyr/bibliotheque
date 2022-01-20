@@ -64,14 +64,14 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qautor, ModelMap modelo) throws ErrorServicio{
-        Autor wri= null;
+        Autor autor= null;
         try {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
-            wri = autorServ.consultaAutorNomCompl(qautor);
-            modelo.put("wri", wri);
+            autor = autorServ.consultaAutorNomCompl(qautor);
+            modelo.put("autor", autor);
             return "autor.html";
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
@@ -118,8 +118,8 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Autor> wris = autorRepo.listarAutorActiva();
-        modelo.put("wris", wris);
+        List<Autor> autores = autorRepo.listarAutorActiva();
+        modelo.put("autores", autores);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -132,8 +132,8 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Autor> wris = autorRepo.listarAutorCompleta();
-        modelo.put("wris", wris);
+        List<Autor> autores = autorRepo.listarAutorCompleta();
+        modelo.put("autores", autores);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -146,13 +146,13 @@ public class AutorControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/modificar")
-    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String wriId,  ModelMap modelo) throws ErrorServicio{
+    public String modificar(HttpSession session, @RequestParam String id, @RequestParam String autorId,  ModelMap modelo) throws ErrorServicio{
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        Autor wri = autorServ.consultaAutorId(wriId);
-        modelo.put("wri", wri);
+        Autor autor = autorServ.consultaAutorId(autorId);
+        modelo.put("autor", autor);
         
         
         return "autor-actualizar.html";
@@ -163,14 +163,14 @@ public class AutorControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
-    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId, @RequestParam String nombre, @RequestParam MultipartFile archivo) throws ErrorServicio {
+    public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId, @RequestParam String nombre, @RequestParam MultipartFile archivo) throws ErrorServicio {
         try {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
             
-            autorServ.modificarAutor(nombre, archivo, wriId);
+            autorServ.modificarAutor(nombre, archivo, autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";
@@ -189,13 +189,13 @@ public class AutorControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-baja")
-    public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId) throws ErrorServicio {
+    public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
         try {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }       
-            autorServ.bajaAutor(wriId);
+            autorServ.bajaAutor(autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";
@@ -208,13 +208,13 @@ public class AutorControlador {
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-alta")
-    public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String wriId) throws ErrorServicio {
+    public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
         try {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }       
-            autorServ.altaAutor(wriId);
+            autorServ.altaAutor(autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";

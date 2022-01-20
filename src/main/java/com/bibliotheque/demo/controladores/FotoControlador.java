@@ -33,7 +33,7 @@ public class FotoControlador {
     @Autowired
     private AutorServicio autorServ;
     @Autowired
-    private LibroServicio bookServ;
+    private LibroServicio libroServ;
 
     @GetMapping("/perfil/{id}")
     public ResponseEntity<byte[]> fotoPartner(@PathVariable String id) {
@@ -55,14 +55,14 @@ public class FotoControlador {
     }
 
 
-    @GetMapping("/wri/{id}")
-    public ResponseEntity<byte[]> fotoWriter(@PathVariable String id) {
+    @GetMapping("/autor/{id}")
+    public ResponseEntity<byte[]> fotoAutor(@PathVariable String id) {
         try {
-            Autor wri = autorServ.consultaAutorId(id);
-            if (wri.getFoto() == null) {
+            Autor autor = autorServ.consultaAutorId(id);
+            if (autor.getFoto() == null) {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
-            byte[] foto = wri.getFoto().getContenido();
+            byte[] foto = autor.getFoto().getContenido();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
@@ -74,14 +74,14 @@ public class FotoControlador {
         }
     }
     
-    @GetMapping("/book/{id}")
-    public ResponseEntity<byte[]> fotoBook(@PathVariable String id) {
+    @GetMapping("/libro/{id}")
+    public ResponseEntity<byte[]> fotoLibro(@PathVariable String id) {
         try {
-            Libro book = bookServ.buscarLibroId(id);
-            if (book.getFoto() == null) {
+            Libro libro = libroServ.buscarLibroId(id);
+            if (libro.getFoto() == null) {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
-            byte[] foto = book.getFoto().getContenido();
+            byte[] foto = libro.getFoto().getContenido();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);

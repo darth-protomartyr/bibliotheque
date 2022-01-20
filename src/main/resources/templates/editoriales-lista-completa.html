@@ -11,23 +11,23 @@
         <div class= "main">            
             <div class="main__card">
                 <p class ="tit">Lista Completa Editoriales</p>
-                <div th:each="edi:${publish}" class="main__card__object">
+                <div th:each="editorial:${editoriales}" class="main__card__object">
                     <div class = "object--single">
-                        <p class ="sub-tit">Nombre: <span th:text="${edi.nombre}"></span></p>
+                        <p class ="sub-tit">Nombre: <span th:text="${editorial.nombre}"></span></p>
                         <div class="object__button__container object__button__container-2">
                             <div class="object__btn object__btn-2">
-                                <a th:href="@{/editoriales/modificar(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" th:if="${session.adminsession != null}">Modificar Editorial</a>
+                                <a th:href="@{/editoriales/modificar(id=__${session.adminsession.id}__, editorialId=__${editorial.id}__)}" th:if="${session.adminsession != null}">Modificar Editorial</a>
                             </div>
-                            <div class="object__btn object__btn-2" th:if="${edi.alta == true}">
-                                <form th:action="@{/editoriales/proceso-baja(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" method="post" enctype="multipart/form-data">
+                            <div class="object__btn object__btn-2" th:if="${editorial.alta == true}">
+                                <form th:action="@{/editoriales/proceso-baja(id=__${session.adminsession.id}__, editorialId=__${editorial.id}__)}" method="post" enctype="multipart/form-data">
                                     <div class="form__container object__btn object__btn-2">
                                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
                                         <button type="submit">Baja Editorial</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="object__btn object__btn-2" th:if="${edi.alta == false}">
-                                <form th:action="@{/editoriales/proceso-alta(id=__${session.adminsession.id}__, ediId=__${edi.id}__)}" method="post" enctype="multipart/form-data">
+                            <div class="object__btn object__btn-2" th:if="${editorial.alta == false}">
+                                <form th:action="@{/editoriales/proceso-alta(id=__${session.adminsession.id}__, editorialId=__${editorial.id}__)}" method="post" enctype="multipart/form-data">
                                     <div class="form__container object__btn object__btn-2">
                                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
                                         <button type="submit">Alta Editorial</button>
