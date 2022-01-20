@@ -7,15 +7,10 @@ package com.bibliotheque.demo.controladores;
 
 import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.entidades.Autor;
-import com.bibliotheque.demo.entidades.Editorial;
-import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.AutorRepositorio;
-import com.bibliotheque.demo.repositorios.EditorialRepositorio;
-import com.bibliotheque.demo.repositorios.LibroRepositorio;
 import com.bibliotheque.demo.servicios.AdminServicio;
 import com.bibliotheque.demo.servicios.AutorServicio;
-import com.bibliotheque.demo.servicios.EditorialServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class AutorControlador {
 
     @Autowired
-    private AdminServicio adminServ;
-    @Autowired
     private AutorRepositorio autorRepo;
     @Autowired
     private AutorServicio autorServ;
@@ -51,12 +44,6 @@ public class AutorControlador {
             return "redirect:/inicio";
         }
 
-//        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
-//        } catch (ErrorServicio e) {
-//            modelo.addAttribute("error", e.getMessage());
-//        }
         return "autores.html";
     }
     
