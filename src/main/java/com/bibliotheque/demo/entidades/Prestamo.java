@@ -30,7 +30,11 @@ public class Prestamo {
     @OneToOne
     private Admin admin;
     @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaSolicitud;
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaDevolucion;
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaBaja;
     private Boolean alta;
@@ -38,11 +42,13 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(String id, Libro libro, Admin admin, Date fechaAlta, Date fechaBaja, Boolean alta) {
+    public Prestamo(String id, Libro libro, Admin admin, Date fechaAlta, Date fechaDevolucion, Date fechaBaja, Date fechaSolicitud, Boolean alta) {
         this.id = id;
         this.libro = libro;
         this.admin = admin;
+        this.fechaSolicitud = fechaSolicitud;
         this.fechaAlta = fechaAlta;
+        this.fechaDevolucion = fechaDevolucion;
         this.fechaBaja = fechaBaja;
         this.alta = alta;
     }
@@ -70,6 +76,14 @@ public class Prestamo {
     public void setAdmin(Admin admin) {
         this.admin = admin;
     }
+    
+    public Date getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(Date fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
 
     public Date getFechaAlta() {
         return fechaAlta;
@@ -78,6 +92,16 @@ public class Prestamo {
     public void setFechaAlta(Date fechaAlta) {
         this.fechaAlta = fechaAlta;
     }
+    
+    
+    public Date getFechaDevolucion() {
+        return fechaAlta;
+    }
+
+    public void setFechaDevolucion(Date fechaAlta) {
+        this.fechaAlta = fechaAlta;
+    }
+    
 
     public Date getFechaBaja() {
         return fechaBaja;
@@ -86,6 +110,10 @@ public class Prestamo {
     public void setFechaBaja(Date fechaBaja) {
         this.fechaBaja = fechaBaja;
     }
+    
+    
+    
+    
 
     public Boolean getAlta() {
         return alta;

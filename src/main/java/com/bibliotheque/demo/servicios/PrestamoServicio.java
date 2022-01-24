@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.bibliotheque.demo.servicios;
 
 
@@ -22,6 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -39,95 +41,156 @@ public class PrestamoServicio {
     private AdminRepositorio adminRepo;
     
     @Transactional
-    public Prestamo altaPrestamo(String libro, String idAdmin, String sexo) throws ErrorServicio {
-        if (libro == null || libro.isEmpty()) {
-            throw new ErrorServicio("Falta el nombre del usuario");
+    public Prestamo crearPrestamo(String adminId, String libroId) throws ErrorServicio {
+        
+        if (adminId == null || adminId.isEmpty()) {
+            throw new ErrorServicio("Falta ingresar el número de socio");
         }
         
-        if (idAdmin == null || idAdmin.isEmpty() || idAdmin.length() < 6) {
-            throw new ErrorServicio("Falta ingresar el password del usuario");
+        if (libroId == null || libroId.isEmpty()) {
+            throw new ErrorServicio("Falta ingresar el libro que desea pedir");
         }
         
-        if (sexo == null || sexo.isEmpty()) {
-            throw new ErrorServicio("Falta ingresar el sexo del usuario");
-        }
-        
-        Libro libroPrestamo = null; 
-        Optional<Libro> rta = libroRepo.buscaLibroNom(libro);
-        if(rta.isPresent()) {
-            libroPrestamo = rta.get();
-        } else {
-            throw new ErrorServicio("No hay un libro registrado con ese Título.");
+        int limite = limitePrestamo(adminId);
+        if (limite > 5) {
+            throw new ErrorServicio("Usted ha excedido el límite de préstamos permitidos.");
         }
         
         Admin adminPrestamo = null;
-        Optional<Admin> rta1 = adminRepo.findById(idAdmin);
+        Optional<Admin> rta1 = adminRepo.buscaAdminIdAlta(adminId);
         if(rta1.isPresent()) {
             adminPrestamo = rta1.get();
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
         
+        if (adminPrestamo.getPenalidad() == true) {
+            throw new ErrorServicio("Usted se encuentra penalizado para el préstamo de Libros");
+        }
+        
+        Libro libroPrestamo = null; 
+        Optional<Libro> rta = libroRepo.buscaLibroId(libroId);
+        if(rta.isPresent()) {
+            libroPrestamo = rta.get();
+        } else {
+            throw new ErrorServicio("No hay un libro registrado con ese Título.");
+        }
+        
+        
+        
         Prestamo prestamo = new Prestamo();
         
-        prestamo.setAlta(Boolean.TRUE);
-        prestamo.setLibro(libroPrestamo);
+        prestamo.setAlta(Boolean.FALSE);
+        
+        if (libroPrestamo.getEjemplaresRestantes() > 0) {
+            prestamo.setLibro(libroPrestamo);
+            libroPrestamo.setEjemplaresRestantes(libroPrestamo.getEjemplaresRestantes() - 1);
+            libroPrestamo.setEjemplaresPrestados(libroPrestamo.getEjemplaresPrestados() + 1);
+            
+        } else {
+            throw new ErrorServicio("No hay ejemplares disponibles para préstamo");
+        }
         prestamo.setAdmin(adminPrestamo);
-        prestamo.setFechaAlta(new Date());
+        prestamo.setFechaSolicitud(new Date());
         libroServ.modEjemplaresRet(libroPrestamo);
         return prestamoRepo.save(prestamo);
     }
     
-    /*
     @Transactional
-    public void bajaPrestamo(String admin, String libro ) throws ErrorServicio {
-        Admin adminPrestamo = null;
-        Optional<Admin> rta = adminRepo.buscaAdminNom(admin);
+    public void bajaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
+        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoId(idPrestamo);
+        Prestamo prestamo = null;
         if (rta.isPresent()) {
-            adminPrestamo = rta.get();
-        } else {
-            throw new ErrorServicio("No hay un socio registrado con ese nombre.");
+            prestamo = rta.get();
+        }
+        Admin admin = prestamo.getAdmin();
+        Libro libro = prestamo.getLibro();
+        
+        prestamo.setAlta(false);
+        prestamo.setFechaBaja(new Date());
+        Date dateBaja = prestamo.getFechaBaja();
+        Date dateVenc = prestamo.getFechaDevolucion();
+        Date datePen = admin.getFechaPenalidad();
+        if (dateVenc.before(dateBaja)) {
+            admin.setPenalidad(Boolean.TRUE);
+            admin.setFechaPenalidad(diasPenalidad(dateBaja, dateVenc, datePen));
         }
         
-        Libro libroPrestamo = null;
-        Optional<Libro> rta1 = libroRepo.buscaLibroNom(libro);
-        if (rta1.isPresent()) {
-            libroPrestamo = rta1.get();
-        } else {
-            throw new ErrorServicio("No hay un libro registrado con ese título.");
-        }
-        
-        Optional<List<Prestamo>> prestamoOp1 = prestamoRepo.buscaPrestamoLibro(libroPrestamo.getTitulo());
-        Optional<List<Prestamo>> prestamoOp2 = prestamoRepo.buscaPrestamoNom(adminPrestamo.getNombre());
-        List<Prestamo> prestamo1 = null;
-        List<Prestamo> prestamo2 = null;
-        
-        if (prestamoOp1.isPresent()) {
-            prestamo1=prestamoOp1.get();
-        }
-        
-        if (prestamoOp2.isPresent()) {
-            prestamo2=prestamoOp2.get();
-        }
-        
-        if(prestamo1.getId().equals(prestamo2.getId())) {
-            prestamo1.setFechaBaja(new Date());
-            prestamo1.setAlta(Boolean.FALSE);
-            libroServ.modEjemplaresDev(libroPrestamo);
-            prestamoRepo.save(prestamo1);
-        } else {
-            throw new ErrorServicio("No hay ningún préstamo activo con esos datos.");
-        }
+        libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
+        libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
     }
-    */
+    
     
     @Transactional(readOnly = true)
     public List<Prestamo> listarPrestamos(){
-        List<Prestamo> prestamos = prestamoRepo.listarPrestamo();
+        List <Prestamo> prestamos = null;
+        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamo();
+        prestamos = rta.get();
         return prestamos;
     }
-    
+
     static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
         return Instant.ofEpochMilli(dateToConvert.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
+    
+    
+    public List <Admin> listarSolicitantes() {
+        HashSet<Admin> solicitantesHS = null;
+        List<Admin> solicitantes = null;
+        List <Prestamo> prestamos = null;
+        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamoSolicitados();
+        
+        if (rta.isPresent()) {
+            prestamos = rta.get();
+        }
+
+        for (Prestamo prestamo : prestamos) {
+            solicitantesHS.add(prestamo.getAdmin());
+        }
+        
+        for (Admin admin : solicitantes) {
+            solicitantes.add(admin);
+        }
+        
+        return solicitantes;
+    }
+    
+    private int limitePrestamo(String adminId) {
+        int limite = 0;
+        List <Prestamo> prestamos = null;
+        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoAdminID(adminId);
+        if (rta.isPresent()) {
+            prestamos = rta.get();
+        }
+        limite = prestamos.size();
+        return limite;
+    }
+    
+    
+    static Date diasPenalidad(Date dateBaja, Date dateVenc, Date datePen) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	String dBaja = dateFormat.format(dateBaja);
+       	String dVenc = dateFormat.format(dateVenc);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        Date baja = sdf.parse(dBaja);
+        Date venc = sdf.parse(dVenc);
+
+        long diffInMillies = Math.abs(baja.getTime() - venc.getTime());
+        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        
+        int days = (int) diff;
+        
+        Calendar calendar = Calendar.getInstance();
+        if (datePen == null) {
+            calendar.setTime(dateBaja);
+            calendar.add(Calendar.DAY_OF_YEAR, days);  
+            return calendar.getTime();
+        } else {
+            calendar.setTime(datePen);
+            calendar.add(Calendar.DAY_OF_YEAR, days); 
+            return calendar.getTime();
+        }
+    }
+
+    
 }

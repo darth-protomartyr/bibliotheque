@@ -7,6 +7,7 @@ package com.bibliotheque.demo.entidades;
 
 
 import com.bibliotheque.demo.enumeraciones.Genero;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -15,6 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 /**
  *
  * @author Gonzalo
@@ -32,6 +35,9 @@ public class Admin {
    @Enumerated(EnumType.ORDINAL)
    private Genero genero;
    private Boolean alta;
+   @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaPenalidad;
+   private Boolean penalidad;
    @OneToOne
    private Foto foto;
 
@@ -39,14 +45,32 @@ public class Admin {
    
    }
 
-    public Admin(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Foto foto) {
+    public Admin(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Date fechaPenalidad, Boolean penalidad, Foto foto) {
         this.id = id;
         this.nombre = nombre;
         this.pass = pass;
         this.alta = alta;
         this.genero = genero;
         this.mail = mail;
+        this.fechaPenalidad = fechaPenalidad;
+        this.penalidad = penalidad;
         this.foto = foto;
+    }
+
+    public Date getFechaPenalidad() {
+        return fechaPenalidad;
+    }
+
+    public void setFechaPenalidad(Date fechaPenalidad) {
+        this.fechaPenalidad = fechaPenalidad;
+    }
+
+    public Boolean getPenalidad() {
+        return penalidad;
+    }
+
+    public void setPenalidad(Boolean penalidad) {
+        this.penalidad = penalidad;
     }
 
     public String getId() {

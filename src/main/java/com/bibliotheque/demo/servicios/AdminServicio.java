@@ -160,9 +160,9 @@ public class AdminServicio implements UserDetailsService {
     }
     
     @Transactional
-    public void BajaDeAdmin(String name, String pass) throws ErrorServicio {
+    public void bajaDeAdmin(String id, String pass) throws ErrorServicio {
         Admin adminPrestamo = null;
-        Optional<Admin> rta1 = adminRepo.buscaAdminNom(name);
+        Optional<Admin> rta1 = adminRepo.buscaAdminIdAlta(id);
         if(rta1.isPresent()) {
             adminPrestamo = rta1.get();
             if (adminPrestamo.getAlta().equals(false)) {
@@ -177,8 +177,8 @@ public class AdminServicio implements UserDetailsService {
     }
     
     @Transactional
-    public void AltaDeAdmin(String name, String pass) throws ErrorServicio {
-        Optional<Admin> rta = adminRepo.buscaAdminNom(name);
+    public void altaDeAdmin(String id, String pass) throws ErrorServicio {
+        Optional<Admin> rta = adminRepo.buscaAdminIdAlta(id);
         Admin admin = rta.get();
         if (rta.isPresent()) {
             if (admin.getAlta().equals(true)) {
@@ -189,6 +189,35 @@ public class AdminServicio implements UserDetailsService {
             }
         } else {
             throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
+        }
+    }
+    
+//    @Transactional
+//    public void modificarPenalidad(String id, int penalidad) throws ErrorServicio {
+//        Optional<Admin> rta = adminRepo.buscaAdminIdAlta(id);
+//        Admin admin = rta.get();
+//        if (rta.isPresent()) {
+//            if (admin.getAlta().equals(true)) {
+//                throw new ErrorServicio("El usuario se encuentra dado de alta.");
+//            } else {
+//            admin.setAlta(Boolean.TRUE);
+//            adminRepo.save(admin);
+//            }
+//        } else {
+//            throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
+//        }
+//    }
+    
+    @Transactional
+    public void eliminarPenalidad (String id) throws ErrorServicio {
+        Admin admin = null;
+        Optional <Admin> rta = adminRepo.buscaAdminIdAltaPenAlta(id);
+        if (rta.isPresent()) {
+            admin = rta.get();
+            admin.setPenalidad(Boolean.FALSE);
+            admin.setFechaPenalidad(null);
+        }  else {
+            throw new ErrorServicio ("El nombre del usuario que ingresó no se encuentra en los Registros o no está penalizado");
         }
     }
     

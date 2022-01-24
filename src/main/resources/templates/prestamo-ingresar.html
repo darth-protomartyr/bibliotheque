@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+
+    <header th:replace="/fragments/header :: header"> </header>
+
+    <main>
+        <div class= "main">
+            <div class ="main__card">
+                <h2>Generar Prestamo</h2>
+                <form th:action="@{/prestamos/proceso-ingresar(id=__${session.adminsession.id}__)}" method="post" enctype="multipart/form-data">
+                    <div class="form__container">
+                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                        <p>Seleccione un Libro</p>
+                        <select name="libroId">
+                            <option th:each="libro : ${libros}" th:value="${libro.id}" th:text="${libro.titulo}" th:selected="${libroId}"></option>
+                        </select>
+                        <button type="submit">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="/fragments/footer :: footer"></footer>
+
+</body>
+</html>

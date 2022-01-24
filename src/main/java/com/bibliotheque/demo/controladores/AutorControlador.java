@@ -43,6 +43,8 @@ public class AutorControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        
 
         return "autores.html";
     }

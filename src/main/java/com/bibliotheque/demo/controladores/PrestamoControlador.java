@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
+import com.bibliotheque.demo.servicios.PrestamoServicio;
 
 /**
  *
@@ -35,13 +35,33 @@ public class PrestamoControlador {
     private AdminServicio adminServ;    
     @Autowired
     private PrestamoRepositorio prestamoRepo;
-    
+    @Autowired
+    private PrestamoServicio prestamoServ;
+    @Autowired
+    private LibroRepositorio libroRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/prestamo")
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Prestamo> prestamos = prestamoRepo.findAll();
-        modelo.put("prestamos", prestamos);
+        List <Libro> libros = libroRepo.listarLibrosActivos();
+        modelo.put("libros", libros);
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        return "prestamos.html";
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @GetMapping("/ingresar")
+    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo) {
+        List <Libro> libros = libroRepo.listarLibrosActivos();
+        modelo.put("libros", libros);
+        
+        List <Admin> solicitantes = prestamoServ.listarSolicitantes();
+        modelo.put("libros", libros);
+
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -53,8 +73,37 @@ public class PrestamoControlador {
         } catch (ErrorServicio e) {
             modelo.addAttribute("error", e.getMessage());
         }
-        return "prestamos.html";
+        return "prestamo-ingresar.html";
     }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-generar")
+    public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
+        List <Libro> libros = libroRepo.listarLibrosActivos();
+        modelo.put("libros", libros);
+        try {
+            Admin login = (Admin) session.getAttribute("adminsession");
+            if (login == null || !login.getId().equals(id)) {
+                return "redirect:/inicio";
+            }
+            
+            String adminId= login.getId();
+            prestamoServ.crearPrestamo(adminId, libroId);
+            
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La solicitud de préstamo fue realizada.");
+            return "succes.html";
+        } catch (ErrorServicio e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("libroId", libroId);
+            modelo.put("libros", libros);
+            return "prestamo-ingresar.html";
+        }
+    }
+    
+    
+    
     
 
 //
