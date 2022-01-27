@@ -90,6 +90,7 @@ public class AdminServicio implements UserDetailsService {
         Foto foto = picServ.guardar(archivo);
         admin.setFoto(foto);
         admin.setAlta(true);
+        admin.setPenalidad(Boolean.FALSE);
         admin.setMail(validarMail(mail));
         //notServ.enviar("Bienvenido a Librodepository", "Librodepository", admin.getMail());
         return adminRepo.save(admin);

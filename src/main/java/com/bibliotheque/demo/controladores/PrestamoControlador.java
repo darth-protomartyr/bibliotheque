@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.servicios.PrestamoServicio;
+import java.util.Optional;
 
 /**
  *
@@ -43,111 +44,69 @@ public class PrestamoControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/prestamo")
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List <Libro> libros = libroRepo.listarLibrosActivos();
-        modelo.put("libros", libros);
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        return "prestamos.html";
-    }
-    
-    
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-    @GetMapping("/ingresar")
-    public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo) {
-        List <Libro> libros = libroRepo.listarLibrosActivos();
-        modelo.put("libros", libros);
         
-        List <Admin> solicitantes = prestamoServ.listarSolicitantes();
-        modelo.put("libros", libros);
-
-        Admin login = (Admin) session.getAttribute("adminsession");
-        if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
-        }
-
-        try {
-            Admin admin = adminServ.buscarPorId(id);
-            modelo.addAttribute("perfil", admin);
-        } catch (ErrorServicio e) {
-            modelo.addAttribute("error", e.getMessage());
-        }
-        return "prestamo-ingresar.html";
+        listas(modelo,id);
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        return "prestamos.html";
     }
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-generar")
     public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
-        List <Libro> libros = libroRepo.listarLibrosActivos();
-        modelo.put("libros", libros);
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
-            
+        
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        try {                       
             String adminId= login.getId();
             prestamoServ.crearPrestamo(adminId, libroId);
-            
-            modelo.put("tit", "Operación Exitosa");
-            modelo.put("subTit", "La solicitud de préstamo fue realizada.");
-            return "succes.html";
+            modelo.put("success", "La solicitud fue envíada. Si desea realizar otra, seleccione un texto");
+            listas(modelo, id);
+
+
+            return "prestamos.html";
         } catch (ErrorServicio e) {
+            listas(modelo, id);
             modelo.put("error", e.getMessage());
             modelo.put("libroId", libroId);
-            modelo.put("libros", libros);
-            return "prestamo-ingresar.html";
+            return "prestamos.html";
         }
     }
     
+    //genera las lista que formaran parte del html
+    private void listas (ModelMap modelo, String id) {
+        List <Libro> libros = libroRepo.listarLibrosActivos();
+        modelo.put("libros", libros);
+        
+        List <Prestamo> solicitudes = null;
+        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitAdminID(id);
+        if (rta.isPresent()) {
+            solicitudes = rta.get();
+        }
+        modelo.put("solicitudes", solicitudes);
+        if (solicitudes.isEmpty()) {
+            modelo.put("mes1","La cuenta no tiene solicitudes pendientes");
+        }
+        
+        List <Prestamo> prestamos = null;
+        Optional <List <Prestamo>> rta1 = prestamoRepo.buscaPrestamoActivosAdminID(id);
+        if (rta.isPresent()) {
+            prestamos = rta1.get();
+        }
+        modelo.put("prestamos", prestamos);
+        if (prestamos.isEmpty()) {
+            modelo.put("mes2","La cuenta no tiene préstamos vigentes");
+        }
+    }
     
-    
-    
-
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @GetMapping("/editar-perfil")
-//    public String editarPerfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
-//        List<Genero> sexos = genRepo.findAll();
-//        modelo.put("sexos", sexos);
-//        
-//        Admin login = (Admin) session.getAttribute("adminsession");
-//        if (login == null || !login.getId().equals(id)) {
-//            return "redirect:/inicio";
-//        }
-//
-//        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
-//        } catch (ErrorServicio e) {
-//            modelo.addAttribute("error", e.getMessage());
-//        }
-//        return "libros.html";
-//    }
-//
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @PostMapping("/proceso-actualizar-perfil")
-//    public String modificarAdmin(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, byte sexoId, String mail, MultipartFile archivo) {
-//        
-//        Admin admin = null;
-//        try {
-//
-//            Admin login = (Admin) session.getAttribute("adminsession");
-//            if (login == null || !login.getId().equals(id)) {
-//                return "redirect:/inicio";
-//            }
-//
-//            admin = adminServ.buscarPorId(id);
-//            adminServ.modificar(id, name, pass1, pass2, sexoId, mail, archivo);
-//            session.setAttribute("adminsession", admin);
-//            return "redirect:/inicio";
-//        } catch (ErrorServicio ex) {
-//            modelo.put("error", ex.getMessage());
-//            modelo.put("perfil", admin);
-//
-//            return "perfil.html";
-//        }
-//   }        
 }

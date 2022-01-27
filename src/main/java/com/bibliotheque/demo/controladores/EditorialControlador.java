@@ -48,6 +48,8 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
 //        try {
 //            Admin admin = adminServ.buscarPorId(id);
@@ -62,12 +64,15 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qeditorial, ModelMap modelo) throws ErrorServicio{
-        Editorial editorial= null;
-        try {
         Admin login = (Admin) session.getAttribute("adminsession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        Editorial editorial= null;
+        try {
         editorial = editorialServ.consultaEditorialNomCompl(qeditorial);
         modelo.put("editorial", editorial);
         
@@ -89,6 +94,9 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         return "editorial-ingresar.html";
     }
     
@@ -101,6 +109,9 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
+            
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+            
             editorialServ.crearEditorial(nombre);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La Editorial fue ingresada a la base de datos correctamente.");
@@ -122,6 +133,9 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
 
 //        try {
 //            Admin admin = adminServ.buscarPorId(id);
@@ -142,13 +156,9 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
-//        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
-//        } catch (ErrorServicio e) {
-//            modelo.addAttribute("error", e.getMessage());
-//        }
         return "editoriales-lista-completa.html";
     }
     
@@ -161,6 +171,9 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");        
+        
         Editorial editorial = editorialServ.consultaEditorialId(ediId);
         modelo.put("editorial", editorial);
         
@@ -179,6 +192,8 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
+            
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
             
 //            ed = editorialServ.consultaEditorialId(ediId);
             editorialServ.modificarEditorial(ediId, nombre);
@@ -202,7 +217,10 @@ public class EditorialControlador {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
-            }       
+            }
+            
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
             editorialServ.bajaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -221,7 +239,10 @@ public class EditorialControlador {
             Admin login = (Admin) session.getAttribute("adminsession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
-            }       
+            }
+            
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+            
             editorialServ.altaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -231,8 +252,4 @@ public class EditorialControlador {
             return "editoriales.html";
         }
     }
-    
-    
-    
-      
 }

@@ -53,18 +53,24 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         return "libros.html";
     }
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+            
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         Libro libro= null;
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
+        try {            
             libro = libroServ.buscarLibroTitCompl(qlibro);
             modelo.put("libro", libro);
             return "libro.html";
@@ -85,6 +91,7 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("autores", autores);
         modelo.put("editoriales", editoriales);
         return "libro-ingresar.html";
@@ -96,11 +103,15 @@ public class LibroControlador {
     public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
+            
             libroServ.crearLibro(isbn, titulo, ejemplaresTotales, autorId, editorialId, archivo);
             
             modelo.put("tit", "Operación Exitosa");
@@ -131,6 +142,8 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("libro", libro);
         modelo.put("autores", autores);
         modelo.put("editoriales", editoriales);
@@ -142,20 +155,19 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
         Libro libro = null;
         try {
-
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
-            
-
             libro = libroServ.buscarLibroId(libroId);
             libroServ.modificar(libroId, isbn, titulo, ejemplaresTotales, autorId, editorialId, archivo);
-            //session.setAttribute("adminsession", admin);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
             return "succes.html";
@@ -181,6 +193,8 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
         return "libros-lista-activos.html";
     }
@@ -195,6 +209,8 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
         return "libros-lista-completa.html";
     }
@@ -204,11 +220,14 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }       
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        } 
+
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        try {      
             libroServ.darBajaLibro(libroId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -223,11 +242,13 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }       
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }             
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+           
+        try {     
             libroServ.darAltaLibro(libroId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");

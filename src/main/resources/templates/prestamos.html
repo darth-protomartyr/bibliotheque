@@ -10,21 +10,40 @@
     <main>
         <div class = "main">
             <div class= "main__card">
-                <h3 class="main__card__h3">Prestamos</h3>
-                <div class="main__card__object">
+                <h3 class="main__card__h3">Solicitar Prestamo</h3>
+                <div class="main__card__object main__card__prestamo">
                     <div class="object__button__container">
-                        <div class="object__btn">
-                            <a th:href="@{/prestamos/ingresar(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Solicitar prestamo</a>
+                        <form th:action="@{/prestamos/proceso-generar(id=__${session.adminsession.id}__)}" method="post" enctype="multipart/form-data">
+                            <div class="form__container">
+                                <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                                <p th:if="${success != null}" th:text="${success}" class="ok"></p>
+                                <p>Seleccione un Libro</p>
+                                <select name="libroId">
+                                    <option th:each="libro : ${libros}" th:value="${libro.id}" th:text="${libro.titulo}" th:selected="${libroId}"></option>
+                                </select>
+                                <div class="object__btn">
+                                    <button type="submit">Generar Solicitud</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class = "container__lista__object">
+                        <div class = "lista__object">
+                            <h4>Lista de Solicitudes pendientes</h4>
+                            <p th:if="${mes1 != null}" th:text="${mes1}" class="ok"></p>
+                            <div th:each ="solicitud:${solicitudes}" class="list_txt">
+                                <h6>Titulo: <span th:text="${solicitud.libro.titulo}"></span></h6>
+                            </div>
                         </div>
-                        
-                        <div class="object__btn">
-                            <a th:href="@{/prestamos/listar-activas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Solicitudes pendientes Activos</a>
-                        </div>
-                        
-                        <div class="object__btn">
-                            <a th:href="@{/prestamos/listar-todas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Prestamos Vigentes</a>
+                        <div class = "lista__object">
+                            <h4>Lista Prestamos en curso</h4>
+                            <p th:if="${mes2 != null}" th:text="${mes2}" class="ok"></p>
+                            <div th:each ="prestamo:${prestamos}" class="list_txt">
+                                <h6>Titulo: <span th:text="${prestamo.libro.titulo}"></span></h6>
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

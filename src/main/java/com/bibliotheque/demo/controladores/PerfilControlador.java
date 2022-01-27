@@ -46,6 +46,7 @@ public class PerfilControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
 
         try {
             Admin admin = adminServ.buscarPorId(id);
@@ -61,13 +62,14 @@ public class PerfilControlador {
     public String modificarAdmin(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         Admin admin = null;
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+
+        modelo.addAttribute("perfil", login);
+        
         try {
-
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
-
             admin = adminServ.buscarPorId(id);
             adminServ.modificar(id, name, pass1, pass2, generoId, mail, archivo);
             session.setAttribute("adminsession", admin);

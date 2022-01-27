@@ -59,12 +59,12 @@ public class PortalControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/inicio")
     public String inicio(ModelMap modelo, HttpSession session) throws ErrorServicio {
-//-------------------------intento
         Admin login = (Admin) session.getAttribute("adminsession");
         String id = login.getId();
         Admin admin = adminServ.buscarPorId(id);
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
         modelo.addAttribute("perfil", admin);
-//-------------------------intento
         return "inicio.html";
     }
     

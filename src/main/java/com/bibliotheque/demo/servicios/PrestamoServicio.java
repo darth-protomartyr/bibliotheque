@@ -52,7 +52,7 @@ public class PrestamoServicio {
         }
         
         int limite = limitePrestamo(adminId);
-        if (limite > 5) {
+        if (limite >= 5) {
             throw new ErrorServicio("Usted ha excedido el límite de préstamos permitidos.");
         }
         
@@ -96,6 +96,28 @@ public class PrestamoServicio {
         return prestamoRepo.save(prestamo);
     }
     
+    
+    
+    @Transactional
+    public void altaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
+        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoId(idPrestamo);
+        Prestamo prestamo = null;
+        if (rta.isPresent()) {
+            prestamo = rta.get();
+        }
+        Admin admin = prestamo.getAdmin();
+        Libro libro = prestamo.getLibro();
+        
+        prestamo.setAlta(true);
+        prestamo.setFechaAlta(new Date());
+        prestamo.setFechaDevolucion(generarFechaDevolucion(prestamo.getFechaAlta()));
+        
+        libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
+        libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
+    }
+    
+    
+    
     @Transactional
     public void bajaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
         Optional <Prestamo> rta = prestamoRepo.buscaPrestamoId(idPrestamo);
@@ -108,6 +130,7 @@ public class PrestamoServicio {
         
         prestamo.setAlta(false);
         prestamo.setFechaBaja(new Date());
+        
         Date dateBaja = prestamo.getFechaBaja();
         Date dateVenc = prestamo.getFechaDevolucion();
         Date datePen = admin.getFechaPenalidad();
@@ -121,13 +144,15 @@ public class PrestamoServicio {
     }
     
     
-    @Transactional(readOnly = true)
-    public List<Prestamo> listarPrestamos(){
-        List <Prestamo> prestamos = null;
-        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamo();
-        prestamos = rta.get();
-        return prestamos;
-    }
+
+    
+//    @Transactional(readOnly = true)
+//    public List<Prestamo> listarPrestamos(){
+//        List <Prestamo> prestamos = null;
+//        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamo();
+//        prestamos = rta.get();
+//        return prestamos;
+//    }
 
     static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
         return Instant.ofEpochMilli(dateToConvert.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
@@ -155,15 +180,25 @@ public class PrestamoServicio {
         return solicitantes;
     }
     
+    
     private int limitePrestamo(String adminId) {
         int limite = 0;
         List <Prestamo> prestamos = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoAdminID(adminId);
+        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitAdminID(adminId);
         if (rta.isPresent()) {
             prestamos = rta.get();
         }
         limite = prestamos.size();
         return limite;
+    }
+    
+    
+    static Date generarFechaDevolucion(Date dateAlta) throws ParseException {
+        int horas = 176;
+        Calendar calendar = Calendar.getInstance();	
+        calendar.setTime(dateAlta); // Configuramos la fecha que se recibe
+        calendar.add(Calendar.HOUR, horas);  // numero de horas a añadir, o restar en caso de horas<0
+        return calendar.getTime(); // Devuelve el objeto Date con las nuevas horas añadidas
     }
     
     
@@ -190,7 +225,5 @@ public class PrestamoServicio {
             calendar.add(Calendar.DAY_OF_YEAR, days); 
             return calendar.getTime();
         }
-    }
-
-    
+    }    
 }

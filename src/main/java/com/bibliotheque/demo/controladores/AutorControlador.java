@@ -9,7 +9,6 @@ import com.bibliotheque.demo.entidades.Admin;
 import com.bibliotheque.demo.entidades.Autor;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.AutorRepositorio;
-import com.bibliotheque.demo.servicios.AdminServicio;
 import com.bibliotheque.demo.servicios.AutorServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -44,8 +43,8 @@ public class AutorControlador {
             return "redirect:/inicio";
         }
         
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         
-
         return "autores.html";
     }
     
@@ -54,11 +53,14 @@ public class AutorControlador {
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qautor, ModelMap modelo) throws ErrorServicio{
         Autor autor= null;
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+            
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        try {         
             autor = autorServ.consultaAutorNomCompl(qautor);
             modelo.put("autor", autor);
             return "autor.html";
@@ -79,6 +81,9 @@ public class AutorControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         return "autor-ingresar.html";
     }
     
@@ -86,14 +91,18 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, @RequestParam MultipartFile archivo, ModelMap modelo) throws ErrorServicio {
+        
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+            
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
             autorServ.crearAutor(nombre, archivo);
             modelo.put("tit", "Operación Exitosa");
-            modelo.put("subTit", "El Autor fue ingresada a la base de datos correctamente.");
+            modelo.put("subTit", "El Autor fue ingresado a la base de datos correctamente.");
             return "succes.html";
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
@@ -114,6 +123,8 @@ public class AutorControlador {
             return "redirect:/inicio";
         }
 
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         return "autores-lista-activos.html";
     }
     
@@ -127,6 +138,8 @@ public class AutorControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
         return "autores-lista-completa.html";
     }
@@ -140,6 +153,9 @@ public class AutorControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
         Autor autor = autorServ.consultaAutorId(autorId);
         modelo.put("autor", autor);
         
@@ -153,12 +169,16 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId, @RequestParam String nombre, @RequestParam MultipartFile archivo) throws ErrorServicio {
+        
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }
-            
             autorServ.modificarAutor(nombre, archivo, autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -169,21 +189,21 @@ public class AutorControlador {
             return "autor-actualizar.html";
         }
     }
+   
     
-
-    
-    
-
-
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }       
+        
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        try {     
             autorServ.bajaAutor(autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -198,11 +218,15 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
-        try {
-            Admin login = (Admin) session.getAttribute("adminsession");
-            if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
-            }       
+        
+        Admin login = (Admin) session.getAttribute("adminsession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        try {       
             autorServ.altaAutor(autorId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");

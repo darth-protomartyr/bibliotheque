@@ -29,12 +29,16 @@ public class Prestamo {
     private Libro libro;
     @OneToOne
     private Admin admin;
+    //Se crea al generar la solicitud de prestamo
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaSolicitud;
+    //Se crea cuando se habilita el préstamo
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
+    //Se crea cuando se habilita el préstamo y corresponde a 7 días luego de la habilitación
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaDevolucion;
+    //Se genera cuando los libros son devueltos
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaBaja;
     private Boolean alta;
@@ -95,11 +99,11 @@ public class Prestamo {
     
     
     public Date getFechaDevolucion() {
-        return fechaAlta;
+        return fechaDevolucion;
     }
 
-    public void setFechaDevolucion(Date fechaAlta) {
-        this.fechaAlta = fechaAlta;
+    public void setFechaDevolucion(Date fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
     }
     
 

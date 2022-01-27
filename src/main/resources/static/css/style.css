@@ -519,7 +519,18 @@ input::placeholder {
     align-items: center;
 }
 
-/*------------------------- MAIN SINGLE OBJECT */
+/*------------------------- MAIN PRESTAMOS y ORDENES */
+
+.main__card__prestamo {
+    display : flex;
+    flex-direction: column:
+}
+
+.container__lista__object {
+    display : flex;
+    flex-direction: row;
+}
+
 
 
 /*------------------------- FOOTER FORMS */
