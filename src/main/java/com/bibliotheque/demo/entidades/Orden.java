@@ -27,16 +27,16 @@ public class Orden {
     @OneToMany
     private List<Prestamo> prestamos;
     @ManyToOne
-    private Admin admin;
+    private Usuario usuario;
     private Boolean alta;
 
     public Orden() {
     }
 
-    public Orden(String id, List<Prestamo> prestamos, Admin admin, Boolean alta) {
+    public Orden(String id, List<Prestamo> prestamos, Usuario usuario, Boolean alta) {
         this.id = id;
         this.prestamos = prestamos;
-        this.admin = admin;
+        this.usuario = usuario;
         this.alta = alta;
     }
 
@@ -56,12 +56,12 @@ public class Orden {
         this.prestamos = prestamos;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public Boolean getAlta() {

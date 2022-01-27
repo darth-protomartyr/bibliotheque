@@ -23,7 +23,7 @@ import javax.persistence.TemporalType;
  * @author Gonzalo
  */
 @Entity
-public class Admin {
+public class Usuario {
    @Id
    @GeneratedValue(generator = "uuid")
    @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -41,11 +41,11 @@ public class Admin {
    @OneToOne
    private Foto foto;
 
-   public Admin() {
+   public Usuario() {
    
    }
 
-    public Admin(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Date fechaPenalidad, Boolean penalidad, Foto foto) {
+    public Usuario(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Date fechaPenalidad, Boolean penalidad, Foto foto) {
         this.id = id;
         this.nombre = nombre;
         this.pass = pass;
@@ -115,7 +115,7 @@ public class Admin {
 
     @Override
     public String toString() {
-        return "Admin:\n"
+        return "Usuario:\n"
                 + "     Id: " + id + "\n"
                 + "     Nombre: " + nombre + "\n"
                 + "     Sexo: " + genero + "\n"

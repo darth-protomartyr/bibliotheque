@@ -11,7 +11,7 @@
         <div class= "main">
             <div class ="main__card">
                 <h2>Modificar Editorial</h2>
-                <form th:action="@{/editoriales/proceso-modificar(id=__${session.adminsession.id}__, editorialId=__${editorial.id}__)}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/editoriales/proceso-modificar(id=__${session.usuariosession.id}__, editorialId=__${editorial.id}__)}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
 <!--                        <input type="hidden" name="edId" th:value="${editorial.Id}"/>-->

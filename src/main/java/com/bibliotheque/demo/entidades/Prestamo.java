@@ -28,7 +28,7 @@ public class Prestamo {
     @OneToOne
     private Libro libro;
     @OneToOne
-    private Admin admin;
+    private Usuario usuario;
     //Se crea al generar la solicitud de prestamo
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaSolicitud;
@@ -46,10 +46,10 @@ public class Prestamo {
     public Prestamo() {
     }
 
-    public Prestamo(String id, Libro libro, Admin admin, Date fechaAlta, Date fechaDevolucion, Date fechaBaja, Date fechaSolicitud, Boolean alta) {
+    public Prestamo(String id, Libro libro, Usuario usuario, Date fechaAlta, Date fechaDevolucion, Date fechaBaja, Date fechaSolicitud, Boolean alta) {
         this.id = id;
         this.libro = libro;
-        this.admin = admin;
+        this.usuario = usuario;
         this.fechaSolicitud = fechaSolicitud;
         this.fechaAlta = fechaAlta;
         this.fechaDevolucion = fechaDevolucion;
@@ -73,12 +73,12 @@ public class Prestamo {
         this.libro = libro;
     }
 
-    public Admin getAdmin() {
-        return admin;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
     
     public Date getFechaSolicitud() {
@@ -132,7 +132,7 @@ public class Prestamo {
         return "Préstamo:"
                 + "     Id de la Préstamo: " + id + "\n"
                 + "     Libro: " + libro + "\n"
-                + "     Admin:" + admin + "\n"
+                + "     Usuario:" + usuario + "\n"
                 + "     Fecha de Entraga: " + fechaAlta + "\n"
                 + "     Fecha de devolución" + fechaBaja + "\n"
                 + "     Alta: " + alta;

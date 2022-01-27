@@ -13,7 +13,7 @@
                 <h3 class="main__card__h3">Autores</h3>
                 <div class="main__card__object">
                     <div class="main__object--buscador">
-                        <form th:action="@{/autores/proceso-buscar(id=__${session.adminsession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                        <form th:action="@{/autores/proceso-buscar(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
                             <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                             <div class="form__container__buscar">
                                 <input type="text" placeholder="Ingrese nombre del autor" name="qautor" required>
@@ -23,15 +23,15 @@
                     </div>
                     <div class="object__button__container">
                         <div class="object__btn">
-                            <a th:href="@{/autores/ingresar(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Registrar Autor</a>
+                            <a th:href="@{/autores/ingresar(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Registrar Autor</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/autores/listar-activas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Autores Activos</a>
+                            <a th:href="@{/autores/listar-activas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Autores Activos</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/autores/listar-todas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Lista Autores</a>
+                            <a th:href="@{/autores/listar-todas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Lista Autores</a>
                         </div>
                     </div>
                 </div>

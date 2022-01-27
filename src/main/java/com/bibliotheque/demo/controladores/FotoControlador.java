@@ -5,11 +5,11 @@
  */
 package com.bibliotheque.demo.controladores;
 
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Autor;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import com.bibliotheque.demo.servicios.AutorServicio;
 import com.bibliotheque.demo.servicios.LibroServicio;
 import java.util.logging.Level;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class FotoControlador {
    
     @Autowired
-    private AdminServicio adminServ;
+    private UsuarioServicio usuarioServ;
     @Autowired
     private AutorServicio autorServ;
     @Autowired
@@ -38,11 +38,11 @@ public class FotoControlador {
     @GetMapping("/perfil/{id}")
     public ResponseEntity<byte[]> fotoPartner(@PathVariable String id) {
         try {
-            Admin admin = adminServ.buscarPorId(id);
-            if (admin.getFoto() == null) {
+            Usuario usuario = usuarioServ.buscarPorId(id);
+            if (usuario.getFoto() == null) {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
-            byte[] foto = admin.getFoto().getContenido();
+            byte[] foto = usuario.getFoto().getContenido();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);

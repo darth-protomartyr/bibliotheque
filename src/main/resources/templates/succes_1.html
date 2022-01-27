@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">            
+            <div class="main__card">
+                <p class ="tit" th:text = ${tit}></p> 
+                <p class ="sub-tit" th:text = ${subTit}></p> 
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer_1 :: footer"></footer>
+    
+</body>
+</html>

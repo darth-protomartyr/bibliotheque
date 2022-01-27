@@ -8,10 +8,10 @@ package com.bibliotheque.demo.controladores;
 
 
 
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +34,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/")
 public class PortalControlador {
     @Autowired
-    private AdminServicio adminServ;
+    private UsuarioServicio usuarioServ;
 
     @GetMapping("/")
     public String index(ModelMap modelo) throws ErrorServicio{    
-        List<Admin> adminsActivos = adminServ.consultaListaAdmins();
-        modelo.addAttribute("admins", adminsActivos);
+        List<Usuario> usuariosActivos = usuarioServ.consultaListaUsuarios();
+        modelo.addAttribute("usuarios", usuariosActivos);
         return "index.html";
     }
 
@@ -59,12 +59,12 @@ public class PortalControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/inicio")
     public String inicio(ModelMap modelo, HttpSession session) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         String id = login.getId();
-        Admin admin = adminServ.buscarPorId(id);
+        Usuario usuario = usuarioServ.buscarPorId(id);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
-        modelo.addAttribute("perfil", admin);
+        modelo.addAttribute("perfil", usuario);
         return "inicio.html";
     }
     
@@ -80,7 +80,7 @@ public class PortalControlador {
     public String registro(ModelMap modelo, @RequestParam String nom, @RequestParam String pass1, @RequestParam String pass2, @RequestParam int generoId, MultipartFile archivo,@RequestParam String mail) throws ErrorServicio {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         try {
-            adminServ.registrarAdmin(nom, pass1, pass2, generoId, archivo, mail);
+            usuarioServ.registrarUsuario(nom, pass1, pass2, generoId, archivo, mail);
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
             modelo.put("nom", nom);
@@ -95,6 +95,6 @@ public class PortalControlador {
         }
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
-        return "succes.html";
+        return "succes_1.html";
     }
 }

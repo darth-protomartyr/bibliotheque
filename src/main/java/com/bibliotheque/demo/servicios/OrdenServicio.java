@@ -8,11 +8,11 @@ package com.bibliotheque.demo.servicios;
 
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Prestamo;
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Orden;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.repositorios.AdminRepositorio;
+import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import com.bibliotheque.demo.repositorios.OrdenRepositorio;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -41,17 +41,17 @@ public class OrdenServicio {
     @Autowired
     private LibroServicio libroServ;
     @Autowired
-    private AdminRepositorio adminRepo;
+    private UsuarioRepositorio usuarioRepo;
     @Autowired
     private OrdenRepositorio ordenRepo;
     @Autowired
     private PrestamoServicio prestamoServ;
     
     @Transactional
-    public Orden generarOrden(List <Prestamo> prestamos, String adminId) throws ErrorServicio {
+    public Orden generarOrden(List <Prestamo> prestamos, String usuarioId) throws ErrorServicio {
         Orden orden = null;
         
-        if (adminId == null || adminId.isEmpty()) {
+        if (usuarioId == null || usuarioId.isEmpty()) {
             throw new ErrorServicio("Falta ingresar el número de socio");
         }
         
@@ -59,10 +59,10 @@ public class OrdenServicio {
             throw new ErrorServicio("No ha ingresado los pedidos de prestamo");
         }
         
-        Admin admin = null;
-        Optional<Admin> rta1 = adminRepo.buscaAdminIdAlta(adminId);
+        Usuario usuario = null;
+        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(usuarioId);
         if(rta1.isPresent()) {
-            admin = rta1.get();
+            usuario = rta1.get();
         } else {
             throw new ErrorServicio("No es un socio registrado.");
         }
@@ -80,11 +80,11 @@ public class OrdenServicio {
         }
 
         
-        if (admin.getPenalidad() == true) {
+        if (usuario.getPenalidad() == true) {
             throw new ErrorServicio("El Socio no puede realizar el pedido por encontrarse penalizado");
         }
         
-        orden.setAdmin(admin);
+        orden.setUsuario(usuario);
         orden.setAlta(Boolean.TRUE);
         orden.setPrestamos(prestamos);
         return ordenRepo.save(orden);

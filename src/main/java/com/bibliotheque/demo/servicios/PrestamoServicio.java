@@ -3,10 +3,10 @@ package com.bibliotheque.demo.servicios;
 
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Prestamo;
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.repositorios.AdminRepositorio;
+import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -38,12 +38,12 @@ public class PrestamoServicio {
     @Autowired
     private LibroServicio libroServ;
     @Autowired
-    private AdminRepositorio adminRepo;
+    private UsuarioRepositorio usuarioRepo;
     
     @Transactional
-    public Prestamo crearPrestamo(String adminId, String libroId) throws ErrorServicio {
+    public Prestamo crearPrestamo(String usuarioId, String libroId) throws ErrorServicio {
         
-        if (adminId == null || adminId.isEmpty()) {
+        if (usuarioId == null || usuarioId.isEmpty()) {
             throw new ErrorServicio("Falta ingresar el número de socio");
         }
         
@@ -51,20 +51,20 @@ public class PrestamoServicio {
             throw new ErrorServicio("Falta ingresar el libro que desea pedir");
         }
         
-        int limite = limitePrestamo(adminId);
+        int limite = limitePrestamo(usuarioId);
         if (limite >= 5) {
             throw new ErrorServicio("Usted ha excedido el límite de préstamos permitidos.");
         }
         
-        Admin adminPrestamo = null;
-        Optional<Admin> rta1 = adminRepo.buscaAdminIdAlta(adminId);
+        Usuario usuarioPrestamo = null;
+        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(usuarioId);
         if(rta1.isPresent()) {
-            adminPrestamo = rta1.get();
+            usuarioPrestamo = rta1.get();
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
         
-        if (adminPrestamo.getPenalidad() == true) {
+        if (usuarioPrestamo.getPenalidad() == true) {
             throw new ErrorServicio("Usted se encuentra penalizado para el préstamo de Libros");
         }
         
@@ -90,7 +90,7 @@ public class PrestamoServicio {
         } else {
             throw new ErrorServicio("No hay ejemplares disponibles para préstamo");
         }
-        prestamo.setAdmin(adminPrestamo);
+        prestamo.setUsuario(usuarioPrestamo);
         prestamo.setFechaSolicitud(new Date());
         libroServ.modEjemplaresRet(libroPrestamo);
         return prestamoRepo.save(prestamo);
@@ -105,7 +105,7 @@ public class PrestamoServicio {
         if (rta.isPresent()) {
             prestamo = rta.get();
         }
-        Admin admin = prestamo.getAdmin();
+        Usuario usuario = prestamo.getUsuario();
         Libro libro = prestamo.getLibro();
         
         prestamo.setAlta(true);
@@ -125,7 +125,7 @@ public class PrestamoServicio {
         if (rta.isPresent()) {
             prestamo = rta.get();
         }
-        Admin admin = prestamo.getAdmin();
+        Usuario usuario = prestamo.getUsuario();
         Libro libro = prestamo.getLibro();
         
         prestamo.setAlta(false);
@@ -133,10 +133,10 @@ public class PrestamoServicio {
         
         Date dateBaja = prestamo.getFechaBaja();
         Date dateVenc = prestamo.getFechaDevolucion();
-        Date datePen = admin.getFechaPenalidad();
+        Date datePen = usuario.getFechaPenalidad();
         if (dateVenc.before(dateBaja)) {
-            admin.setPenalidad(Boolean.TRUE);
-            admin.setFechaPenalidad(diasPenalidad(dateBaja, dateVenc, datePen));
+            usuario.setPenalidad(Boolean.TRUE);
+            usuario.setFechaPenalidad(diasPenalidad(dateBaja, dateVenc, datePen));
         }
         
         libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
@@ -159,9 +159,9 @@ public class PrestamoServicio {
     }
     
     
-    public List <Admin> listarSolicitantes() {
-        HashSet<Admin> solicitantesHS = null;
-        List<Admin> solicitantes = null;
+    public List <Usuario> listarSolicitantes() {
+        HashSet<Usuario> solicitantesHS = null;
+        List<Usuario> solicitantes = null;
         List <Prestamo> prestamos = null;
         Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamoSolicitados();
         
@@ -170,21 +170,21 @@ public class PrestamoServicio {
         }
 
         for (Prestamo prestamo : prestamos) {
-            solicitantesHS.add(prestamo.getAdmin());
+            solicitantesHS.add(prestamo.getUsuario());
         }
         
-        for (Admin admin : solicitantes) {
-            solicitantes.add(admin);
+        for (Usuario usuario : solicitantes) {
+            solicitantes.add(usuario);
         }
         
         return solicitantes;
     }
     
     
-    private int limitePrestamo(String adminId) {
+    private int limitePrestamo(String usuarioId) {
         int limite = 0;
         List <Prestamo> prestamos = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitAdminID(adminId);
+        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitUsuarioID(usuarioId);
         if (rta.isPresent()) {
             prestamos = rta.get();
         }

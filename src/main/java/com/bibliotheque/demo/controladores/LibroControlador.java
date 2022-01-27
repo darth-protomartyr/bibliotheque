@@ -5,7 +5,7 @@
  */
 package com.bibliotheque.demo.controladores;
 
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Autor;
 import com.bibliotheque.demo.entidades.Editorial;
 import com.bibliotheque.demo.entidades.Libro;
@@ -13,7 +13,7 @@ import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.AutorRepositorio;
 import com.bibliotheque.demo.repositorios.EditorialRepositorio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import com.bibliotheque.demo.servicios.LibroServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class LibroControlador {
 
     @Autowired
-    private AdminServicio adminServ;    
+    private UsuarioServicio usuarioServ;    
     @Autowired
     private LibroRepositorio libroRepo;
     @Autowired
@@ -49,7 +49,7 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/libro")
     public String libros(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -62,7 +62,7 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -87,7 +87,7 @@ public class LibroControlador {
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo) {
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -103,7 +103,7 @@ public class LibroControlador {
     public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -138,7 +138,7 @@ public class LibroControlador {
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
         Libro libro = libroRepo.getById(libroId);
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -155,7 +155,7 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -189,7 +189,7 @@ public class LibroControlador {
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Libro> libros = libroServ.listarLibrosActivos();
         modelo.put("libros", libros);
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -205,7 +205,7 @@ public class LibroControlador {
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Libro> libros = libroRepo.listarLibrosCompleta();
         modelo.put("libros", libros);
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -220,7 +220,7 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         } 
@@ -242,7 +242,7 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }             

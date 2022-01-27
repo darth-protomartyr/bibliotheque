@@ -13,7 +13,7 @@
                 <h3 class="main__card__h3">Libros</h3>
                 <div class="main__card__object">
                     <div class="main__object--buscador">
-                        <form th:action="@{/libros/proceso-buscar(id=__${session.adminsession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                        <form th:action="@{/libros/proceso-buscar(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
                             <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                             <div class="form__container__buscar">
                                 <input type="text" placeholder="Ingrese nombre del libro" name="qlibro" required>
@@ -23,15 +23,15 @@
                     </div>
                     <div class="object__button__container">
                         <div class="object__btn">
-                            <a th:href="@{/libros/ingresar(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Registrar Libro</a>
+                            <a th:href="@{/libros/ingresar(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Registrar Libro</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/libros/listar-activas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Libros Activos</a>
+                            <a th:href="@{/libros/listar-activas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Libros Activos</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/libros/listar-todas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Lista Libros</a>
+                            <a th:href="@{/libros/listar-todas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Lista Libros</a>
                         </div>
                     </div>
                 </div>

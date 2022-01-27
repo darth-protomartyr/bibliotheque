@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 package com.bibliotheque.demo.controladores;
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class PrestamoControlador {
 
     @Autowired
-    private AdminServicio adminServ;    
+    private UsuarioServicio usuarioServ;    
     @Autowired
     private PrestamoRepositorio prestamoRepo;
     @Autowired
@@ -44,7 +44,7 @@ public class PrestamoControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/prestamo")
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -61,15 +61,15 @@ public class PrestamoControlador {
     @PostMapping("/proceso-generar")
     public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
         
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         
         try {                       
-            String adminId= login.getId();
-            prestamoServ.crearPrestamo(adminId, libroId);
+            String usuarioId= login.getId();
+            prestamoServ.crearPrestamo(usuarioId, libroId);
             modelo.put("success", "La solicitud fue envíada. Si desea realizar otra, seleccione un texto");
             listas(modelo, id);
 
@@ -89,7 +89,7 @@ public class PrestamoControlador {
         modelo.put("libros", libros);
         
         List <Prestamo> solicitudes = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitAdminID(id);
+        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitUsuarioID(id);
         if (rta.isPresent()) {
             solicitudes = rta.get();
         }
@@ -99,7 +99,7 @@ public class PrestamoControlador {
         }
         
         List <Prestamo> prestamos = null;
-        Optional <List <Prestamo>> rta1 = prestamoRepo.buscaPrestamoActivosAdminID(id);
+        Optional <List <Prestamo>> rta1 = prestamoRepo.buscaPrestamoActivosUsuarioID(id);
         if (rta.isPresent()) {
             prestamos = rta1.get();
         }

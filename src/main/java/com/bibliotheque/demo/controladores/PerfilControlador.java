@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 package com.bibliotheque.demo.controladores;
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PerfilControlador {
 
     @Autowired
-    private AdminServicio adminServ;
+    private UsuarioServicio usuarioServ;
     
 
 
@@ -42,15 +42,15 @@ public class PerfilControlador {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         modelo.put("generos", generos);
         
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
         
 
         try {
-            Admin admin = adminServ.buscarPorId(id);
-            modelo.addAttribute("perfil", admin);
+            Usuario usuario = usuarioServ.buscarPorId(id);
+            modelo.addAttribute("perfil", usuario);
         } catch (ErrorServicio e) {
             modelo.addAttribute("error", e.getMessage());
         }
@@ -59,10 +59,10 @@ public class PerfilControlador {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/editar-perfil")
-    public String modificarAdmin(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
+    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
-        Admin admin = null;
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario usuario = null;
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -70,15 +70,15 @@ public class PerfilControlador {
         modelo.addAttribute("perfil", login);
         
         try {
-            admin = adminServ.buscarPorId(id);
-            adminServ.modificar(id, name, pass1, pass2, generoId, mail, archivo);
-            session.setAttribute("adminsession", admin);
+            usuario = usuarioServ.buscarPorId(id);
+            usuarioServ.modificar(id, name, pass1, pass2, generoId, mail, archivo);
+            session.setAttribute("usuariosession", usuario);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
             return "succes.html";
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
-            modelo.put("perfil", admin);
+            modelo.put("perfil", usuario);
             modelo.put("generos", generos);
             return "perfil.html";
         }

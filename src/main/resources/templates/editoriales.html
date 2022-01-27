@@ -13,7 +13,7 @@
                 <h3 class="main__card__h3">Editoriales</h3>
                 <div class="main__card__object">
                     <div class="main__object--buscador">
-                        <form th:action="@{/editoriales/proceso-buscar(id=__${session.adminsession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                        <form th:action="@{/editoriales/proceso-buscar(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
                             <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                             <div class="form__container__buscar">
                                 <input type="text" placeholder="Ingrese nombre de la editorial" name="qeditorial" required>
@@ -23,15 +23,15 @@
                     </div>
                     <div class="object__button__container">
                         <div class="object__btn">
-                            <a th:href="@{/editoriales/ingresar(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Registrar Editorial</a>
+                            <a th:href="@{/editoriales/ingresar(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Registrar Editorial</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/editoriales/listar-activas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Editoriales Activas</a>
+                            <a th:href="@{/editoriales/listar-activas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Editoriales Activas</a>
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/editoriales/listar-todas(id=__${session.adminsession.id}__)}" th:if="${session.adminsession != null}">Lista Editoriales</a>
+                            <a th:href="@{/editoriales/listar-todas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Lista Editoriales</a>
                         </div>
                     </div>
 <!--                    <div class ="main__object__container">
@@ -44,7 +44,7 @@
                                 <p></p>
                                 <p></p>
                                 <div class="btn">
-                                    <a th:href="@{/libros/modificar-libro(id=__${session.adminsession.id}__ , libroId=__${texto.id}__)}" th:if="${session.adminsession != null}">Actualizar Libro</a>
+                                    <a th:href="@{/libros/modificar-libro(id=__${session.usuariosession.id}__ , libroId=__${texto.id}__)}" th:if="${session.usuariosession != null}">Actualizar Libro</a>
                                     <a href="#">Administrar Libro</a>
                                 </div>
                             </div>

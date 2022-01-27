@@ -13,7 +13,7 @@
                 <h3 class="main__card__h3">Solicitar Prestamo</h3>
                 <div class="main__card__object main__card__prestamo">
                     <div class="object__button__container">
-                        <form th:action="@{/prestamos/proceso-generar(id=__${session.adminsession.id}__)}" method="post" enctype="multipart/form-data">
+                        <form th:action="@{/prestamos/proceso-generar(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
                             <div class="form__container">
                                 <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                                 <p th:if="${success != null}" th:text="${success}" class="ok"></p>

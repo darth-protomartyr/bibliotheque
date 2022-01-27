@@ -5,13 +5,13 @@
  */
 package com.bibliotheque.demo.controladores;
 
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Editorial;
 import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.EditorialRepositorio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
-import com.bibliotheque.demo.servicios.AdminServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import com.bibliotheque.demo.servicios.EditorialServicio;
 import java.util.List;
 import javax.servlet.http.HttpSession;
@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class EditorialControlador {
 
     @Autowired
-    private AdminServicio adminServ;    
+    private UsuarioServicio usuarioServ;    
     @Autowired
     private EditorialRepositorio editorialRepo;
     @Autowired
@@ -44,7 +44,7 @@ public class EditorialControlador {
     @GetMapping("/editorial")
     public String editoriales(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
 
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -52,8 +52,8 @@ public class EditorialControlador {
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
 //        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
+//            Usuario usuario = usuarioServ.buscarPorId(id);
+//            modelo.addAttribute("perfil", usuario);
 //        } catch (ErrorServicio e) {
 //            modelo.addAttribute("error", e.getMessage());
 //        }
@@ -64,7 +64,7 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qeditorial, ModelMap modelo) throws ErrorServicio{
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -90,7 +90,7 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/ingresar")
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -105,7 +105,7 @@ public class EditorialControlador {
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, ModelMap modelo) throws ErrorServicio {
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
+            Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
@@ -129,7 +129,7 @@ public class EditorialControlador {
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
         modelo.put("editoriales", editoriales);
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -138,8 +138,8 @@ public class EditorialControlador {
 
 
 //        try {
-//            Admin admin = adminServ.buscarPorId(id);
-//            modelo.addAttribute("perfil", admin);
+//            Usuario usuario = usuarioServ.buscarPorId(id);
+//            modelo.addAttribute("perfil", usuario);
 //        } catch (ErrorServicio e) {
 //            modelo.addAttribute("error", e.getMessage());
 //        }
@@ -152,7 +152,7 @@ public class EditorialControlador {
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Editorial> editoriales = editorialRepo.listarEditorialCompleta();
         modelo.put("editoriales", editoriales);
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -167,7 +167,7 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/modificar")
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String ediId,  ModelMap modelo) throws ErrorServicio{
-        Admin login = (Admin) session.getAttribute("adminsession");
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
@@ -188,7 +188,7 @@ public class EditorialControlador {
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId, @RequestParam String nombre) throws ErrorServicio {
 //        Editorial ed = null;
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
+            Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
@@ -197,7 +197,7 @@ public class EditorialControlador {
             
 //            ed = editorialServ.consultaEditorialId(ediId);
             editorialServ.modificarEditorial(ediId, nombre);
-            //session.setAttribute("adminsession", admin);
+            //session.setAttribute("usuariosession", usuario);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
             return "succes.html";
@@ -214,7 +214,7 @@ public class EditorialControlador {
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
+            Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }
@@ -236,7 +236,7 @@ public class EditorialControlador {
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
         try {
-            Admin login = (Admin) session.getAttribute("adminsession");
+            Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/inicio";
             }

@@ -20,13 +20,13 @@
                         <div class = "main__card__index__right__half">
                             <p>Ingresar</p>
                             <div class="btn">
-                                <a th:if="${session.adminsession == null}" th:href="@{/login}">Log in</a>
+                                <a th:if="${session.usuariosession == null}" th:href="@{/login}">Log in</a>
                             </div>
                         </div>
                         <div class = "main__card__index__right__half">
                             <p>Crear Cuenta</p>
                             <div class="btn">
-                                <a th:href="@{/registrar}" th:if="${session.adminsession == null}">Sign in</a>
+                                <a th:href="@{/registrar}" th:if="${session.usuariosession == null}">Sign in</a>
                             </div>
                         </div>
                     </div>

@@ -7,10 +7,10 @@ package com.bibliotheque.demo.servicios;
 
 
 import com.bibliotheque.demo.entidades.Foto;
-import com.bibliotheque.demo.entidades.Admin;
+import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.AdminRepositorio;
+import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,16 +36,16 @@ import org.springframework.web.multipart.MultipartFile;
  */
 
 @Service
-public class AdminServicio implements UserDetailsService {
+public class UsuarioServicio implements UserDetailsService {
     @Autowired
-    private AdminRepositorio adminRepo;
+    private UsuarioRepositorio usuarioRepo;
     @Autowired
     private FotoServicio picServ;
     @Autowired
     private NotificacionServicio notServ;
-//-----------------------------------------------Admin y Admin
+//-----------------------------------------------Usuario y Usuario
     @Transactional
-    public Admin registrarAdmin(String nombre, String pass1, String pass2, int generoId, MultipartFile archivo, String mail) throws ErrorServicio {
+    public Usuario registrarUsuario(String nombre, String pass1, String pass2, int generoId, MultipartFile archivo, String mail) throws ErrorServicio {
         if (nombre == null || nombre.isEmpty()) {
             throw new ErrorServicio("Falta el nombre del usuario");
         }
@@ -73,7 +73,7 @@ public class AdminServicio implements UserDetailsService {
             throw new ErrorServicio("Falta ingresar el sexo del usuario");
         }
         
-        Optional<Admin> rta = adminRepo.buscaAdminMail(mail);
+        Optional<Usuario> rta = usuarioRepo.buscaUsuarioMail(mail);
         if (rta.isPresent()) {
             throw new ErrorServicio("El mail ya se encuentra registrado en la base de datos");
         }
@@ -82,31 +82,31 @@ public class AdminServicio implements UserDetailsService {
             throw new ErrorServicio("Falta ingresar el sexo del usuario");
         }
     
-        Admin admin = new Admin();
-        admin.setNombre(nombre);
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
         String passCrypt = new BCryptPasswordEncoder().encode(pass);
-        admin.setPass(passCrypt);
-        admin.setGenero(validateGenero(generoId));
+        usuario.setPass(passCrypt);
+        usuario.setGenero(validateGenero(generoId));
         Foto foto = picServ.guardar(archivo);
-        admin.setFoto(foto);
-        admin.setAlta(true);
-        admin.setPenalidad(Boolean.FALSE);
-        admin.setMail(validarMail(mail));
-        //notServ.enviar("Bienvenido a Librodepository", "Librodepository", admin.getMail());
-        return adminRepo.save(admin);
+        usuario.setFoto(foto);
+        usuario.setAlta(true);
+        usuario.setPenalidad(Boolean.FALSE);
+        usuario.setMail(validarMail(mail));
+        //notServ.enviar("Bienvenido a Librodepository", "Librodepository", usuario.getMail());
+        return usuarioRepo.save(usuario);
     }
     
     @Transactional
     public void modificar(String id, String name, String pass1 , String pass2, int generoId, String mail, MultipartFile archivo) throws ErrorServicio {
         
-        Admin admin = null;
-        Optional<Admin> rta1 = adminRepo.findById(id);
+        Usuario usuario = null;
+        Optional<Usuario> rta1 = usuarioRepo.findById(id);
         if(rta1.isPresent()) {
-            admin = rta1.get();
+            usuario = rta1.get();
             if (name == null || name.isEmpty()) {
-                admin.setNombre(admin.getNombre());
+                usuario.setNombre(usuario.getNombre());
             } else {
-                admin.setNombre(name);
+                usuario.setNombre(name);
             }
             
             String pass = null;
@@ -116,7 +116,7 @@ public class AdminServicio implements UserDetailsService {
                     pass = pass1;
                     if (pass.length() > 3) {
                         String passCrypt = new BCryptPasswordEncoder().encode(pass);
-                        admin.setPass(passCrypt);
+                        usuario.setPass(passCrypt);
                     } else {
                         throw new ErrorServicio("El password ingresado posee menos de 4 caracteres");
                     }
@@ -126,51 +126,51 @@ public class AdminServicio implements UserDetailsService {
             }
                       
             if (generoId != 1 && generoId != 2 && generoId != 3) {
-                admin.setGenero(admin.getGenero());
+                usuario.setGenero(usuario.getGenero());
             } else {
-                admin.setGenero(validateGenero(generoId));
+                usuario.setGenero(validateGenero(generoId));
             }
             
-            Optional<Admin> rta = adminRepo.buscaAdminMail(mail);
-            if (rta.isPresent() && !mail.equals(admin.getMail())) {
+            Optional<Usuario> rta = usuarioRepo.buscaUsuarioMail(mail);
+            if (rta.isPresent() && !mail.equals(usuario.getMail())) {
                 throw new ErrorServicio("El mail ya se encuentra registrado en la base de datos");
             }
             
 
             if (mail == null || mail.isEmpty()) {
-                admin.setMail(admin.getMail());
+                usuario.setMail(usuario.getMail());
             } else {
-                admin.setMail(validarMail(mail));
+                usuario.setMail(validarMail(mail));
             }
 
             if (archivo == null || archivo.isEmpty()) {
-                admin.setFoto(admin.getFoto());
+                usuario.setFoto(usuario.getFoto());
             } else {
                 String idFoto = null;
-                if (admin.getFoto() != null){
-                    idFoto = admin.getFoto().getId();
+                if (usuario.getFoto() != null){
+                    idFoto = usuario.getFoto().getId();
                 }
                 Foto foto = picServ.actualizar(idFoto, archivo);
-                admin.setFoto(foto);
+                usuario.setFoto(foto);
             }
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
-        adminRepo.save(admin);
-        //notServ.enviar("LA modificación ha sido realizada", "Librodepository", admin.getMail());
+        usuarioRepo.save(usuario);
+        //notServ.enviar("LA modificación ha sido realizada", "Librodepository", usuario.getMail());
     }
     
     @Transactional
-    public void bajaDeAdmin(String id, String pass) throws ErrorServicio {
-        Admin adminPrestamo = null;
-        Optional<Admin> rta1 = adminRepo.buscaAdminIdAlta(id);
+    public void bajaDeUsuario(String id, String pass) throws ErrorServicio {
+        Usuario usuarioPrestamo = null;
+        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(id);
         if(rta1.isPresent()) {
-            adminPrestamo = rta1.get();
-            if (adminPrestamo.getAlta().equals(false)) {
+            usuarioPrestamo = rta1.get();
+            if (usuarioPrestamo.getAlta().equals(false)) {
                 throw new ErrorServicio("El usuario se encuentra dado de baja.");
             } else {
-                 adminPrestamo.setAlta(Boolean.TRUE);
-                 adminRepo.save(adminPrestamo);
+                 usuarioPrestamo.setAlta(Boolean.TRUE);
+                 usuarioRepo.save(usuarioPrestamo);
             }
         } else {
             throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
@@ -178,15 +178,15 @@ public class AdminServicio implements UserDetailsService {
     }
     
     @Transactional
-    public void altaDeAdmin(String id, String pass) throws ErrorServicio {
-        Optional<Admin> rta = adminRepo.buscaAdminIdAlta(id);
-        Admin admin = rta.get();
+    public void altaDeUsuario(String id, String pass) throws ErrorServicio {
+        Optional<Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(id);
+        Usuario usuario = rta.get();
         if (rta.isPresent()) {
-            if (admin.getAlta().equals(true)) {
+            if (usuario.getAlta().equals(true)) {
                 throw new ErrorServicio("El usuario se encuentra dado de alta.");
             } else {
-            admin.setAlta(Boolean.TRUE);
-            adminRepo.save(admin);
+            usuario.setAlta(Boolean.TRUE);
+            usuarioRepo.save(usuario);
             }
         } else {
             throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
@@ -195,14 +195,14 @@ public class AdminServicio implements UserDetailsService {
     
 //    @Transactional
 //    public void modificarPenalidad(String id, int penalidad) throws ErrorServicio {
-//        Optional<Admin> rta = adminRepo.buscaAdminIdAlta(id);
-//        Admin admin = rta.get();
+//        Optional<Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(id);
+//        Usuario usuario = rta.get();
 //        if (rta.isPresent()) {
-//            if (admin.getAlta().equals(true)) {
+//            if (usuario.getAlta().equals(true)) {
 //                throw new ErrorServicio("El usuario se encuentra dado de alta.");
 //            } else {
-//            admin.setAlta(Boolean.TRUE);
-//            adminRepo.save(admin);
+//            usuario.setAlta(Boolean.TRUE);
+//            usuarioRepo.save(usuario);
 //            }
 //        } else {
 //            throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
@@ -211,33 +211,33 @@ public class AdminServicio implements UserDetailsService {
     
     @Transactional
     public void eliminarPenalidad (String id) throws ErrorServicio {
-        Admin admin = null;
-        Optional <Admin> rta = adminRepo.buscaAdminIdAltaPenAlta(id);
+        Usuario usuario = null;
+        Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAltaPenAlta(id);
         if (rta.isPresent()) {
-            admin = rta.get();
-            admin.setPenalidad(Boolean.FALSE);
-            admin.setFechaPenalidad(null);
+            usuario = rta.get();
+            usuario.setPenalidad(Boolean.FALSE);
+            usuario.setFechaPenalidad(null);
         }  else {
             throw new ErrorServicio ("El nombre del usuario que ingresó no se encuentra en los Registros o no está penalizado");
         }
     }
     
-    //--------------------------------------Solo Admin
+    //--------------------------------------Solo Usuario
     @Transactional(readOnly = true)
-    public Admin consultaAdmin(String nom) throws ErrorServicio {
-        Optional<Admin> rta = adminRepo.buscaAdminNom(nom);
+    public Usuario consultaUsuario(String nom) throws ErrorServicio {
+        Optional<Usuario> rta = usuarioRepo.buscaUsuarioNom(nom);
         if (rta.isPresent()) {
-            Admin admin = rta.get();
-            return admin;
+            Usuario usuario = rta.get();
+            return usuario;
         } else {
             throw new ErrorServicio ("El nombre del usuario que ingresó no se encuentra en la base de datos");
         }
     }
     
     @Transactional(readOnly = true)
-    public List<Admin> consultaListaAdmins() throws ErrorServicio {
-        List<Admin> admins = adminRepo.listarAdmins();
-        return admins;
+    public List<Usuario> consultaListaUsuarios() throws ErrorServicio {
+        List<Usuario> usuarios = usuarioRepo.listarUsuarios();
+        return usuarios;
     }
 
     static Genero validateGenero(int generoId) throws ErrorServicio {
@@ -264,19 +264,19 @@ public class AdminServicio implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        Admin admin = null;
-        Optional <Admin> rta = adminRepo.buscaAdminMail(mail);
+        Usuario usuario = null;
+        Optional <Usuario> rta = usuarioRepo.buscaUsuarioMail(mail);
         if (rta.isPresent()) {
-            admin = rta.get();
+            usuario = rta.get();
             List<GrantedAuthority> permisos = new ArrayList();
             GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_ADMIN_REGISTRADO");
             permisos.add(p1);
             
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
             HttpSession session = attr.getRequest().getSession(true);
-            session.setAttribute("adminsession", admin);
+            session.setAttribute("usuariosession", usuario);
             
-            User user = new User(admin.getMail(), admin.getPass(), permisos);
+            User user = new User(usuario.getMail(), usuario.getPass(), permisos);
             return user;
             
         } else {
@@ -285,13 +285,13 @@ public class AdminServicio implements UserDetailsService {
     }
     
     @Transactional(readOnly=true)
-    public Admin buscarPorId(String id) throws ErrorServicio {
+    public Usuario buscarPorId(String id) throws ErrorServicio {
 
-        Optional<Admin> respuesta = adminRepo.findById(id);
+        Optional<Usuario> respuesta = usuarioRepo.findById(id);
         if (respuesta.isPresent()) {
 
-            Admin admin = respuesta.get();
-            return admin;
+            Usuario usuario = respuesta.get();
+            return usuario;
         } else {
             throw new ErrorServicio("No se encontró el usuario solicitado");
         }

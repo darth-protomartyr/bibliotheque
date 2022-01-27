@@ -31,10 +31,10 @@
                         </div>
                         <div class="object__button__container">
                             <div class="object__btn object__btn-2">
-                                <a th:href="@{/libros/modificar(id=__${session.adminsession.id}__, libroId=__${libro.id}__)}" th:if="${session.adminsession != null}">Modificar Libro</a>
+                                <a th:href="@{/libros/modificar(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" th:if="${session.usuariosession != null}">Modificar Libro</a>
                             </div>
                             <div th:if="${libro.alta == true}">
-                                <form th:action="@{/libros/proceso-baja(id=__${session.adminsession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
+                                <form th:action="@{/libros/proceso-baja(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
                                     <div class="form__container object__btn object__btn-2">
                                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
                                         <button type="submit">Baja Libro</button>
@@ -42,7 +42,7 @@
                                 </form>
                             </div>
                             <div th:if="${libro.alta == false}">
-                                <form th:action="@{/libros/proceso-alta(id=__${session.adminsession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
+                                <form th:action="@{/libros/proceso-alta(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
                                     <div class="form__container object__btn object__btn-2">
                                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
                                         <button type="submit">Alta Libro</button>
