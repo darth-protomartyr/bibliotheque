@@ -6,6 +6,7 @@
 package com.bibliotheque.demo.repositorios;
 
 import com.bibliotheque.demo.entidades.Prestamo;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,5 +42,10 @@ public interface PrestamoRepositorio extends JpaRepository<Prestamo, String> {
     @Query("SELECT s FROM Prestamo s WHERE s.alta = true")
     public Optional <List<Prestamo>> listarPrestamo();
     
+    @Query("SELECT p FROM Prestamo p WHERE p.alta = false AND p.fechaAlta is null")
+    public Optional<HashSet<Prestamo>> listarSolicitudes();
+    
+//    @Query("SELECT s FROM Prestamo s WHERE s.alta = false")
+//    public Optional <HashSet<Prestamo>> listarPrestamoHS();
     
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+    
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class = "main">
+            <div class= "main__card">
+                <h1 class="main__card__h3">ADMINISTRADOR</h1>
+                <div class="main__card__object main__card__prestamo">
+                    <h3>Lista de Solicitantes</h3>
+<!--                    <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                    <p th:if="${success != null}" th:text="${success}" class="ok"></p>-->
+
+                    <!--<div th:each = "solicitante:solicitantes" class="object__button__container">-->
+                    <div class="object__button__container">
+
+                        <!--<form th:action="@{/prestamos/proceso-generar(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">-->
+                            <div class="form__container">
+                                <div class="object__btn">
+                                    <div th:if="${solicitantes.alta == true}">
+                                        <form th:action="@{/administradores/proceso-generar-orden}" method="post" enctype="multipart/form-data">
+                                            <div class="form__container object__btn object__btn-2">                                      
+                                                <button type="submit" th:text="${solicitantes.nombre}"></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <!--<button type="submit" th:text="${solicitante.nombre}"></button>-->
+                                    <!--<div th: if ="${solicitantes == null}" th:text="${solicitante.nombre}"><span>th:text="${solicitante.nombre}"</span></div>-->
+                                    <!--<span th:text="${solicitante.nombre}"></span>-->
+                                    <!--<p th:if="${solicitantes != null}" th:text="${solicitantes.nombre}"></p>--> 
+                                    <!--<p th:text="${solicitantes.nombre}"></p>--> 
+
+                                </div>
+                            </div>
+                        <!--</form>-->
+<!--                    </div>
+                    <div class = "container__lista__object">
+                        <div class = "lista__object">
+                            <h4>Lista de Solicitudes pendientes</h4>
+                            <p th:if="${mes1 != null}" th:text="${mes1}" class="ok"></p>
+                            <div th:each ="solicitud:${solicitudes}" class="list_txt">
+                                <h6>Titulo: <span th:text="${solicitud.libro.titulo}"></span></h6>
+                            </div>
+                        </div>
+                        <div class = "lista__object">
+                            <h4>Lista Prestamos en curso</h4>
+                            <p th:if="${mes2 != null}" th:text="${mes2}" class="ok"></p>
+                            <div th:each ="prestamo:${prestamos}" class="list_txt">
+                                <h6>Titulo: <span th:text="${prestamo.libro.titulo}"></span></h6>
+                            </div>
+                        </div>-->
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

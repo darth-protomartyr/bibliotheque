@@ -2,61 +2,61 @@
 <html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
 
 <head th:replace="/fragments/head :: head"></head>
-    
+
 <body>
-    
+
     <header th:replace="/fragments/header :: header"> </header>
-    
+
     <main>
         <div class= "main">            
             <div class="main__card__list">
                 <p class ="tit">Lista Libros</p>
                 <div th:each="libro:${libros}" class = "object--single--pic">
                     <div>
-                            <img th:if="${libro.foto != null}" th:src="${'/foto/libro/' + libro.id}" class="pic-rect" alt="libro">
-                            <img th:if="${libro.foto == null}" src="/img/libroicon.jpg" class="pic-rect" alt="libro">
+                        <img th:if="${libro.foto != null}" th:src="${'/foto/libro/' + libro.id}" class="pic-rect" alt="libro">
+                        <img th:if="${libro.foto == null}" src="/img/libroicon.jpg" class="pic-rect" alt="libro">
+                    </div>
+                    <div class="object__data">
+                        <div>
+                            <p class ="sub-tit">Titulo: <span th:text="${libro.titulo}"></span></p>
                         </div>
-                        <div class="object__data">
-                            <div>
-                                <p class ="sub-tit">Titulo: <span th:text="${libro.titulo}"></span></p>
+                        <div>
+                            <p class ="sub-tit"> Autor: <span th:text="${libro.autor.nombre}"></span></p>
+                        </div>
+                        <div>
+                            <p class ="sub-tit">Editotial: <span th:text="${libro.editorial.nombre}"></span></p>
+                        </div>
+                        <div>
+                            <p class ="sub-tit">Ejemplares disponibles: <span th:text="${libro.ejemplaresRestantes}"></span></p>
+                        </div>
+                        <div class="object__button__container">
+                            <div class="object__btn object__btn-2">
+                                  <a th:href="@{/libros/modificar(id=__${solicitantes.id}__,)}" th:if="${session.usuariosession != null}">Modificar Libro</a>
                             </div>
-                            <div>
-                                <p class ="sub-tit"> Autor: <span th:text="${libro.autor.nombre}"></span></p>
+                            <div th:if="${libro.alta == true}">
+                                <form th:action="@{/libros/proceso-baja(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Baja Libro</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div>
-                                <p class ="sub-tit">Editotial: <span th:text="${libro.editorial.nombre}"></span></p>
-                            </div>
-                            <div>
-                                <p class ="sub-tit">Ejemplares disponibles: <span th:text="${libro.ejemplaresRestantes}"></span></p>
-                            </div>
-                            <div class="object__button__container">
-                                <div class="object__btn object__btn-2">
-                                    <a th:href="@{/libros/modificar(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" th:if="${session.usuariosession != null}">Modificar Libro</a>
-                                </div>
-                                <div th:if="${libro.alta == true}">
-                                    <form th:action="@{/libros/proceso-baja(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
-                                        <div class="form__container object__btn object__btn-2">
-                                            <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
-                                            <button type="submit">Baja Libro</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div th:if="${libro.alta == false}">
-                                    <form th:action="@{/libros/proceso-alta(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
-                                        <div class="form__container object__btn object__btn-2">
-                                            <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
-                                            <button type="submit">Alta Libro</button>
-                                        </div>
-                                    </form>
-                                </div>
+                            <div th:if="${libro.alta == false}">
+                                <form th:action="@{/libros/proceso-alta(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">
+                                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
+                                        <button type="submit">Alta Libro</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
-    
+
     <footer th:replace="/fragments/footer :: footer"></footer>
-    
+
 </body>
 </html>
