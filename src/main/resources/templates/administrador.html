@@ -20,21 +20,14 @@
                     <div class="object__button__container">
 
                         <!--<form th:action="@{/prestamos/proceso-generar(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">-->
-                            <div class="form__container">
+                            <div th:each="solicitante:${solicitantes}" class="form__container">
                                 <div class="object__btn">
-                                    <div th:if="${solicitantes.alta == true}">
-                                        <form th:action="@{/administradores/proceso-generar-orden}" method="post" enctype="multipart/form-data">
-                                            <div class="form__container object__btn object__btn-2">                                      
-                                                <button type="submit" th:text="${solicitantes.nombre}"></button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!--<button type="submit" th:text="${solicitante.nombre}"></button>-->
-                                    <!--<div th: if ="${solicitantes == null}" th:text="${solicitante.nombre}"><span>th:text="${solicitante.nombre}"</span></div>-->
-                                    <!--<span th:text="${solicitante.nombre}"></span>-->
-                                    <!--<p th:if="${solicitantes != null}" th:text="${solicitantes.nombre}"></p>--> 
-                                    <!--<p th:text="${solicitantes.nombre}"></p>--> 
-
+                                    <form th:action="@{/administradores/proceso-generar-orden}" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="id" value="${solictante.id}">
+                                        <div class="form__container object__btn object__btn-2">                    
+                                            <button type="submit" th:if="${solicitante != null}" th:text="${solicitante.nombre}"></button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         <!--</form>-->

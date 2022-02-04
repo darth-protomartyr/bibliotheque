@@ -42,8 +42,11 @@ public interface PrestamoRepositorio extends JpaRepository<Prestamo, String> {
     @Query("SELECT s FROM Prestamo s WHERE s.alta = true")
     public Optional <List<Prestamo>> listarPrestamo();
     
-    @Query("SELECT p FROM Prestamo p WHERE p.alta = false AND p.fechaAlta is null")
-    public Optional<HashSet<Prestamo>> listarSolicitudes();
+    @Query("SELECT s FROM Prestamo s")
+    public Optional <List<Prestamo>> listarPrestamoTot();
+    
+//    @Query("SELECT p FROM Prestamo p WHERE p.alta = false AND p.fechaAlta is null")
+//    public Optional<HashSet<Prestamo>> listarSolicitudes();
     
 //    @Query("SELECT s FROM Prestamo s WHERE s.alta = false")
 //    public Optional <HashSet<Prestamo>> listarPrestamoHS();

@@ -162,7 +162,7 @@ public class UsuarioServicio implements UserDetailsService {
     
     @Transactional
     public void bajaDeUsuario(String id, String pass) throws ErrorServicio {
-        Usuario usuarioPrestamo = null;
+        Usuario usuarioPrestamo;
         Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(id);
         if(rta1.isPresent()) {
             usuarioPrestamo = rta1.get();
@@ -211,7 +211,7 @@ public class UsuarioServicio implements UserDetailsService {
     
     @Transactional
     public void eliminarPenalidad (String id) throws ErrorServicio {
-        Usuario usuario = null;
+        Usuario usuario;
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAltaPenAlta(id);
         if (rta.isPresent()) {
             usuario = rta.get();
@@ -264,7 +264,7 @@ public class UsuarioServicio implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        Usuario usuario = null;
+        Usuario usuario;
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioMail(mail);
         if (rta.isPresent()) {
             usuario = rta.get();

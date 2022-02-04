@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 
 /**
@@ -32,18 +34,22 @@ public class AdministradorServicio {
     @Autowired
     private UsuarioRepositorio usuarioRepo;
     
-    @Transactional
-    public Usuario listarSolicitantes() throws ErrorServicio {
-        Usuario usuario = null;
-        List<Prestamo> solicitantes = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.listarPrestamo();
+    
+    @Transactional(readOnly = true)
+    public List<Usuario> listarSolicitantes() throws ErrorServicio {
+        List<Prestamo> prestamos = new ArrayList();
+        HashSet<Usuario> solicitantesHS = new HashSet();
+        Optional<List<Prestamo>> rta = prestamoRepo.listarPrestamoSolicitados();
         if (rta.isPresent()) {
-            solicitantes = rta.get();
+            prestamos = rta.get();
         }
         
-        for (Prestamo solicitante : solicitantes) {
-            usuario = solicitante.getUsuario();
-        }     
-        return usuario ;
+        for (Prestamo prestamo : prestamos) {
+            solicitantesHS.add(prestamo.getUsuario());
+        }
+        
+        List<Usuario> solicitantes = new ArrayList(solicitantesHS);
+        
+        return solicitantes;
     }    
 }

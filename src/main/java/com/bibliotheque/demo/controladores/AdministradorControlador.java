@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
 package com.bibliotheque.demo.controladores;
+import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import com.bibliotheque.demo.servicios.AdministradorServicio;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
@@ -41,22 +43,23 @@ UsuarioRepositorio usuarioRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-//        Usuario solicitantes = adminServ.listarSolicitantes();
-        Usuario solicitantes = null;
-        
-        Optional <Usuario> rta = usuarioRepo.findById(id);
-        if (rta.isPresent()) {
-            solicitantes = rta.get();
-        }
-        
+
+        List <Usuario> solicitantes = adminServ.listarSolicitantes();
         modelo.put("solicitantes", solicitantes);    
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "administrador.html";
     }
     
+    
+    
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-generar-orden")
-    public String generarOrden() {
+    public String generarOrden(HttpSession session, @RequestParam String id, ModelMap modelo) {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+   
         String html = "html";
         return html;
     }
