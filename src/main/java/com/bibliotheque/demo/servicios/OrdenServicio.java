@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 
@@ -46,6 +47,15 @@ public class OrdenServicio {
     private OrdenRepositorio ordenRepo;
     @Autowired
     private PrestamoServicio prestamoServ;
+    
+    @Transactional
+    public Orden iniciarOrden(Usuario usuario) {
+        Orden orden = new Orden();
+        orden.setUsuario(usuario);
+        orden.setAlta(true);
+        return ordenRepo.save(orden);
+    }
+    
     
     @Transactional
     public Orden generarOrden(List <Prestamo> prestamos, String usuarioId) throws ErrorServicio {
@@ -107,5 +117,27 @@ public class OrdenServicio {
         
         orden.setAlta(Boolean.FALSE);
     }
- 
+
+    
+    public List<Prestamo> listaPrestamoAlta(String ordenId, String prestamoId) {
+        List <Prestamo> alta = new ArrayList();
+        Orden orden = null;
+        Optional <Orden> rta = ordenRepo.findById(ordenId);
+        if(rta.isPresent()) {
+            orden = rta.get();
+        }
+        
+        List<Prestamo>prestamos = orden.getPrestamos();
+        for (Prestamo prestamo : prestamos) {
+            alta.add(prestamo);
+        }
+
+        Prestamo actual = null;
+        Optional<Prestamo>rta1 = prestamoRepo.findById(prestamoId);
+        if(rta1.isPresent()) {
+            actual = rta1.get();
+        }
+        alta.add(actual);   
+        return alta;
+    }
 }

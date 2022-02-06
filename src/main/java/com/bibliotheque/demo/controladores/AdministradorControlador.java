@@ -4,11 +4,17 @@
  * and open the template in the editor.
  */
 package com.bibliotheque.demo.controladores;
+import com.bibliotheque.demo.entidades.Orden;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
+import com.bibliotheque.demo.repositorios.OrdenRepositorio;
+import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import com.bibliotheque.demo.servicios.AdministradorServicio;
+import com.bibliotheque.demo.servicios.OrdenServicio;
+import com.bibliotheque.demo.servicios.PrestamoServicio;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +39,15 @@ public class AdministradorControlador {
 @Autowired
 AdministradorServicio adminServ;
 @Autowired
+OrdenServicio ordenServ;
+@Autowired
 UsuarioRepositorio usuarioRepo;
-
+@Autowired
+PrestamoRepositorio prestamoRepo;
+@Autowired
+PrestamoServicio prestamoServ;
+@Autowired
+OrdenRepositorio ordenRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @GetMapping("/administrador")
@@ -53,67 +66,85 @@ UsuarioRepositorio usuarioRepo;
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-    @PostMapping("/proceso-generar-orden")
-    public String generarOrden(HttpSession session, @RequestParam String id, ModelMap modelo) {
+    @PostMapping("/proceso-iniciar-orden")
+    public String iniciarOrden(HttpSession session, @RequestParam String id, @RequestParam String solicitId, ModelMap modelo) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-   
-        String html = "html";
-        return html;
+        Usuario solicit = null;
+        Optional <Usuario> rta = usuarioRepo.findById(solicitId);
+        if(rta.isPresent()) {
+            solicit = rta.get();
+        }
+        modelo.put("perfil", solicit);
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        
+        List<Prestamo> solicitados = new ArrayList();
+        Optional <List<Prestamo>> rta1 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
+        if(rta1.isPresent()) {
+            solicitados = rta1.get();
+        }       
+        modelo.put("solicitados", solicitados);
+        
+        Orden orden = ordenServ.iniciarOrden(solicit);       
+        modelo.put("order", orden);
+
+        return "orden.html";
     }
     
-//    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
-//    @PostMapping("/proceso-generar")
-//    public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
-//        
-//        Usuario login = (Usuario) session.getAttribute("usuariosession");
-//        if (login == null || !login.getId().equals(id)) {
-//            return "redirect:/inicio";
-//        }
-//        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-//        
-//        try {                       
-//            String usuarioId= login.getId();
-//            prestamoServ.crearPrestamo(usuarioId, libroId);
-//            modelo.put("success", "La solicitud fue envíada. Si desea realizar otra, seleccione un texto");
-//            listas(modelo, id);
-//
-//
-//            return "prestamos.html";
-//        } catch (ErrorServicio e) {
-//            listas(modelo, id);
-//            modelo.put("error", e.getMessage());
-//            modelo.put("libroId", libroId);
-//            return "prestamos.html";
-//        }
-//    }
-//    
-//    //genera las lista que formaran parte del html
-//    private void listas (ModelMap modelo, String id) {
-//        List <Libro> libros = libroRepo.listarLibrosActivos();
-//        modelo.put("libros", libros);
-//        
-//        List <Prestamo> solicitudes = null;
-//        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitUsuarioID(id);
-//        if (rta.isPresent()) {
-//            solicitudes = rta.get();
-//        }
-//        modelo.put("solicitudes", solicitudes);
-//        if (solicitudes.isEmpty()) {
-//            modelo.put("mes1","La cuenta no tiene solicitudes pendientes");
-//        }
-//        
-//        List <Prestamo> prestamos = null;
-//        Optional <List <Prestamo>> rta1 = prestamoRepo.buscaPrestamoActivosUsuarioID(id);
-//        if (rta.isPresent()) {
-//            prestamos = rta1.get();
-//        }
-//        modelo.put("prestamos", prestamos);
-//        if (prestamos.isEmpty()) {
-//            modelo.put("mes2","La cuenta no tiene préstamos vigentes");
-//        }
-//    }
     
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-completar-orden")
+    public String completarOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, @RequestParam String prestamoId, ModelMap modelo) throws ErrorServicio, ParseException {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        Orden orden = null;
+        Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
+        if (rta.isPresent()) {
+            orden=rta.get();
+        }
+        modelo.put("order", orden);
+        
+        Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId);
+        
+        List <Prestamo> prestamos = ordenServ.listaPrestamoAlta(ordenId, prestamoId);
+
+
+        orden.setPrestamos(prestamos);
+        
+        Usuario usuario = prestamo.getUsuario();
+        String solicitId = usuario.getId();
+        
+        List<Prestamo> solicitados = new ArrayList();
+        Optional <List<Prestamo>> rta2 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
+        if(rta2.isPresent()) {
+            solicitados = rta2.get();
+        }
+        
+        modelo.put("solicitados", solicitados);
+        modelo.put("perfil", usuario);        
+        
+        int solicitInt = solicitados.size();
+        
+        if(solicitInt > 0) {
+            modelo.put("solicitados",solicitados);
+            if(error != null) {
+                modelo.put("error", "No se pudo completar la orden");
+            } else {
+                modelo.put("succes", "El pedido fue ingresado a la orden de préstamos");
+            }
+            return "orden.html";
+        } else {
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La orden fue ingresada y los prestamos están activos.");
+            return "succes.html";
+        }   
+    }
 }

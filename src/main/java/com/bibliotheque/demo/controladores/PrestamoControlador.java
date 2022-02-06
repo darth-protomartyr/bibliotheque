@@ -24,10 +24,7 @@ import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import com.bibliotheque.demo.servicios.PrestamoServicio;
 import java.util.Optional;
 
-/**
- *
- * @author Gonzalo
- */
+
 @Controller
 @RequestMapping("/prestamos")
 public class PrestamoControlador {
@@ -69,7 +66,7 @@ public class PrestamoControlador {
         
         try {                       
             String usuarioId= login.getId();
-            prestamoServ.crearPrestamo(usuarioId, libroId);
+            prestamoServ.iniciarPrestamo(usuarioId, libroId);
             modelo.put("success", "La solicitud fue envíada. Si desea realizar otra, seleccione un texto");
             listas(modelo, id);
 
@@ -89,7 +86,7 @@ public class PrestamoControlador {
         modelo.put("libros", libros);
         
         List <Prestamo> solicitudes = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitUsuarioID(id);
+        Optional <List <Prestamo>> rta = prestamoRepo.listarPrestamoSolicitadosUsuarioID(id);
         if (rta.isPresent()) {
             solicitudes = rta.get();
         }
@@ -108,5 +105,4 @@ public class PrestamoControlador {
             modelo.put("mes2","La cuenta no tiene préstamos vigentes");
         }
     }
-    
 }

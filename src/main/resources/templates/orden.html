@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+    
+<body>
+    
+    <header th:replace="/fragments/header :: header"> </header>
+    
+    <main>
+        <div class= "main">            
+            <div class="main__card">
+                <p class ="tit">ORDEN</p>
+                <p th:if="${error != null}" th:text="${error}" class="warn"></p>                
+                <p th:if="${success != null}" th:text="${success}" class="warn"></p>                
+
+                <div class="main__card__object">
+                    <div class = "object--single--pic">
+                        <div>
+                            <img th:if="${perfil.foto != null}" th:src="${'/foto/perfil/' + perfil.id}" class="pic-rect" alt="libro">
+                            <img th:if="${perfil.foto == null}" src="/img/avatar.jpg" class="pic-rect" alt="libro">
+                            <div>
+                                <h3 th:text="${perfil.nombre}"></h3>
+                            </div>
+                        </div>
+                        <div class="object__data">
+                            <div class="object__button__container">
+                                <div th:each="solicitado:${solicitados}">
+                                    <form th:action="@{/administradores/proceso-completar-orden(id=__${session.usuariosession.id}__, ordenId=__${order.id}__, prestamoId=__${solicitado.id}__)}" method="post" enctype="multipart/form-data">
+                                        <div class="form__container object__btn object__btn-2">                                      
+                                            <button type="submit" th:text="${solicitado.libro.titulo}" ></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer th:replace="/fragments/footer :: footer"></footer>
+    
+</body>
+</html>

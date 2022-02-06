@@ -22,8 +22,9 @@
                         <!--<form th:action="@{/prestamos/proceso-generar(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">-->
                             <div th:each="solicitante:${solicitantes}" class="form__container">
                                 <div class="object__btn">
-                                    <form th:action="@{/administradores/proceso-generar-orden}" method="post" enctype="multipart/form-data">
-                                        <input type="hidden" name="id" value="${solictante.id}">
+                                    <form th:action="@{/administradores/proceso-iniciar-orden(id=__${session.usuariosession.id}__, solicitId = __${solicitante.id}__)}" method="post" enctype="multipart/form-data">
+<!--                                        <input type="hidden" name="id" value=${session.usuariosession.id}>
+                                        <input type="hidden" name="solicitId" value="${solictante.id}">-->
                                         <div class="form__container object__btn object__btn-2">                    
                                             <button type="submit" th:if="${solicitante != null}" th:text="${solicitante.nombre}"></button>
                                         </div>

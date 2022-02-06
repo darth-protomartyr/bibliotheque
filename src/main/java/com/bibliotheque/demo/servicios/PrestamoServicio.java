@@ -20,6 +20,7 @@ import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Locale;
@@ -41,7 +42,7 @@ public class PrestamoServicio {
     private UsuarioRepositorio usuarioRepo;
     
     @Transactional
-    public Prestamo crearPrestamo(String usuarioId, String libroId) throws ErrorServicio {
+    public Prestamo iniciarPrestamo(String usuarioId, String libroId) throws ErrorServicio {
         
         if (usuarioId == null || usuarioId.isEmpty()) {
             throw new ErrorServicio("Falta ingresar el número de socio");
@@ -76,8 +77,6 @@ public class PrestamoServicio {
             throw new ErrorServicio("No hay un libro registrado con ese Título.");
         }
         
-        
-        
         Prestamo prestamo = new Prestamo();
         
         prestamo.setAlta(Boolean.FALSE);
@@ -99,28 +98,23 @@ public class PrestamoServicio {
     
     
     @Transactional
-    public void altaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
-        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoId(idPrestamo);
-        Prestamo prestamo = null;
+    public Prestamo completarPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
+        Prestamo prestamo = new Prestamo();
+        Optional <Prestamo> rta = prestamoRepo.findById(idPrestamo);
         if (rta.isPresent()) {
             prestamo = rta.get();
         }
-        Usuario usuario = prestamo.getUsuario();
-        Libro libro = prestamo.getLibro();
-        
         prestamo.setAlta(true);
         prestamo.setFechaAlta(new Date());
         prestamo.setFechaDevolucion(generarFechaDevolucion(prestamo.getFechaAlta()));
-        
-        libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
-        libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
+        return prestamo;
     }
     
     
     
     @Transactional
     public void bajaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
-        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoId(idPrestamo);
+        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoIdAlta(idPrestamo);
         Prestamo prestamo = null;
         if (rta.isPresent()) {
             prestamo = rta.get();
@@ -184,7 +178,7 @@ public class PrestamoServicio {
     private int limitePrestamo(String usuarioId) {
         int limite = 0;
         List <Prestamo> prestamos = null;
-        Optional <List <Prestamo>> rta = prestamoRepo.buscaPrestamoSolicitUsuarioID(usuarioId);
+        Optional <List <Prestamo>> rta = prestamoRepo.listarPrestamoSolicitadosUsuarioID(usuarioId);
         if (rta.isPresent()) {
             prestamos = rta.get();
         }
@@ -226,4 +220,5 @@ public class PrestamoServicio {
             return calendar.getTime();
         }
     }    
+
 }

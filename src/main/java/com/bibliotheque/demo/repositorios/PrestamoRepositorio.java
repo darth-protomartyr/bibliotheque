@@ -19,15 +19,15 @@ public interface PrestamoRepositorio extends JpaRepository<Prestamo, String> {
     
     //Muestra un prestamo dado de alta
     @Query("SELECT p FROM Prestamo p WHERE p.id = :prestamoId AND p.alta = true")
-    public Optional<Prestamo> buscaPrestamoId (@Param("prestamoId") String prestamoId);
+    public Optional<Prestamo> buscaPrestamoIdAlta (@Param("prestamoId") String prestamoId);
     
     //Muestra todas las solicitudes de préstamo
     @Query("SELECT s FROM Prestamo s WHERE s.alta = false AND s.fechaAlta is null")
     public Optional <List<Prestamo>> listarPrestamoSolicitados();
 
     //Lista todos los prestamos solicitados por un usuario 
-    @Query("SELECT p FROM Prestamo p WHERE p.usuario.id = :usuarioId AND p.fechaBaja is null")
-    public Optional<List<Prestamo>> buscaPrestamoSolicitUsuarioID (@Param("usuarioId") String usuarioId);
+    @Query("SELECT p FROM Prestamo p WHERE p.usuario.id = :usuarioId AND p.fechaAlta is null")
+    public Optional<List<Prestamo>> listarPrestamoSolicitadosUsuarioID (@Param("usuarioId") String usuarioId);
     
     //Lista todos los prestamos solicitados por un usuario 
     @Query("SELECT p FROM Prestamo p WHERE p.usuario.id = :usuarioId AND p.alta = true")
