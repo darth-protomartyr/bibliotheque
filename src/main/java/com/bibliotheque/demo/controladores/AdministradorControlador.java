@@ -56,15 +56,15 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-
         List <Usuario> solicitantes = adminServ.listarSolicitantes();
-        modelo.put("solicitantes", solicitantes);    
+        modelo.put("solicitantes", solicitantes);
+        List <Orden> activas = adminServ.listarActivas();
+        modelo.put("activas", activas);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "administrador.html";
     }
-    
-    
-    
+
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-iniciar-orden")
     public String iniciarOrden(HttpSession session, @RequestParam String id, @RequestParam String solicitId, ModelMap modelo) {
@@ -111,30 +111,21 @@ OrdenRepositorio ordenRepo;
             orden=rta.get();
         }
         modelo.put("order", orden);
-        
         Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId);
-        
         List <Prestamo> prestamos = ordenServ.listaPrestamoAlta(ordenId, prestamoId);
-
-
-        orden.setPrestamos(prestamos);
-        
+        orden.setPrestamos(prestamos);        
         Usuario usuario = prestamo.getUsuario();
         String solicitId = usuario.getId();
-        
         List<Prestamo> solicitados = new ArrayList();
         Optional <List<Prestamo>> rta2 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
         if(rta2.isPresent()) {
             solicitados = rta2.get();
         }
-        
         modelo.put("solicitados", solicitados);
         modelo.put("perfil", usuario);        
-        
         int solicitInt = solicitados.size();
         
         if(solicitInt > 0) {
-            modelo.put("solicitados",solicitados);
             if(error != null) {
                 modelo.put("error", "No se pudo completar la orden");
             } else {
@@ -143,8 +134,49 @@ OrdenRepositorio ordenRepo;
             return "orden.html";
         } else {
             modelo.put("tit", "Operación Exitosa");
-            modelo.put("subTit", "La orden fue ingresada y los prestamos están activos.");
+            modelo.put("subTit", "La orden fue ingresada y los prestamos están en curso.");
             return "succes.html";
-        }   
+        }
+    }
+    
+    
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/baja-orden")
+    public String bajaOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        Orden orden = null;
+        Optional <Orden> rta = ordenRepo.findById(ordenId);
+        if (rta.isPresent()) {
+            orden = rta.get();
+        }
+        
+        Usuario usuario = orden.getUsuario();
+        
+        List<Prestamo>activos = orden.getPrestamos();
+        modelo.put("activos", activos);
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        modelo.put("perfil", usuario);        
+        
+//        if (activos.size() > 0) {
+            return "orden-baja.html";
+//        } else {
+//            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+//            modelo.put("error", "No se pudo completar la orden");
+//            return "error.html";
+//        }
+    }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PostMapping("/proceso-baja-prestamo")
+    public String ProcesobajaPrestamo(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
+    
+        return "succes.html";
     }
 }

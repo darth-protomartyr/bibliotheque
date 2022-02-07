@@ -137,43 +137,11 @@ public class PrestamoServicio {
         libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
     }
     
-    
-
-    
-//    @Transactional(readOnly = true)
-//    public List<Prestamo> listarPrestamos(){
-//        List <Prestamo> prestamos = null;
-//        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamo();
-//        prestamos = rta.get();
-//        return prestamos;
-//    }
 
     static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
         return Instant.ofEpochMilli(dateToConvert.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
-    
-    
-    public List <Usuario> listarSolicitantes() {
-        HashSet<Usuario> solicitantesHS = null;
-        List<Usuario> solicitantes = null;
-        List <Prestamo> prestamos = null;
-        Optional <List<Prestamo>> rta = prestamoRepo.listarPrestamoSolicitados();
-        
-        if (rta.isPresent()) {
-            prestamos = rta.get();
-        }
 
-        for (Prestamo prestamo : prestamos) {
-            solicitantesHS.add(prestamo.getUsuario());
-        }
-        
-        for (Usuario usuario : solicitantes) {
-            solicitantes.add(usuario);
-        }
-        
-        return solicitantes;
-    }
-    
     
     private int limitePrestamo(String usuarioId) {
         int limite = 0;
