@@ -8,8 +8,11 @@ package com.bibliotheque.demo.entidades;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -42,11 +45,15 @@ public class Prestamo {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaBaja;
     private Boolean alta;
+    //Convierte en bidireccional la relación con orden
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="orden_id", nullable=true)
+    private Orden orden;
 
     public Prestamo() {
     }
 
-    public Prestamo(String id, Libro libro, Usuario usuario, Date fechaAlta, Date fechaDevolucion, Date fechaBaja, Date fechaSolicitud, Boolean alta) {
+    public Prestamo(String id, Libro libro, Usuario usuario, Date fechaAlta, Date fechaDevolucion, Date fechaBaja, Date fechaSolicitud, Boolean alta, Orden orden) {
         this.id = id;
         this.libro = libro;
         this.usuario = usuario;
@@ -55,6 +62,7 @@ public class Prestamo {
         this.fechaDevolucion = fechaDevolucion;
         this.fechaBaja = fechaBaja;
         this.alta = alta;
+        this.orden = orden;
     }
 
     public String getId() {
@@ -63,6 +71,14 @@ public class Prestamo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Orden getOrden() {
+        return orden;
+    }
+
+    public void setOrden(Orden orden) {
+        this.orden = orden;
     }
 
     public Libro getLibro() {

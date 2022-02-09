@@ -119,25 +119,25 @@ public class OrdenServicio {
     }
 
     
-    public List<Prestamo> listaPrestamoAlta(String ordenId, String prestamoId) {
-        List <Prestamo> alta = new ArrayList();
-        Orden orden = null;
-        Optional <Orden> rta = ordenRepo.findById(ordenId);
-        if(rta.isPresent()) {
-            orden = rta.get();
-        }
-        
-        List<Prestamo>prestamos = orden.getPrestamos();
-        for (Prestamo prestamo : prestamos) {
-            alta.add(prestamo);
-        }
-
-        Prestamo actual = null;
-        Optional<Prestamo>rta1 = prestamoRepo.findById(prestamoId);
-        if(rta1.isPresent()) {
-            actual = rta1.get();
-        }
-        alta.add(actual);   
-        return alta;
-    }
+//    public List<Prestamo> listaPrestamoAlta(String ordenId, String prestamoId) {
+//        List <Prestamo> alta = new ArrayList();
+//        Orden orden = null;
+//        Optional <Orden> rta = ordenRepo.findById(ordenId);
+//        if(rta.isPresent()) {
+//            orden = rta.get();
+//        }
+//        
+//        List<Prestamo>prestamos = orden.getPrestamos();
+//        for (Prestamo prestamo : prestamos) {
+//            alta.add(prestamo);
+//        }
+//
+//        Prestamo actual = null;
+//        Optional<Prestamo>rta1 = prestamoRepo.findById(prestamoId);
+//        if(rta1.isPresent()) {
+//            actual = rta1.get();
+//        }
+//        alta.add(actual);   
+//        return alta;
+//    }
 }

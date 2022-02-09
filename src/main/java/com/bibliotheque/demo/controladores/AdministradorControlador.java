@@ -72,6 +72,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
         Usuario solicit = null;
         Optional <Usuario> rta = usuarioRepo.findById(solicitId);
         if(rta.isPresent()) {
@@ -85,7 +86,8 @@ OrdenRepositorio ordenRepo;
         Optional <List<Prestamo>> rta1 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
         if(rta1.isPresent()) {
             solicitados = rta1.get();
-        }       
+        }
+        
         modelo.put("solicitados", solicitados);
         
         Orden orden = ordenServ.iniciarOrden(solicit);       
@@ -110,10 +112,14 @@ OrdenRepositorio ordenRepo;
         if (rta.isPresent()) {
             orden=rta.get();
         }
+        
         modelo.put("order", orden);
-        Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId);
-        List <Prestamo> prestamos = ordenServ.listaPrestamoAlta(ordenId, prestamoId);
-        orden.setPrestamos(prestamos);        
+        Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId, ordenId);
+        
+        orden.agregarPrestamo(prestamo);
+        
+//        List <Prestamo> prestamos = ordenServ.listaPrestamoAlta(ordenId, prestamoId);
+//        orden.setPrestamos(prestamos);        
         Usuario usuario = prestamo.getUsuario();
         String solicitId = usuario.getId();
         List<Prestamo> solicitados = new ArrayList();

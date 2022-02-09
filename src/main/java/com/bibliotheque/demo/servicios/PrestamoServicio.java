@@ -2,10 +2,12 @@ package com.bibliotheque.demo.servicios;
 
 
 import com.bibliotheque.demo.entidades.Libro;
+import com.bibliotheque.demo.entidades.Orden;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.LibroRepositorio;
+import com.bibliotheque.demo.repositorios.OrdenRepositorio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -40,6 +42,8 @@ public class PrestamoServicio {
     private LibroServicio libroServ;
     @Autowired
     private UsuarioRepositorio usuarioRepo;
+    @Autowired
+    private OrdenRepositorio ordenRepo;
     
     @Transactional
     public Prestamo iniciarPrestamo(String usuarioId, String libroId) throws ErrorServicio {
@@ -58,9 +62,9 @@ public class PrestamoServicio {
         }
         
         Usuario usuarioPrestamo = null;
-        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(usuarioId);
-        if(rta1.isPresent()) {
-            usuarioPrestamo = rta1.get();
+        Optional<Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(usuarioId);
+        if(rta.isPresent()) {
+            usuarioPrestamo = rta.get();
         } else {
             throw new ErrorServicio("No hay un socio registrado con ese nombre.");
         }
@@ -70,9 +74,9 @@ public class PrestamoServicio {
         }
         
         Libro libroPrestamo = null; 
-        Optional<Libro> rta = libroRepo.buscaLibroId(libroId);
-        if(rta.isPresent()) {
-            libroPrestamo = rta.get();
+        Optional<Libro> rta1 = libroRepo.buscaLibroId(libroId);
+        if(rta1.isPresent()) {
+            libroPrestamo = rta1.get();
         } else {
             throw new ErrorServicio("No hay un libro registrado con ese Título.");
         }
@@ -89,6 +93,8 @@ public class PrestamoServicio {
         } else {
             throw new ErrorServicio("No hay ejemplares disponibles para préstamo");
         }
+        
+        prestamo.setOrden(null);
         prestamo.setUsuario(usuarioPrestamo);
         prestamo.setFechaSolicitud(new Date());
         libroServ.modEjemplaresRet(libroPrestamo);
@@ -98,7 +104,7 @@ public class PrestamoServicio {
     
     
     @Transactional
-    public Prestamo completarPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
+    public Prestamo completarPrestamo(String idPrestamo,String ordenId) throws ErrorServicio, ParseException {
         Prestamo prestamo = new Prestamo();
         Optional <Prestamo> rta = prestamoRepo.findById(idPrestamo);
         if (rta.isPresent()) {
@@ -107,6 +113,16 @@ public class PrestamoServicio {
         prestamo.setAlta(true);
         prestamo.setFechaAlta(new Date());
         prestamo.setFechaDevolucion(generarFechaDevolucion(prestamo.getFechaAlta()));
+        
+        Orden orden = null;
+        Optional <Orden> rta1 = ordenRepo.findById(ordenId);
+        if(rta1.isPresent()) {
+            orden = rta1.get();
+        }
+        
+        prestamo.setOrden(orden);
+        
+        
         return prestamo;
     }
     

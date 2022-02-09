@@ -10,6 +10,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,7 +26,10 @@ public class Orden {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-    @OneToMany
+    @OneToMany (mappedBy="orden")
+//    @JoinTable(name="orden_prestamos" //da nombre a la tabla
+//        ,joinColumns=@JoinColumn(name="orden_id") //da nombre a la columna que incluye el id del objeto de origen
+//        ,inverseJoinColumns=@JoinColumn(name="prestamo_id")) //danombre a la columna que incluye el id del objeto al que se dirige
     private List<Prestamo> prestamos;
     @ManyToOne
     private Usuario usuario;
@@ -71,4 +76,17 @@ public class Orden {
     public void setAlta(Boolean alta) {
         this.alta = alta;
     }
+    
+    
+    public void agregarPrestamo(Prestamo prestamo) {
+        prestamos.add(prestamo);
+        prestamo.setOrden(this);
+    }
+    
+     public void quitarPrestamo(Prestamo prestamo) {
+        prestamos.remove(prestamo);
+        prestamo.setOrden(null);
+        
+    }
+    
 }
