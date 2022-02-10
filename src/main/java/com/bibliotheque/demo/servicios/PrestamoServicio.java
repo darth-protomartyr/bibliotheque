@@ -196,7 +196,7 @@ public class PrestamoServicio {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 	String dBaja = dateFormat.format(dateBaja);
        	String dVenc = dateFormat.format(dateVenc);
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ROOT);
         Date baja = sdf.parse(dBaja);
         Date venc = sdf.parse(dVenc);
 

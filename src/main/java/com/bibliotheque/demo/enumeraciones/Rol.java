@@ -10,7 +10,7 @@ package com.bibliotheque.demo.enumeraciones;
  * @author Gonzalo
  */
 public enum Rol {
-    MANAGER(1), EDITOR(2), OPERARIO(3);
+    ADMIN(1), EDITOR(2), USUARIO(3);
     int id;
     private Rol(int id) {
         this.id = id;
