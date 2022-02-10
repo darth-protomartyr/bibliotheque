@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrdenRepositorio extends JpaRepository<Orden, String> {
     @Query("SELECT o FROM Orden o WHERE o.id = :ordenId AND o.alta = true")
-    public Optional<Orden> buscaOrdenIdAlta (@Param("ordenId") String ordenId);
+    public Optional <Orden> buscaOrdenIdAlta (@Param("ordenId") String ordenId);
 
     @Query("SELECT o FROM Orden o WHERE o.alta = true")
     public Optional<List<Orden>> listarActivas();

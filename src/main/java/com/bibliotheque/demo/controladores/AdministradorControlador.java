@@ -116,7 +116,7 @@ OrdenRepositorio ordenRepo;
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
         if (rta.isPresent()) {
-            orden=rta.get();
+            orden = rta.get();
         }
         
         modelo.put("order", orden);
@@ -192,10 +192,11 @@ OrdenRepositorio ordenRepo;
         
         
         Orden orden = null;
-        Optional <Orden> rta1 = ordenRepo.findById(ordenId);
-        if (rta1.isPresent()) {
-            orden = rta1.get();
+        Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
+        if (rta.isPresent()) {
+            orden = rta.get();
         }
+        
         
         List<Prestamo> activos = new ArrayList();
         Optional <List<Prestamo>> rta2 = prestamoRepo.listarPrestamoByOrden(ordenId);
@@ -204,9 +205,6 @@ OrdenRepositorio ordenRepo;
         }
         
         Usuario usuario = orden.getUsuario();
-
-            
-
         
         if (activos.size() > 0) {
             modelo.put("perfil", usuario);
@@ -214,7 +212,8 @@ OrdenRepositorio ordenRepo;
             modelo.put("order", orden);
             return "orden-baja.html";
         } else {
-            orden.setAlta(false);
+            
+            ordenServ.seteaOrden(ordenId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "Los prestamos y la orden fueron dados de baja.");
             return "succes.html";
