@@ -6,12 +6,15 @@
 package com.bibliotheque.demo.entidades;
 
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -24,6 +27,8 @@ public class Orden {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaDevolucion;
 
 //No se crea tabla intermedia por lo que anotaciones comentadas innecesarias.
     @OneToMany (mappedBy="orden")
@@ -39,15 +44,24 @@ public class Orden {
     public Orden() {
     }
 
-    public Orden(String id, List<Prestamo> prestamos, Usuario usuario, boolean alta) {
+    public Orden(String id, Date fechaDevolucion, List<Prestamo> prestamos, Usuario usuario, boolean alta) {
         this.id = id;
         this.prestamos = prestamos;
         this.usuario = usuario;
         this.alta = alta;
+        this.fechaDevolucion = fechaDevolucion;
     }
 
     public String getId() {
         return id;
+    }
+
+    public Date getFechaDevolucion() {
+        return fechaDevolucion;
+    }
+
+    public void setFechaDevolucion(Date fechaDevolucion) {
+        this.fechaDevolucion = fechaDevolucion;
     }
 
     public void setId(String id) {

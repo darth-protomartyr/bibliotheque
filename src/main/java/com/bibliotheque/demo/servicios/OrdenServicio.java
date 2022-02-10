@@ -9,13 +9,16 @@ package com.bibliotheque.demo.servicios;
 
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.entidades.Orden;
+import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.repositorios.OrdenRepositorio;
+import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 @Service
@@ -23,7 +26,9 @@ public class OrdenServicio {
     
     @Autowired
     private OrdenRepositorio ordenRepo;
-
+    @Autowired
+    private PrestamoRepositorio prestamoRepo;
+    
 //Inicializa la orden pero no completa la lista de préstamos    
     @Transactional
     public Orden iniciarOrden(Usuario usuario) {
@@ -32,7 +37,7 @@ public class OrdenServicio {
         orden.setAlta(true);
         return ordenRepo.save(orden);
     }
-    
+
 
 //Limpia eventuales oórdenes que se generen y luego no sean completadas con ningún préstamo
     public void limpiezaOrden() {
@@ -57,5 +62,20 @@ public class OrdenServicio {
         }
         orden.setAlta(false);
         ordenRepo.save(orden);
+    }
+
+    public void seteaFechaPrestamos(String ordenId) {
+        Orden orden = null;
+        Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
+        if (rta.isPresent()) {
+            orden = rta.get();
+        }
+
+        List <Prestamo> prestamos = orden.getPrestamos();
+        for (Prestamo prestamo : prestamos) {
+            Date vencimiento = orden.getFechaDevolucion();
+            prestamo.setFechaDevolucion(vencimiento);
+            prestamoRepo.save(prestamo);
+        }
     }
 }

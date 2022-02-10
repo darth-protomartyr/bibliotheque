@@ -63,5 +63,17 @@ public class AdministradorServicio {
         return activos;
     }
     
+    @Transactional(readOnly = true)
+    public List<Orden> listarVencidas() {
+        List <Orden> vencidas = new ArrayList();
+        List <Orden> todas = listarActivas();
+        for (Orden toda : todas) {
+            if (toda.getFechaDevolucion().before(new Date())) {
+                vencidas.add(toda);
+            }
+        }
+        return vencidas;
+    }
+    
     
 }

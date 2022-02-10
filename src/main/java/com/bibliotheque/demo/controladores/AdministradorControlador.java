@@ -62,6 +62,8 @@ OrdenRepositorio ordenRepo;
         modelo.put("solicitantes", solicitantes);
         List <Orden> activas = adminServ.listarActivas();
         modelo.put("activas", activas);
+        List <Orden> vencidas = adminServ.listarVencidas();
+        modelo.put("vencidas", vencidas);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "administrador.html";
     }
@@ -123,7 +125,9 @@ OrdenRepositorio ordenRepo;
         Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId, ordenId);
         
         orden.agregarPrestamo(prestamo);
-              
+        
+        
+        
         Usuario usuario = prestamo.getUsuario();
         String solicitId = usuario.getId();
         List<Prestamo> solicitados = new ArrayList();
@@ -143,6 +147,7 @@ OrdenRepositorio ordenRepo;
             }
             return "orden.html";
         } else {
+            ordenServ.seteaFechaPrestamos(ordenId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La orden fue ingresada y los prestamos están en curso.");
             return "succes.html";
@@ -212,7 +217,6 @@ OrdenRepositorio ordenRepo;
             modelo.put("order", orden);
             return "orden-baja.html";
         } else {
-            
             ordenServ.seteaOrden(ordenId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "Los prestamos y la orden fueron dados de baja.");

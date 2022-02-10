@@ -120,6 +120,9 @@ public class PrestamoServicio {
         
         prestamo.setOrden(orden);
         
+        Date vencimiento = prestamo.getFechaDevolucion();
+        orden.setFechaDevolucion(vencimiento);
+        ordenRepo.save(orden);
         
         return prestamo;
     }
@@ -212,6 +215,5 @@ public class PrestamoServicio {
             calendar.add(Calendar.DAY_OF_YEAR, days); 
             return calendar.getTime();
         }
-    }    
-
+    }
 }
