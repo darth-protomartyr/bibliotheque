@@ -132,8 +132,6 @@ public class Prestamo {
     }
     
     
-    
-    
 
     public Boolean getAlta() {
         return alta;

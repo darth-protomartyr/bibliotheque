@@ -20,4 +20,7 @@ public interface OrdenRepositorio extends JpaRepository<Orden, String> {
 
     @Query("SELECT o FROM Orden o WHERE o.alta = true")
     public Optional<List<Orden>> listarActivas();
+
+    @Query("SELECT o FROM Orden o WHERE o.prestamos is empty")
+    public Optional<List<Orden>> listaOrdenListEmpty();
 }

@@ -56,6 +56,8 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+
+        ordenServ.limpiezaOrden();
         List <Usuario> solicitantes = adminServ.listarSolicitantes();
         modelo.put("solicitantes", solicitantes);
         List <Orden> activas = adminServ.listarActivas();
@@ -72,6 +74,10 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        
+        
+       ordenServ.limpiezaOrden();
+
         
         Usuario solicit = null;
         Optional <Usuario> rta = usuarioRepo.findById(solicitId);
@@ -117,9 +123,7 @@ OrdenRepositorio ordenRepo;
         Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId, ordenId);
         
         orden.agregarPrestamo(prestamo);
-        
-//        List <Prestamo> prestamos = ordenServ.listaPrestamoAlta(ordenId, prestamoId);
-//        orden.setPrestamos(prestamos);        
+              
         Usuario usuario = prestamo.getUsuario();
         String solicitId = usuario.getId();
         List<Prestamo> solicitados = new ArrayList();
@@ -155,7 +159,8 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.findById(ordenId);
         if (rta.isPresent()) {
@@ -166,23 +171,53 @@ OrdenRepositorio ordenRepo;
         
         List<Prestamo>activos = orden.getPrestamos();
         modelo.put("activos", activos);
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("perfil", usuario);        
-        
-//        if (activos.size() > 0) {
-            return "orden-baja.html";
-//        } else {
-//            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-//            modelo.put("error", "No se pudo completar la orden");
-//            return "error.html";
-//        }
+        modelo.put("order", orden);        
+
+        return "orden-baja.html";
+
     }
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
     @PostMapping("/proceso-baja-prestamo")
-    public String ProcesobajaPrestamo(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
-    
-        return "succes.html";
+    public String ProcesoBajaPrestamo(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String prestamoId, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        prestamoServ.bajaPrestamo(prestamoId, ordenId);
+        
+        
+        Orden orden = null;
+        Optional <Orden> rta1 = ordenRepo.findById(ordenId);
+        if (rta1.isPresent()) {
+            orden = rta1.get();
+        }
+        
+        List<Prestamo> activos = new ArrayList();
+        Optional <List<Prestamo>> rta2 = prestamoRepo.listarPrestamoByOrden(ordenId);
+        if(rta2.isPresent()) {
+            activos = rta2.get();
+        }
+        
+        Usuario usuario = orden.getUsuario();
+
+            
+
+        
+        if (activos.size() > 0) {
+            modelo.put("perfil", usuario);
+            modelo.put("activos", activos);
+            modelo.put("order", orden);
+            return "orden-baja.html";
+        } else {
+            orden.setAlta(false);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "Los prestamos y la orden fueron dados de baja.");
+            return "succes.html";
+        }
     }
 }

@@ -22,9 +22,7 @@ import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -129,17 +127,28 @@ public class PrestamoServicio {
     
     
     @Transactional
-    public void bajaPrestamo(String idPrestamo) throws ErrorServicio, ParseException {
-        Optional <Prestamo> rta = prestamoRepo.buscaPrestamoIdAlta(idPrestamo);
+    public void bajaPrestamo(String idPrestamo, String ordenId) throws ErrorServicio, ParseException {
         Prestamo prestamo = null;
+        Optional <Prestamo> rta = prestamoRepo.findById(idPrestamo);
         if (rta.isPresent()) {
             prestamo = rta.get();
         }
+        
+//        Orden orden = null;
+//        Optional <Orden> rta1 = ordenRepo.buscaOrdenIdAlta(idPrestamo);
+//        if (rta.isPresent()) {
+//            orden = rta1.get();
+//        }
+        
+        
         Usuario usuario = prestamo.getUsuario();
         Libro libro = prestamo.getLibro();
         
+//        orden.quitarPrestamo(prestamo);
         prestamo.setAlta(false);
         prestamo.setFechaBaja(new Date());
+
+        
         
         Date dateBaja = prestamo.getFechaBaja();
         Date dateVenc = prestamo.getFechaDevolucion();

@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="main__card__object main__card__prestamo">
-                    <h3>Lista de Prestamos Activos</h3>
+                    <h3>Lista de Usuarios con Prestamos Activos</h3>
                     <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                     <p th:if="${success != null}" th:text="${success}" class="ok"></p>
                     <div class="object__button__container">
@@ -43,6 +43,22 @@
                         </div>
                     </div>
                 </div>
+<!--                <div class="main__card__object main__card__prestamo">
+                    <h3>Lista de Prestamos Vencidos</h3>
+                    <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                    <p th:if="${success != null}" th:text="${success}" class="ok"></p>
+                    <div class="object__button__container">
+                        <div th:each="activa:${activas}" class="form__container">
+                            <div class="object__btn">
+                                <form th:action="@{/administradores/baja-orden(id=__${session.usuariosession.id}__, ordenId = __${activa.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">                    
+                                        <button type="submit" th:if="${activa != null}" th:text="${activa.usuario.nombre}"></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
             </div>
         </div>
     </main>

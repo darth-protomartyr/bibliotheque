@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
-
+    
 <head th:replace="/fragments/head :: head"></head>
     
 <body>
@@ -10,7 +10,7 @@
     <main>
         <div class= "main">            
             <div class="main__card">
-                <p class ="tit">ORDEN</p>
+                <p class ="tit">BAJA DE ORDEN</p>
                 <p th:if="${error != null}" th:text="${error}" class="warn"></p>                
                 <p th:if="${success != null}" th:text="${success}" class="warn"></p>                
 
@@ -25,8 +25,9 @@
                         </div>
                         <div class="object__data">
                             <div class="object__button__container">
+                                <h3>Seleccione los libros devueltos</h3>
                                 <div th:each="activo:${activos}">
-                                    <form th:action="@{/administradores/proceso-baja-prestamo(id=__${session.usuariosession.id}__, prestamoId=__${activo.id}__)}" method="post" enctype="multipart/form-data">
+                                    <form th:action="@{/administradores/proceso-baja-prestamo(id=__${session.usuariosession.id}__, prestamoId=__${activo.id}__, ordenId=__${order.id}__)}" method="post" enctype="multipart/form-data">
                                         <div class="form__container object__btn object__btn-2">                                      
                                             <button type="submit" th:text="${activo.libro.titulo}" ></button>
                                         </div>
@@ -34,6 +35,17 @@
                                 </div>
                             </div>
                         </div>
+                        
+<!--                        <div class="object__button__container">
+                            <h3>Seleccione los libros devueltos</h3>
+                            <div th:each="activo:${activos}">
+                                <form th:action="@{/administradores/proceso-baja-prestamo(id=__${session.usuariosession.id}__, prestamoId=__${activo.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">                                      
+                                        <button type="submit" th:text="${activo.libro.titulo}" ></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>-->
                     </div>
                 </div>
             </div>

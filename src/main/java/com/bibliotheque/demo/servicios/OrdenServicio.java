@@ -56,88 +56,21 @@ public class OrdenServicio {
         return ordenRepo.save(orden);
     }
     
-    
-    @Transactional
-    public Orden generarOrden(List <Prestamo> prestamos, String usuarioId) throws ErrorServicio {
-        Orden orden = null;
-        
-        if (usuarioId == null || usuarioId.isEmpty()) {
-            throw new ErrorServicio("Falta ingresar el número de socio");
-        }
-        
-        if (prestamos.size() == 0) {
-            throw new ErrorServicio("No ha ingresado los pedidos de prestamo");
-        }
-        
-        Usuario usuario = null;
-        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(usuarioId);
-        if(rta1.isPresent()) {
-            usuario = rta1.get();
-        } else {
-            throw new ErrorServicio("No es un socio registrado.");
-        }
-        
-        for (Prestamo prestamo : prestamos) {
-            prestamo.setAlta(Boolean.TRUE);
-            prestamo.setFechaAlta(new Date());
-            
-            Calendar date = Calendar.getInstance();
-            date.setTime(prestamo.getFechaAlta());
-            
-            date.add(Calendar.HOUR, 180);
-            java.util.Date fechaVencimiento = date.getTime();
-            prestamo.setFechaDevolucion(fechaVencimiento);
-        }
-
-        
-        if (usuario.getPenalidad() == true) {
-            throw new ErrorServicio("El Socio no puede realizar el pedido por encontrarse penalizado");
-        }
-        
-        orden.setUsuario(usuario);
-        orden.setAlta(Boolean.TRUE);
-        orden.setPrestamos(prestamos);
-        return ordenRepo.save(orden);
-    }
-    
-    public void darBajaOrden(String ordenId) throws ErrorServicio, ParseException {
-        Orden orden = null;
-        Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
-        if (rta.isPresent()) {
-            orden = rta.get();
-        }
-        
-        List <Prestamo> prestamos = orden.getPrestamos();
-        
-        for (Prestamo prestamo : prestamos) {
-            String idPrestamo = prestamo.getId();
-            prestamoServ.bajaPrestamo(idPrestamo);
-            prestamos.remove(prestamo);
-        }
-        
-        orden.setAlta(Boolean.FALSE);
-    }
-
-    
-//    public List<Prestamo> listaPrestamoAlta(String ordenId, String prestamoId) {
-//        List <Prestamo> alta = new ArrayList();
-//        Orden orden = null;
-//        Optional <Orden> rta = ordenRepo.findById(ordenId);
-//        if(rta.isPresent()) {
-//            orden = rta.get();
-//        }
+//    public Orden booleanOrden(String ordenIn) {
 //        
-//        List<Prestamo>prestamos = orden.getPrestamos();
-//        for (Prestamo prestamo : prestamos) {
-//            alta.add(prestamo);
-//        }
-//
-//        Prestamo actual = null;
-//        Optional<Prestamo>rta1 = prestamoRepo.findById(prestamoId);
-//        if(rta1.isPresent()) {
-//            actual = rta1.get();
-//        }
-//        alta.add(actual);   
-//        return alta;
 //    }
+
+    public void limpiezaOrden() {
+        List <Orden> ordenes = new ArrayList();
+        Optional <List<Orden>> rta = ordenRepo.listaOrdenListEmpty();
+        if (rta.isPresent()) {
+            ordenes = rta.get();
+        }
+        
+        if (ordenes.size()>0) {
+            for (Orden orden : ordenes) {
+                ordenRepo.delete(orden);
+            }
+        }
+    }
 }
