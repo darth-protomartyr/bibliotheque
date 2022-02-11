@@ -160,6 +160,7 @@ public class UsuarioServicio implements UserDetailsService {
         //notServ.enviar("LA modificación ha sido realizada", "Librodepository", usuario.getMail());
     }
     
+    
     @Transactional
     public void bajaDeUsuario(String id, String pass) throws ErrorServicio {
         Usuario usuarioPrestamo;
