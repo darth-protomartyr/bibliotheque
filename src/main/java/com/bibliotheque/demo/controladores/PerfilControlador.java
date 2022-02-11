@@ -36,7 +36,7 @@ public class PerfilControlador {
     
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/perfil")
     public String perfil(HttpSession session, @RequestParam String id, ModelMap modelo) {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
@@ -57,7 +57,7 @@ public class PerfilControlador {
         return "perfil.html";
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/editar-perfil")
     public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));

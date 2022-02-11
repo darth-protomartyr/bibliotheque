@@ -49,7 +49,7 @@ PrestamoServicio prestamoServ;
 @Autowired
 OrdenRepositorio ordenRepo;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/administrador")
     public String administradores(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -69,7 +69,7 @@ OrdenRepositorio ordenRepo;
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-iniciar-orden")
     public String iniciarOrden(HttpSession session, @RequestParam String id, @RequestParam String solicitId, ModelMap modelo) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -105,7 +105,7 @@ OrdenRepositorio ordenRepo;
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-completar-orden")
     public String completarOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, @RequestParam String prestamoId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -157,7 +157,7 @@ OrdenRepositorio ordenRepo;
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/baja-orden")
     public String bajaOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -184,7 +184,7 @@ OrdenRepositorio ordenRepo;
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-baja-prestamo")
     public String ProcesoBajaPrestamo(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String prestamoId, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");

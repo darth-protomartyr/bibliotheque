@@ -46,7 +46,7 @@ public class LibroControlador {
     @Autowired
     private EditorialRepositorio ediRepo;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/libro")
     public String libros(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -59,7 +59,7 @@ public class LibroControlador {
         return "libros.html";
     }
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -82,7 +82,7 @@ public class LibroControlador {
     
 
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/ingresar")
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo) {
         List<Autor> autores = autorRepo.findAll();
@@ -98,7 +98,7 @@ public class LibroControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         List<Autor> autores = autorRepo.findAll();
@@ -132,7 +132,7 @@ public class LibroControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/modificar")
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String libroId,  ModelMap modelo){
         List<Autor> autores = autorRepo.findAll();
@@ -152,7 +152,7 @@ public class LibroControlador {
 
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -184,7 +184,7 @@ public class LibroControlador {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Libro> libros = libroServ.listarLibrosActivos();
@@ -200,7 +200,7 @@ public class LibroControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Libro> libros = libroRepo.listarLibrosCompleta();
@@ -217,7 +217,7 @@ public class LibroControlador {
     
     
         
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -239,7 +239,7 @@ public class LibroControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");

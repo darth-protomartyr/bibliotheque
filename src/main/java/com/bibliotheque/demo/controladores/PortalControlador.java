@@ -56,7 +56,7 @@ public class PortalControlador {
     }
 
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/inicio")
     public String inicio(ModelMap modelo, HttpSession session) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");

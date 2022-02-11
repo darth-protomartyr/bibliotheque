@@ -93,7 +93,7 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setAlta(true);
         usuario.setPenalidad(Boolean.FALSE);
         usuario.setMail(validarMail(mail));
-        usuario.setRol(Rol.ADMIN);
+        usuario.setRol(Rol.EDITOR);
         //notServ.enviar("Bienvenido a Librodepository", "Librodepository", usuario.getMail());
         return usuarioRepo.save(usuario);
     }
