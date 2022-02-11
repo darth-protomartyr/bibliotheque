@@ -40,7 +40,7 @@ public class EditorialControlador {
     @Autowired
     private EditorialServicio editorialServ;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/editorial")
     public String editoriales(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
 
@@ -61,7 +61,7 @@ public class EditorialControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qeditorial, ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -87,7 +87,7 @@ public class EditorialControlador {
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/ingresar")
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -101,7 +101,7 @@ public class EditorialControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, ModelMap modelo) throws ErrorServicio {
         try {
@@ -124,7 +124,7 @@ public class EditorialControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
@@ -147,7 +147,7 @@ public class EditorialControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Editorial> editoriales = editorialRepo.listarEditorialCompleta();
@@ -164,7 +164,7 @@ public class EditorialControlador {
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/modificar")
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String ediId,  ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -183,7 +183,7 @@ public class EditorialControlador {
 
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId, @RequestParam String nombre) throws ErrorServicio {
 //        Editorial ed = null;
@@ -210,7 +210,7 @@ public class EditorialControlador {
     }
 
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
         try {
@@ -232,7 +232,7 @@ public class EditorialControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
         try {

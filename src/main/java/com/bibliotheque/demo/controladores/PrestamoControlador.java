@@ -38,7 +38,7 @@ public class PrestamoControlador {
     @Autowired
     private LibroRepositorio libroRepo;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @GetMapping("/prestamo")
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -54,7 +54,7 @@ public class PrestamoControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-generar")
     public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
         
