@@ -6,7 +6,9 @@
 package com.bibliotheque.demo.controladores;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
+import com.bibliotheque.demo.enumeraciones.Rol;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
+import com.bibliotheque.demo.servicios.PrestamoServicio;
 import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +35,8 @@ public class PerfilControlador {
 
     @Autowired
     private UsuarioServicio usuarioServ;
-    
+    @Autowired
+    private PrestamoServicio prestamoServ;
 
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
@@ -82,5 +85,51 @@ public class PerfilControlador {
             modelo.put("generos", generos);
             return "perfil.html";
         }
-    }        
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
+    @PostMapping("/iniciar-proceso-baja-cuenta")
+    public String iniciarBajaCuenta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String nombre) throws ErrorServicio {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        try {
+            //Evita que se dé de baja un usuario con prestamos en curso.
+            if (prestamoServ.verificarPrestamosEnCurso(login.getId())) {
+                throw new ErrorServicio("Usted tiene préstamos pendientes y no puede solicitar la baja de su cuenta");
+            }
+            
+            //Evita que el ADMIN SEA DADO DE BAJA
+            if(login.getRol().equals(Rol.ADMIN)) {
+                throw new ErrorServicio("El Administrador no puede ser dado de baja");
+            }            
+            
+            if (login.getSolicitudBaja() == true) {
+                throw new ErrorServicio("La solicitud de baja ya fue enviada");
+            }
+ 
+            String string1 = usuarioServ.cleanString(nombre);
+            String string2 = usuarioServ.cleanString(login.getNombre());
+
+            if (!string1.equals(string2)) {
+                throw new ErrorServicio("El nombre ingresado no coincide con el del usuario");
+            }
+
+            modelo.addAttribute("perfil", login);
+        
+            usuarioServ.iniciarBajaDeUsuario(id);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La Solicitud de baja fue enviada al administrador.");
+            return "succes.html";
+        } catch (ErrorServicio e) {
+            modelo.put("perfil", login);
+            modelo.put("error", e.getMessage());
+            return "perfil.html";
+        }
+    }
+    
 }

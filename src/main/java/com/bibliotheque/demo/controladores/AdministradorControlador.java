@@ -14,6 +14,7 @@ import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import com.bibliotheque.demo.servicios.AdministradorServicio;
 import com.bibliotheque.demo.servicios.OrdenServicio;
 import com.bibliotheque.demo.servicios.PrestamoServicio;
+import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,8 @@ PrestamoRepositorio prestamoRepo;
 @Autowired
 PrestamoServicio prestamoServ;
 @Autowired
+UsuarioServicio usuarioServ;
+@Autowired
 OrdenRepositorio ordenRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
@@ -64,6 +67,8 @@ OrdenRepositorio ordenRepo;
         modelo.put("activas", activas);
         List <Orden> vencidas = adminServ.listarVencidas();
         modelo.put("vencidas", vencidas);
+        List <Usuario> bajados = usuarioServ.listarBajados();
+        modelo.put("bajados", bajados);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "administrador.html";
     }
@@ -222,5 +227,23 @@ OrdenRepositorio ordenRepo;
             modelo.put("subTit", "Los prestamos y la orden fueron dados de baja.");
             return "succes.html";
         }
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PostMapping("/finalizar-proceso-baja-cuenta")
+    public String finalizarBajaCuenta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String solicitId) throws ErrorServicio {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        modelo.addAttribute("perfil", login);
+        
+        adminServ.completarBajaDeUsuario(solicitId);
+        modelo.put("tit", "Operación Exitosa");
+        modelo.put("subTit", "La baja del usuario es efectiva.");
+        return "succes.html";
     }
 }

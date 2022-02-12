@@ -39,5 +39,11 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     
     //Lista usuarios de alta
     @Query("SELECT s FROM Usuario s WHERE s.alta = true")
-    public List<Usuario> listarUsuarios();  
+    public List<Usuario> listarUsuarios();
+    
+    //Lista pedidos de baja de Usuarios
+    @Query("SELECT u FROM Usuario u WHERE u.solicitudBaja = true AND u.alta = true")
+    public Optional<List<Usuario>> listarSolicitudesBaja();
+    
+    
 }

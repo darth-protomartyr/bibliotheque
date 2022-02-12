@@ -76,4 +76,14 @@ public class AdministradorServicio {
     }
     
     
+    public void completarBajaDeUsuario(String solicitId) {
+        Usuario usuario = null;
+        Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(solicitId);
+        if(rta.isPresent()) {
+            usuario = rta.get();
+        }
+        usuario.setAlta(Boolean.FALSE);
+        usuarioRepo.save(usuario);
+    }
+    
 }

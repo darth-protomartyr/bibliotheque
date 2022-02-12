@@ -37,9 +37,10 @@ public class Usuario {
    private Genero genero;
    @Enumerated(EnumType.ORDINAL)
    private Rol rol;
+   private Boolean solicitudBaja;
    private Boolean penalidad;
-   private Date fechaPenalidad;
    @Temporal(TemporalType.TIMESTAMP)
+   private Date fechaPenalidad;
    @OneToOne
    private Foto foto;
    private Boolean alta;
@@ -48,17 +49,26 @@ public class Usuario {
    
    }
 
-    public Usuario(String id, String nombre, String pass, String mail, Genero genero, Rol rol, Boolean penalidad, Date fechaPenalidad, Foto foto, Boolean alta) {
+    public Usuario(String id, String nombre, String pass, String mail, Genero genero, Rol rol, Boolean solicitudBaja, Boolean penalidad, Date fechaPenalidad, Foto foto, Boolean alta) {
         this.id = id;
         this.nombre = nombre;
         this.pass = pass;
         this.mail = mail;
         this.genero = genero;
         this.rol = rol;
+        this.solicitudBaja = solicitudBaja;
         this.penalidad = penalidad;
         this.fechaPenalidad = fechaPenalidad;
         this.foto = foto;
         this.alta = alta;
+    }
+
+    public Boolean getSolicitudBaja() {
+        return solicitudBaja;
+    }
+
+    public void setSolicitudBaja(Boolean solicitudBaja) {
+        this.solicitudBaja = solicitudBaja;
     }
 
     public Date getFechaPenalidad() {

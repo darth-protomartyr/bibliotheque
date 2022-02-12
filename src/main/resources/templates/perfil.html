@@ -27,6 +27,17 @@
                         <button type="submit">Update</button>
                     </div>
                 </form>
+                
+                <h3>Baja de cuenta</h3>
+                <p class="warn">Si desea solicitar la baja de su cuenta recuerde que no debe tener devoluciones pendientes.</p>
+                <p class="warn">Una vez dada la baja podrá ingresar a su cuenta pero no podrá realizar niniguna solicitud</p>
+                <form th:action="@{/perfiles/iniciar-proceso-baja-cuenta(id=__${perfil.id}__)}" method="post" enctype="multipart/form-data">
+                    <input type="text" placeholder="Ingrese su nombre para confirmar baja" name="nombre">
+                    <div class="form__container object__btn object__btn-2">                    
+                        <button type="submit"> Dar de baja su cuenta</button>
+                    </div>
+                </form>
+                
             </div>
         </div>
     </main>

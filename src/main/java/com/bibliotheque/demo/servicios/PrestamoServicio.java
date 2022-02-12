@@ -169,8 +169,33 @@ public class PrestamoServicio {
     static LocalDate convertToLocalDateViaMilisecond(Date dateToConvert) {
         return Instant.ofEpochMilli(dateToConvert.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
-
     
+    @Transactional(readOnly = true)
+    public boolean verificarPrestamosEnCurso(String id) {
+        boolean prestamo = false;
+        Usuario usuario = null;
+        List <Orden> ordenes = null;
+        
+        Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(id);
+        if (rta.isPresent()) {
+            usuario = rta.get();
+        }
+        
+        Optional <List<Orden>> rta1 = ordenRepo.listarActivas();
+        if(rta1.isPresent()) {
+            ordenes = rta1.get();
+        }
+        
+        for (Orden orden : ordenes) {
+            if(orden.getUsuario().equals(usuario)) {
+                prestamo = true;
+            }
+        }
+        
+        return prestamo;
+    }
+
+    @Transactional(readOnly = true)   
     private int limitePrestamo(String usuarioId) {
         int limite = 0;
         List <Prestamo> prestamos = null;

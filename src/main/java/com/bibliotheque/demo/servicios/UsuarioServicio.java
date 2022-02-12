@@ -94,6 +94,7 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setPenalidad(Boolean.FALSE);
         usuario.setMail(validarMail(mail));
         usuario.setRol(Rol.EDITOR);
+        usuario.setSolicitudBaja(Boolean.FALSE);
         //notServ.enviar("Bienvenido a Librodepository", "Librodepository", usuario.getMail());
         return usuarioRepo.save(usuario);
     }
@@ -272,7 +273,6 @@ public class UsuarioServicio implements UserDetailsService {
         if (rta.isPresent()) {
             usuario = rta.get();
             List<GrantedAuthority> permisos = new ArrayList();
-//            GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_ADMIN");
             GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_" + usuario.getRol());
             permisos.add(p1);
             
@@ -299,5 +299,38 @@ public class UsuarioServicio implements UserDetailsService {
         } else {
             throw new ErrorServicio("No se encontró el usuario solicitado");
         }
+    }
+
+
+    @Transactional(readOnly=true)
+    public List<Usuario> listarBajados() throws ErrorServicio {
+        List <Usuario> bajados = new ArrayList();
+        Optional <List<Usuario>> rta = usuarioRepo.listarSolicitudesBaja();
+        if(rta.isPresent()) {
+            bajados = rta.get();
+        }
+        return bajados;
+    }
+
+
+ @Transactional
+    public void iniciarBajaDeUsuario(String id) throws ErrorServicio {
+        Usuario usuario = null;
+        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(id);
+        if(rta1.isPresent()) {
+            usuario = rta1.get();
+            usuario.setSolicitudBaja(Boolean.TRUE);
+            usuarioRepo.save(usuario);
+        } else {
+            throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
+        }
+    }
+
+
+
+    public String cleanString(String str) {
+        str.toLowerCase();
+        str.replace(" ", "");
+        return str;
     }
 }

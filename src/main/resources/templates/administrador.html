@@ -59,6 +59,23 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="main__card__object main__card__prestamo">
+                    <h3>Solicitudes de Baja de Usuarios</h3>
+                    <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                    <p th:if="${success != null}" th:text="${success}" class="ok"></p>
+                    <div class="object__button__container">
+                        <div th:each="bajado:${bajados}" class="form__container">
+                            <div class="object__btn">
+                                <form th:action="@{/administradores/finalizar-proceso-baja-cuenta(id=__${session.usuariosession.id}__, solicitId = __${bajado.id}__)}" method="post" enctype="multipart/form-data">
+                                    <div class="form__container object__btn object__btn-2">                    
+                                        <button type="submit" th:if="${bajado != null}" th:text="${bajado.nombre}"></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
