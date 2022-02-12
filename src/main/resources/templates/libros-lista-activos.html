@@ -31,7 +31,7 @@
                         </div>
                         <div class="object__button__container">
                             <div class="object__btn object__btn-2">
-                                  <a th:href="@{/libros/modificar(id=__${solicitantes.id}__,)}" th:if="${session.usuariosession != null}">Modificar Libro</a>
+                                  <a th:href="@{/libros/modificar(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" th:if="${session.usuariosession != null}">Modificar Libro</a>
                             </div>
                             <div th:if="${libro.alta == true}">
                                 <form th:action="@{/libros/proceso-baja(id=__${session.usuariosession.id}__, libroId=__${libro.id}__)}" method="post" enctype="multipart/form-data">

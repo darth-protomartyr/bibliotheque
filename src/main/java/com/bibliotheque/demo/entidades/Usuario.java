@@ -7,6 +7,7 @@ package com.bibliotheque.demo.entidades;
 
 
 import com.bibliotheque.demo.enumeraciones.Genero;
+import com.bibliotheque.demo.enumeraciones.Rol;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,27 +35,30 @@ public class Usuario {
    private String mail;
    @Enumerated(EnumType.ORDINAL)
    private Genero genero;
-   private Boolean alta;
-   @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaPenalidad;
+   @Enumerated(EnumType.ORDINAL)
+   private Rol rol;
    private Boolean penalidad;
+   private Date fechaPenalidad;
+   @Temporal(TemporalType.TIMESTAMP)
    @OneToOne
    private Foto foto;
+   private Boolean alta;
 
    public Usuario() {
    
    }
 
-    public Usuario(String id, String nombre, String pass, Boolean alta, Genero genero, String mail, Date fechaPenalidad, Boolean penalidad, Foto foto) {
+    public Usuario(String id, String nombre, String pass, String mail, Genero genero, Rol rol, Boolean penalidad, Date fechaPenalidad, Foto foto, Boolean alta) {
         this.id = id;
         this.nombre = nombre;
         this.pass = pass;
-        this.alta = alta;
-        this.genero = genero;
         this.mail = mail;
-        this.fechaPenalidad = fechaPenalidad;
+        this.genero = genero;
+        this.rol = rol;
         this.penalidad = penalidad;
+        this.fechaPenalidad = fechaPenalidad;
         this.foto = foto;
+        this.alta = alta;
     }
 
     public Date getFechaPenalidad() {
@@ -151,4 +155,15 @@ public class Usuario {
     public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+    
+    
+    
 }

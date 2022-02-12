@@ -9,6 +9,7 @@ package com.bibliotheque.demo.servicios;
 import com.bibliotheque.demo.entidades.Foto;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
+import com.bibliotheque.demo.enumeraciones.Rol;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setAlta(true);
         usuario.setPenalidad(Boolean.FALSE);
         usuario.setMail(validarMail(mail));
+        usuario.setRol(Rol.EDITOR);
         //notServ.enviar("Bienvenido a Librodepository", "Librodepository", usuario.getMail());
         return usuarioRepo.save(usuario);
     }
@@ -270,7 +272,8 @@ public class UsuarioServicio implements UserDetailsService {
         if (rta.isPresent()) {
             usuario = rta.get();
             List<GrantedAuthority> permisos = new ArrayList();
-            GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_ADMIN_REGISTRADO");
+//            GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_ADMIN");
+            GrantedAuthority p1 = new SimpleGrantedAuthority("ROLE_" + usuario.getRol());
             permisos.add(p1);
             
             ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

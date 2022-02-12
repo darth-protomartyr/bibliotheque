@@ -35,7 +35,7 @@ public class AutorControlador {
     @Autowired
     private AutorServicio autorServ;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/autor")
     public String autores(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -49,7 +49,7 @@ public class AutorControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qautor, ModelMap modelo) throws ErrorServicio{
         Autor autor= null;
@@ -74,7 +74,7 @@ public class AutorControlador {
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/ingresar")
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -88,7 +88,7 @@ public class AutorControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, @RequestParam MultipartFile archivo, ModelMap modelo) throws ErrorServicio {
         
@@ -113,7 +113,7 @@ public class AutorControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Autor> autores = autorRepo.listarAutorActiva();
@@ -129,7 +129,7 @@ public class AutorControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Autor> autores = autorRepo.listarAutorCompleta();
@@ -146,7 +146,7 @@ public class AutorControlador {
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/modificar")
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String autorId,  ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
@@ -166,7 +166,7 @@ public class AutorControlador {
     
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId, @RequestParam String nombre, @RequestParam MultipartFile archivo) throws ErrorServicio {
         
@@ -192,7 +192,7 @@ public class AutorControlador {
    
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
         
@@ -215,7 +215,7 @@ public class AutorControlador {
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN_REGISTRADO')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String autorId) throws ErrorServicio {
         
