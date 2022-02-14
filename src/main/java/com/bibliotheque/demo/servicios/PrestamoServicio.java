@@ -241,4 +241,13 @@ public class PrestamoServicio {
             return calendar.getTime();
         }
     }
+
+    public void bajaSolicitud(String solicitId) {
+       Prestamo prestamo = null;
+       Optional<Prestamo> rta = prestamoRepo.findById(solicitId);
+       if (rta.isPresent()) {
+           prestamo = rta.get();
+       }
+       prestamoRepo.delete(prestamo);
+    }
 }

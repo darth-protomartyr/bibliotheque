@@ -80,6 +80,25 @@ public class PrestamoControlador {
         }
     }
     
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PostMapping("/proceso-eliminar-solicitud")
+    public String eliminarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String solicitId) throws ErrorServicio {
+        
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        prestamoServ.bajaSolicitud(solicitId);
+        modelo.put("success", "La solicitud fue eliminada");
+        listas(modelo, id);
+        return "prestamos.html";
+    }
+    
+    
     //genera las lista que formaran parte del html
     private void listas (ModelMap modelo, String id) {
         List <Libro> libros = libroRepo.listarLibrosActivos();

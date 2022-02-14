@@ -13,7 +13,7 @@
                 <h3 class="main__card__h3">Solicitar Prestamo</h3>
                 <div class="main__card__object main__card__prestamo">
                     <div class="object__button__container">
-                        <form th:action="@{/prestamos/proceso-generar(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
+                        <form th:action="@{/prestamos/proceso-generar-solicitud(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
                             <div class="form__container">
                                 <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                                 <p th:if="${success != null}" th:text="${success}" class="ok"></p>
@@ -31,19 +31,14 @@
                         <div class = "lista__object">
                             <h4>Lista de Solicitudes pendientes</h4>
                             <p th:if="${mes1 != null}" th:text="${mes1}" class="ok"></p>
-                            <div th:each ="solicitud:${solicitudes}" class="list_txt">
-                                <h6>Titulo:<span th:text="${solicitud.libro.titulo}"></span></h6>
-                            </div>
-                            
-                            
                             <div  th:each ="solicitud:${solicitudes}" class="object__btn">
-                                <div class="object__delete__containaer">
+                                <div class="object__delete__container">
                                     <div>
-                                        <p th:text="${solicitud.libro.titulo}" class="object__name__btn"><p>
+                                        <p th:text="${solicitud.libro.titulo}" class="object__name__btn"></p>
                                     </div>
                                     <div>
                                         <form th:action="@{/prestamos/proceso-eliminar-solicitud(id=__${session.usuariosession.id}__, solicitId = __${solicitud.id}__)}" method="post" enctype="multipart/form-data">
-                                            <div class="form__container object__btn object__btn-2 object__btn-3">                   
+                                            <div class="form__container object__btn-3">                   
                                                 <button type="submit">Eliminar Solicitud</button>
                                             </div>
                                         </form>
@@ -55,11 +50,10 @@
                             <h4>Lista Prestamos en curso</h4>
                             <p th:if="${mes2 != null}" th:text="${mes2}" class="ok"></p>
                             <div th:each ="prestamo:${prestamos}" class="list_txt">
-                                <h6>Titulo: <span th:text="${prestamo.libro.titulo}"></span></h6>
+                                <p th:text="${prestamo.libro.titulo}" class="object__name__btn"></p>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>

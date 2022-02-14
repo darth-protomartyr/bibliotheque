@@ -523,14 +523,44 @@ input::placeholder {
 
 .main__card__prestamo {
     display : flex;
-    flex-direction: column:
+    flex-direction: column;
 }
 
 .container__lista__object {
     display : flex;
+    flex-direction: column;
+}
+
+.lista__object {
+    display : flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    background-color: rgba(4, 242, 198, 0.2);
+    border-radius: 10px;
+    align-items: center;
+}
+
+.object__delete__container {
+    display : flex;
     flex-direction: row;
 }
 
+.object__btn-3 > button {
+    display: inline-block;
+    color: #F20544;
+    font-size: 0.75em;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    top: 3px;
+    width: 120px;
+    margin: 10px;
+    border-radius: 20px;
+    padding: 5px;
+    background-color: #F20519;
+    color: #fff;
+}
 
 
 /*------------------------- FOOTER FORMS */
