@@ -17,6 +17,7 @@ import com.bibliotheque.demo.servicios.PrestamoServicio;
 import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
@@ -69,6 +70,8 @@ OrdenRepositorio ordenRepo;
         modelo.put("vencidas", vencidas);
         List <Usuario> bajados = usuarioServ.listarBajados();
         modelo.put("bajados", bajados);
+        List <Usuario> penalizados = adminServ.listarActualizarPenalidades();
+        modelo.put("penalizados", penalizados);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "administrador.html";
     }
@@ -246,4 +249,42 @@ OrdenRepositorio ordenRepo;
         modelo.put("subTit", "La baja del usuario es efectiva.");
         return "succes.html";
     }
+    
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PostMapping("/proceso-eliminar-penalidad")
+    public String eliminarPenalidad(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String penalizadoId) throws ErrorServicio {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        usuarioServ.eliminarPenalidad(penalizadoId);
+        
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        modelo.addAttribute("perfil", login);
+        modelo.put("tit", "Operación Exitosa");
+        modelo.put("subTit", "La baja del usuario es efectiva.");
+        return "succes.html";
+    }
+    
+    
+        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PostMapping("/proceso-modificar-penalidad")
+    public String modificarPenalidad(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String penalizadoId, @RequestParam Date newPen) throws ErrorServicio {
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        
+        usuarioServ.modificarPenalidad(penalizadoId, newPen);
+        
+        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        modelo.addAttribute("perfil", login);
+        modelo.put("tit", "Operación Exitosa");
+        modelo.put("subTit", "La baja del usuario es efectiva.");
+        return "succes.html";
+    } 
 }

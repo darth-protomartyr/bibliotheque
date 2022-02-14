@@ -28,7 +28,7 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     
     //Lista usuarios de alta que estén penalizados
     @Query("SELECT s FROM Usuario s WHERE s.alta = true AND s.penalidad = true")
-    public List <Optional<Usuario>> ListarUsuarioIdAltaPenAlta ();
+    public Optional <List<Usuario>> ListarUsuarioIdAltaPenAlta ();
     
 //    @Query("SELECT s FROM Usuario s WHERE s.pass = :pass AND s.alta = true")
 //    public Usuario buscaUsuarioPass (@Param("pass") String nombre);

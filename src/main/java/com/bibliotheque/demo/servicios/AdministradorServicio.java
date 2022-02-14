@@ -1,17 +1,12 @@
 package com.bibliotheque.demo.servicios;
 
 
-import com.bibliotheque.demo.entidades.Libro;
 import com.bibliotheque.demo.entidades.Orden;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
-import com.bibliotheque.demo.repositorios.LibroRepositorio;
 import com.bibliotheque.demo.repositorios.OrdenRepositorio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.bibliotheque.demo.repositorios.PrestamoRepositorio;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -35,6 +29,8 @@ public class AdministradorServicio {
     private PrestamoRepositorio prestamoRepo;
     @Autowired
     private UsuarioRepositorio usuarioRepo;
+    @Autowired
+    private UsuarioServicio usuarioServ;
     @Autowired
     private OrdenRepositorio ordenRepo;
     
@@ -75,7 +71,7 @@ public class AdministradorServicio {
         return vencidas;
     }
     
-    
+    @Transactional
     public void completarBajaDeUsuario(String solicitId) {
         Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(solicitId);
@@ -86,4 +82,47 @@ public class AdministradorServicio {
         usuarioRepo.save(usuario);
     }
     
+    
+    @Transactional
+    public List<Usuario> listarActualizarPenalidades() throws ErrorServicio {
+        List <Usuario> usuarios = new ArrayList();
+        Optional <List<Usuario>> rta = usuarioRepo.ListarUsuarioIdAltaPenAlta();
+        if(rta.isPresent()) {
+            usuarios = rta.get();
+        }    
+        
+        //Actualiza el estado de la penalidad al momento presente
+        
+        
+
+        Iterator<Usuario> it = usuarios.iterator();
+        while(it.hasNext()) {
+            Usuario usuario = it.next();
+            if (usuario.getFechaPenalidad().before(new Date())) {
+                usuario.setFechaPenalidad(null);
+                usuario.setPenalidad(Boolean.FALSE);
+                usuarioRepo.save(usuario);
+//                usuarios.remove(usuario);        
+            }
+        }
+        
+        Optional <List<Usuario>> rta1 = usuarioRepo.ListarUsuarioIdAltaPenAlta();
+        if(rta1.isPresent()) {
+            usuarios = rta1.get();
+        }
+        
+        
+        
+//        for (Usuario usuario : usuarios) {
+//            
+//            if (usuario.getFechaPenalidad().before(new Date())) {
+//                usuario.setFechaPenalidad(null);
+//                usuario.setPenalidad(Boolean.FALSE);
+//                usuarioRepo.save(usuario);
+////                usuarios.remove(usuario);        
+//            }
+//        }
+        
+        return usuarios;
+    }
 }

@@ -13,6 +13,7 @@ import com.bibliotheque.demo.enumeraciones.Rol;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
@@ -44,7 +45,7 @@ public class UsuarioServicio implements UserDetailsService {
     private FotoServicio picServ;
     @Autowired
     private NotificacionServicio notServ;
-//-----------------------------------------------Usuario y Usuario
+//-----------------------------------------------
     @Transactional
     public Usuario registrarUsuario(String nombre, String pass1, String pass2, int generoId, MultipartFile archivo, String mail) throws ErrorServicio {
         if (nombre == null || nombre.isEmpty()) {
@@ -215,16 +216,29 @@ public class UsuarioServicio implements UserDetailsService {
     
     @Transactional
     public void eliminarPenalidad (String id) throws ErrorServicio {
-        Usuario usuario;
+        Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAltaPenAlta(id);
         if (rta.isPresent()) {
             usuario = rta.get();
             usuario.setPenalidad(Boolean.FALSE);
             usuario.setFechaPenalidad(null);
-        }  else {
-            throw new ErrorServicio ("El nombre del usuario que ingresó no se encuentra en los Registros o no está penalizado");
+        }
+        usuarioRepo.save(usuario);
+    }
+    
+    
+    
+    @Transactional
+    public void modificarPenalidad (String penalizadoId, Date newPen) {
+        Usuario usuario = null;
+        Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAltaPenAlta(penalizadoId);
+        if (rta.isPresent()) {
+            usuario = rta.get();
+            usuario.setFechaPenalidad(newPen);
+            usuarioRepo.save(usuario);
         }
     }
+    
     
     //--------------------------------------Solo Usuario
     @Transactional(readOnly = true)
@@ -313,7 +327,7 @@ public class UsuarioServicio implements UserDetailsService {
     }
 
 
- @Transactional
+    @Transactional
     public void iniciarBajaDeUsuario(String id) throws ErrorServicio {
         Usuario usuario = null;
         Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAlta(id);
@@ -325,12 +339,26 @@ public class UsuarioServicio implements UserDetailsService {
             throw new ErrorServicio ("El nombre de usuario que ingresó no se encuentra en la base de datos");
         }
     }
+    
+    
+    @Transactional
+    public Usuario actualizarPenalidad(String id) throws ErrorServicio {
+        Usuario usuario = null;
+        Optional<Usuario> rta1 = usuarioRepo.buscaUsuarioIdAltaPenAlta(id);
+        if(rta1.isPresent()) {
+            usuario = rta1.get();
+            if(usuario.getFechaPenalidad().before(new Date())) {
+                usuario.setFechaPenalidad(null);
+                usuario.setPenalidad(Boolean.FALSE);
+            }
+        }
+        return usuario;
+    }
 
 
 
     public String cleanString(String str) {
-        str.toLowerCase();
-        str.replace(" ", "");
+        str = str.toLowerCase().replace(" ", "");
         return str;
     }
 }

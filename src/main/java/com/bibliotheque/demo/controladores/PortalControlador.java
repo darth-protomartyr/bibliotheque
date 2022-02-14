@@ -11,10 +11,12 @@ package com.bibliotheque.demo.controladores;
 import com.bibliotheque.demo.entidades.Usuario;
 import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
+import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
 import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class PortalControlador {
     @Autowired
     private UsuarioServicio usuarioServ;
-
+    @Autowired
+    private UsuarioRepositorio usuarioRepo;
+    
     @GetMapping("/")
     public String index(ModelMap modelo) throws ErrorServicio{    
         List<Usuario> usuariosActivos = usuarioServ.consultaListaUsuarios();
@@ -55,15 +59,19 @@ public class PortalControlador {
         return "login.html";
     }
 
-    
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/inicio")
     public String inicio(ModelMap modelo, HttpSession session) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         String id = login.getId();
-        Usuario usuario = usuarioServ.buscarPorId(id);
+        Usuario usuario = usuarioServ.actualizarPenalidad(id);
+        Optional<Usuario> rta = usuarioRepo.findById(id);
+        if (rta.isPresent()) {
+            usuario = rta.get();
+        }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
+        session.setAttribute("usuariosession", usuario);
         modelo.addAttribute("perfil", usuario);
         return "inicio.html";
     }
