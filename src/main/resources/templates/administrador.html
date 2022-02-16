@@ -80,7 +80,7 @@
                 <div class = "lista__object">
                     <h4>Lista Usuarios Penalizados</h4>
                     <!--<p th:if="${mes1 != null}" th:text="${mes1}" class="ok"></p>-->
-                    <div  th:each ="penalizado:${penalizados}" class="object__btn">
+                    <div  th:each ="penalizado:${penalizados}" class="object__btn object__btn-4">
                         <div class="object__delete__container object__delete__container__penalizados"> <!--va a contener dos forms-->
                             <div class= "penalizados__cabecera">
                                 <div>
@@ -88,22 +88,28 @@
                                 </div>
                             </div>
                             <div class="penalizados__cuerpo">
-                                <div>
+                                <div class="penalizados__button_1">
                                     <h5>Eliminar fecha Penalidad</h5>
                                     <form th:action="@{/administradores/proceso-eliminar-penalidad(id=__${session.usuariosession.id}__, penalizadoId=__${penalizado.id}__)}" method="post" enctype="multipart/form-data">
-                                        <div class="form__container object__btn-3">                   
+                                        <div class="form__container object__btn-3 btn__penalizado">                   
                                             <button type="submit">Eliminar Penalidad</button>
                                         </div>
                                     </form>
                                 </div>
-                                <div>
-                                    <h5>Modificar fecha Penalidad</h5>                          
-                                    <form th:action="@{/administradores/proceso-modificar-penalidad(id=__${session.usuariosession.id}__, penalizadoId=__${penalizado.id}__)}" method="post" enctype="multipart/form-data">
-                                        <input type="date" name="newPen" required>
-                                        <div class="form__container object__btn-3">                   
-                                            <button type="submit">Modificar Penalidad</button>
-                                        </div>
-                                    </form>
+                                <div class="penalizados__button_2">
+                                    <div class="penalizados__button__head">
+                                        <h5>Modificar fecha Penalidad</h5>
+                                    </div>
+                                    <div>
+                                        <form th:action="@{/administradores/proceso-modificar-penalidad(id=__${session.usuariosession.id}__, penalizadoId=__${penalizado.id}__)}" method="post" enctype="multipart/form-data">
+                                            <div class="penalizados__button__body">
+                                                <input type="date" name="newPen" required>
+                                                <div class="form__container object__btn-3 btn__penalizado">                   
+                                                    <button type="submit">Modificar Penalidad</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>

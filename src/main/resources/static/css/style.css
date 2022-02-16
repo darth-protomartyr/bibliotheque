@@ -569,6 +569,34 @@ input::placeholder {
     flex-direction: column;
 }
 
+.object__btn-4 {
+    background-color: rgba(4, 242, 198, 0.4);
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
+    align-items: center;
+}
+
+.penalizados__button_1 {
+    display:flex;
+    flex-direction: row;
+}
+
+.penalizados__button_2 {
+    display:flex;
+    flex-direction: column;
+}
+
+.penalizados__button__head {
+    display: block;
+}
+
+.penalizados__button__body {
+    display:flex;
+    flex-direction: row;
+    position: relative;
+    bottom: 20px;
+}
 
 /*------------------------- FOOTER FORMS */
 
