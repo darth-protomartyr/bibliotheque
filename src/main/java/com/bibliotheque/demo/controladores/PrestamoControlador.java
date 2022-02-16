@@ -55,7 +55,7 @@ public class PrestamoControlador {
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
-    @PostMapping("/proceso-generar")
+    @PostMapping("/proceso-generar-solicitud")
     public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
         
         Usuario login = (Usuario) session.getAttribute("usuariosession");

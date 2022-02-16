@@ -562,6 +562,13 @@ input::placeholder {
     color: #fff;
 }
 
+/*------------------------- Main Administrador */
+
+.object__delete__container__penalizados {
+    display:flex;
+    flex-direction: column;
+}
+
 
 /*------------------------- FOOTER FORMS */
 

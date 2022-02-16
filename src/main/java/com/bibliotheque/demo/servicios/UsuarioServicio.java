@@ -12,9 +12,12 @@ import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.enumeraciones.Rol;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.UsuarioRepositorio;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,12 +232,18 @@ public class UsuarioServicio implements UserDetailsService {
     
     
     @Transactional
-    public void modificarPenalidad (String penalizadoId, Date newPen) {
+    public void modificarPenalidad (String penalizadoId, String newPen) throws Exception {
+        newPen = newPen.concat(" 00:00:00");
         Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAltaPenAlta(penalizadoId);
         if (rta.isPresent()) {
             usuario = rta.get();
-            usuario.setFechaPenalidad(newPen);
+            Date newDate = dateConverter(newPen);
+            usuario.setFechaPenalidad(newDate);
+            if (newDate.before(new Date())) {
+                usuario.setPenalidad(Boolean.FALSE);
+                usuario.setFechaPenalidad(null);
+            }
             usuarioRepo.save(usuario);
         }
     }
@@ -361,4 +370,12 @@ public class UsuarioServicio implements UserDetailsService {
         str = str.toLowerCase().replace(" ", "");
         return str;
     }
+    
+    
+    public static Date dateConverter (String newPen)throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
+        Date date = sdf.parse(newPen);  
+        return date;
+    } 
+    
 }

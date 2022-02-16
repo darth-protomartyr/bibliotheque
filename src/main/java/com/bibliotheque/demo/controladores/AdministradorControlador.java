@@ -268,23 +268,26 @@ OrdenRepositorio ordenRepo;
         modelo.put("subTit", "La baja del usuario es efectiva.");
         return "succes.html";
     }
-    
-    
-        @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+
+
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-modificar-penalidad")
-    public String modificarPenalidad(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String penalizadoId, @RequestParam Date newPen) throws ErrorServicio {
+    public String modificarPenalidad(ModelMap modelo, HttpSession session, String id, String penalizadoId, String newPen) throws ErrorServicio, Exception {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
+
         usuarioServ.modificarPenalidad(penalizadoId, newPen);
-        
-        
+
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.addAttribute("perfil", login);
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La baja del usuario es efectiva.");
         return "succes.html";
-    } 
+    }
+    
+    
+
 }

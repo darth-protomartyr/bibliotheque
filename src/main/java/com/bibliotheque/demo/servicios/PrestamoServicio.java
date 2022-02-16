@@ -218,10 +218,10 @@ public class PrestamoServicio {
     
     
     static Date diasPenalidad(Date dateBaja, Date dateVenc, Date datePen) throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ROOT);
 	String dBaja = dateFormat.format(dateBaja);
        	String dVenc = dateFormat.format(dateVenc);
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ROOT);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ROOT);
         Date baja = sdf.parse(dBaja);
         Date venc = sdf.parse(dVenc);
 
