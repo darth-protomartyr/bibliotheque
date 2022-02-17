@@ -49,7 +49,7 @@ public class PerfilControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
 
         try {
             Usuario usuario = usuarioServ.buscarPorId(id);
@@ -60,15 +60,21 @@ public class PerfilControlador {
         return "perfil.html";
     }
 
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/editar-perfil")
     public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
-        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
-        Usuario usuario = null;
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        
+        
+        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+        Usuario usuario = null;
+
+
 
         modelo.addAttribute("perfil", login);
         
@@ -102,12 +108,12 @@ public class PerfilControlador {
             if (prestamoServ.verificarPrestamosEnCurso(login.getId())) {
                 throw new ErrorServicio("Usted tiene préstamos pendientes y no puede solicitar la baja de su cuenta");
             }
-            
+
             //Evita que el ADMIN SEA DADO DE BAJA
             if(login.getRol().equals(Rol.ADMIN)) {
                 throw new ErrorServicio("El Administrador no puede ser dado de baja");
             }            
-            
+
             if (login.getSolicitudBaja() == true) {
                 throw new ErrorServicio("La solicitud de baja ya fue enviada");
             }
@@ -120,7 +126,7 @@ public class PerfilControlador {
             }
 
             modelo.addAttribute("perfil", login);
-        
+
             usuarioServ.iniciarBajaDeUsuario(id);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La Solicitud de baja fue enviada al administrador.");
@@ -130,6 +136,5 @@ public class PerfilControlador {
             modelo.put("error", e.getMessage());
             return "perfil.html";
         }
-    }
-    
+    }  
 }

@@ -144,7 +144,7 @@ public class UsuarioServicio implements UserDetailsService {
             }
             
 
-            if (mail == null || mail.isEmpty()) {
+            if (mail == null || mail.isEmpty() || mail == usuario.getMail()) {
                 usuario.setMail(usuario.getMail());
             } else {
                 usuario.setMail(validarMail(mail));

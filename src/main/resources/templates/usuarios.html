@@ -11,8 +11,8 @@
         <div class= "main">
             <div class ="main__card">
                 <h1 class="main__card__h3">USUARIOS</h1>
-                
-                <div class="">
+               
+                <div class=""> 
                 
                 <h2>Seleccione un usuario o busque uno por su nombre</h2>
                 <div class="main__object--buscador">
@@ -37,12 +37,12 @@
                 
                 
                 
-<!--                <div th:if>
-                <h2>Actualizar Datos Personales</h2>
-                <form th:action="@{/perfiles/editar-perfil}" method="post" enctype="multipart/form-data">
+                <div th:if="${perfil != null}">
+                <h2>Actualizar Datos del Usuario</h2>
+                <form th:action="@{/administradores/editar-perfil(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
-                        <input type="hidden" name="id" th:value="${perfil.id}"/>
+                        <input type="hidden" name="usuarioId" th:value="${perfil.id}"/>
                         <input type="text" placeholder="Nombre de Usuario" name="name" th:value="${perfil.nombre}">
                         <input type="password" placeholder="Ingrese su Password" name=pass1 th:value="${pass1}">
                         <input type="password" placeholder="Confirme su Password" name=pass2 th:value="${pass2}">
@@ -56,7 +56,7 @@
                     </div>
                 </form>
                 
-                h2>Modifique el rol de</h2>
+<!--                <h2>Modifique el rol de</h2>
                 <div class="main__object--buscador">
                     <form th:action="@{/administradores/proceso-modificar-rol(id=__${session.usuariosession.id}__, usuarioId=__${perfil.id}__)}">
                         <select name="rol">
@@ -64,9 +64,9 @@
                         </select>            
                         <button type="submit">Buscar</button>
                     </form>
-                </div>
-                
                 </div>-->
+                
+                </div>
                
                 
                     

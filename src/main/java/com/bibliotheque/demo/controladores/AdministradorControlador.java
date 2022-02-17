@@ -7,6 +7,7 @@ package com.bibliotheque.demo.controladores;
 import com.bibliotheque.demo.entidades.Orden;
 import com.bibliotheque.demo.entidades.Prestamo;
 import com.bibliotheque.demo.entidades.Usuario;
+import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.enumeraciones.Rol;
 import com.bibliotheque.demo.excepciones.ErrorServicio;
 import com.bibliotheque.demo.repositorios.OrdenRepositorio;
@@ -18,6 +19,7 @@ import com.bibliotheque.demo.servicios.PrestamoServicio;
 import com.bibliotheque.demo.servicios.UsuarioServicio;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -323,8 +326,10 @@ OrdenRepositorio ordenRepo;
             usuario = rta.get();
         }
         
-        List <Usuario> usuarios = usuarioRepo.findAll();
+        List <Usuario> usuarios = usuarioRepo.findAll();       
+        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         
+        modelo.put("generos", generos);
         modelo.put("perfil",usuario);
         modelo.put("usuarios",usuarios);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -351,15 +356,14 @@ OrdenRepositorio ordenRepo;
             } else {
                 throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
             }
-        
-//        List <Usuario> usuarios = usuarioRepo.findAll();
-        
+            
+            List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+            modelo.put("generos", generos);
             modelo.put("perfil",usuario);
             modelo.put("usuarios",usuarios);
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
             return "usuarios.html";
         } catch (ErrorServicio e) {
-//            List <Usuario> usuarios = usuarioRepo.findAll();
             modelo.put("error", e.getMessage());
             modelo.put("usuarios",usuarios);
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -388,5 +392,36 @@ OrdenRepositorio ordenRepo;
             modelo.put("subTit", "El usuario ahora tiene el rol de Usuario");
         }
         return "succes.html";
+    }
+
+
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PostMapping("/editar-perfil")
+    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
+        
+        Usuario login = (Usuario) session.getAttribute("usuariosession");
+        if (login == null || !login.getId().equals(id)) {
+            return "redirect:/inicio";
+        }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
+        
+        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+        Usuario usuario = null;
+
+        
+        try {
+            usuario = usuarioServ.buscarPorId(usuarioId);
+            usuarioServ.modificar(usuarioId, name, pass1, pass2, generoId, mail, archivo);
+            modelo.put("tit", "Operación Exitosa");
+            modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
+            return "succes.html";
+        } catch (ErrorServicio ex) {
+            modelo.put("error", ex.getMessage());
+            modelo.put("perfil", usuario);
+            modelo.put("generos", generos);
+            return "usuarios.html";
+        }
     }
 }
