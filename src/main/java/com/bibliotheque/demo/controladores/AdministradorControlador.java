@@ -331,9 +331,10 @@ OrdenRepositorio ordenRepo;
         return "usuarios.html";
     }
     
+    
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-buscar-nombre")
-    public String buscarNom(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String nombre) throws ErrorServicio {
+    public String buscarNom(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String qUsuario) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -343,20 +344,20 @@ OrdenRepositorio ordenRepo;
 
         
         try {
-        Usuario usuario = null;
-        Optional <Usuario> rta = usuarioRepo.buscaUsuarioNomTot(nombre);
-        if (rta.isPresent()) {
-            usuario = rta.get();
-        } else {
-            throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
-        }
+            Usuario usuario = null;
+            Optional <Usuario> rta = usuarioRepo.buscaUsuarioNomTot(qUsuario);
+            if (rta.isPresent()) {
+                usuario = rta.get();
+            } else {
+                throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
+            }
         
 //        List <Usuario> usuarios = usuarioRepo.findAll();
         
-        modelo.put("perfil",usuario);
-        modelo.put("usuarios",usuarios);
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-        return "usuarios.html";
+            modelo.put("perfil",usuario);
+            modelo.put("usuarios",usuarios);
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+            return "usuarios.html";
         } catch (ErrorServicio e) {
 //            List <Usuario> usuarios = usuarioRepo.findAll();
             modelo.put("error", e.getMessage());
@@ -365,6 +366,7 @@ OrdenRepositorio ordenRepo;
             return "usuarios.html";
         }
     }
+    
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-modificar-rol")
@@ -387,7 +389,4 @@ OrdenRepositorio ordenRepo;
         }
         return "succes.html";
     }
-    
-    
-    
 }
