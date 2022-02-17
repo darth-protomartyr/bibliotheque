@@ -18,6 +18,9 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     @Query("SELECT s FROM Usuario s WHERE s.nombre = :nombre AND s.alta = true")
     public Optional<Usuario> buscaUsuarioNom (@Param("nombre") String nombre);
     
+    @Query("SELECT s FROM Usuario s WHERE s.nombre = :nombre")
+    public Optional<Usuario> buscaUsuarioNomTot (@Param("nombre") String nombre);
+    
     //Busca usuario de alta por id
     @Query("SELECT s FROM Usuario s WHERE s.id = :usuarioId AND s.alta = true")
     public Optional<Usuario> buscaUsuarioIdAlta (@Param("usuarioId") String usuarioId);
@@ -38,12 +41,10 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, String> {
     public Optional<Usuario> buscaUsuarioMail(String mail);
     
     //Lista usuarios de alta
-    @Query("SELECT s FROM Usuario s WHERE s.alta = true")
-    public List<Usuario> listarUsuarios();
+    @Query("SELECT s FROM Usuario s")
+    public Optional<List<Usuario>> listarUsuarios();
     
     //Lista pedidos de baja de Usuarios
     @Query("SELECT u FROM Usuario u WHERE u.solicitudBaja = true AND u.alta = true")
     public Optional<List<Usuario>> listarSolicitudesBaja();
-    
-    
 }

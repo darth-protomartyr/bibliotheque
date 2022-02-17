@@ -263,7 +263,11 @@ public class UsuarioServicio implements UserDetailsService {
     
     @Transactional(readOnly = true)
     public List<Usuario> consultaListaUsuarios() throws ErrorServicio {
-        List<Usuario> usuarios = usuarioRepo.listarUsuarios();
+        List<Usuario> usuarios = null;
+        Optional<List<Usuario>> rta = usuarioRepo.listarUsuarios();
+        if (rta.isPresent()) {
+            usuarios = rta.get();
+        }
         return usuarios;
     }
 
@@ -377,5 +381,19 @@ public class UsuarioServicio implements UserDetailsService {
         Date date = sdf.parse(newPen);  
         return date;
     } 
-    
+
+    public Usuario modificarRol(String id, int rol) {
+        Usuario usuario = null;
+        Optional<Usuario> rta1 = usuarioRepo.findById(id);
+        if(rta1.isPresent()) {
+            usuario = rta1.get();
+        }
+        
+        if(rol==1) {
+            usuario.setRol(Rol.EDITOR);
+        } else {
+            usuario.setRol(Rol.USUARIO);
+        }
+        return usuarioRepo.save(usuario);
+    }
 }

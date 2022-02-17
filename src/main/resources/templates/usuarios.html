@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+
+    <header th:replace="/fragments/header :: header"> </header>
+
+    <main>
+<!--        <div class= "main">
+            <div class ="main__card">
+                <h1 class="main__card__h3">USUARIOS</h1>
+                
+                <div class="">
+                
+                <h2>Seleccione un usuario o busque uno por su nombre</h2>
+                <div class="main__object--buscador">
+                    <form th:action="@{/administradores/poceso-buscar-id}(id=__${session.usuariosession.id}__)">
+                        <select name="user">
+                            <option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre}"></option>
+                        </select>
+                        <button type="submit">Buscar</button>
+                    </form>
+                </div>
+                      
+                <div class="main__object--buscador">
+                    <form th:action="@{/administradores/proceso-buscar-nombre(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                        <div class="form__container__buscar">
+                            <input type="text" placeholder="Ingrese el nombre del usuario" name="qUsuario" required>
+                            <button type="submit">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+                
+                
+                
+                <div th:if>
+                <h2>Actualizar Datos Personales</h2>
+                <form th:action="@{/perfiles/editar-perfil}" method="post" enctype="multipart/form-data">
+                    <div class="form__container">
+                        <p th:if="${error != null}" th:text="${error}" class="warn"></p>
+                        <input type="hidden" name="id" th:value="${perfil.id}"/>
+                        <input type="text" placeholder="Nombre de Usuario" name="name" th:value="${perfil.nombre}">
+                        <input type="password" placeholder="Ingrese su Password" name=pass1 th:value="${pass1}">
+                        <input type="password" placeholder="Confirme su Password" name=pass2 th:value="${pass2}">
+                        <p>Seleccione su género:</p>
+                        <select name="generoId">
+                            <option th:each="genero : ${generos}" th:value="${genero.id}" th:text="${genero.gen}" th:selected="${perfil.genero !=null && genero.id == perfil.genero.id}"></option>
+                        </select>
+                        <input class ="input-f"  name="archivo" type="file" accept="image/png, image/jpeg" th:value="${perfil.foto}">
+                        <input type="email" placeholder="Ingrese su mail" name="mail" th:value="${perfil.mail}" required>
+                        <button type="submit">Update</button>
+                    </div>
+                </form>
+                
+                h2>Modifique el rol de</h2>
+                <div class="main__object--buscador">
+                    <form th:action="@{/administradores/proceso-modificar-rol(id=__${session.usuariosession.id}__, usuarioId=__${perfil.id}__)}">
+                        <select name="rol">
+                            <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}" th:selected="${perfil.roll !=null && rol.id == perfil.rol.id}"></option>
+                        </select>            
+                        <button type="submit">Buscar</button>
+                    </form>
+                </div>
+                
+                </div>
+               
+                
+                    
+                </div>
+            </div>
+        </div>-->
+    </main>
+
+    <footer th:replace="/fragments/footer :: footer"></footer>
+
+</body>
+</html>

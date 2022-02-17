@@ -115,6 +115,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="administrdor__usuarios">
+                    <a th:href="@{/administradores/usuarios(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Inicio</a>
+                </div>
             </div>
         </div>
     </main>
