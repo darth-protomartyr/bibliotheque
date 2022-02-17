@@ -290,7 +290,7 @@ OrdenRepositorio ordenRepo;
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
-    @PostMapping("/usuarios")
+    @GetMapping("/usuarios")
     public String usuarios(ModelMap modelo, HttpSession session, @RequestParam String id) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
