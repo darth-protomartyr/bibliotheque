@@ -297,13 +297,13 @@ OrdenRepositorio ordenRepo;
             return "redirect:/inicio";
         }
         
-//        List <Usuario> usuarios = null;
-//        Optional <List<Usuario>> rta = usuarioRepo.listarUsuarios();
-//        if (rta.isPresent()) {
-//            usuarios = rta.get();
-//        }
-//        
-//        modelo.put("usuarios",usuarios);
+        List <Usuario> usuarios = null;
+        Optional <List<Usuario>> rta = usuarioRepo.listarUsuarios();
+        if (rta.isPresent()) {
+            usuarios = rta.get();
+        }
+        
+        modelo.put("usuarios",usuarios);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "usuarios.html";
     }

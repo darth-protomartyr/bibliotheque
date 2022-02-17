@@ -16,15 +16,16 @@
                 
                 <h2>Seleccione un usuario o busque uno por su nombre</h2>
                 <div class="main__object--buscador">
-                    <form th:action="@{/administradores/proceso-buscar-id(id=__${session.usuariosession.id}__)}">
+                    <form th:action="@{/administradores/proceso-buscar-id(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
                         <select name="user">
-                            <option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre}"></option>
+                            <option th:each="usuario:${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre}"></option>
                         </select>
                         <button type="submit">Buscar</button>
                     </form>
                 </div>
+                
                       
-                <!--<div class="main__object--buscador">
+<!--                <div class="main__object--buscador">
                     <form th:action="@{/administradores/proceso-buscar-nombre(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                         <div class="form__container__buscar">
@@ -32,11 +33,11 @@
                             <button type="submit">Buscar</button>
                         </div>
                     </form>
-                </div>
+                </div>-->
                 
                 
                 
-                <div th:if>
+<!--                <div th:if>
                 <h2>Actualizar Datos Personales</h2>
                 <form th:action="@{/perfiles/editar-perfil}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
@@ -65,13 +66,13 @@
                     </form>
                 </div>
                 
-                </div>
+                </div>-->
                
                 
                     
                 </div>
             </div>
--->        </div>
+        </div>
     </main>
 
     <footer th:replace="/fragments/footer :: footer"></footer>
