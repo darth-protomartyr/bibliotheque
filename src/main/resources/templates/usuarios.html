@@ -26,7 +26,7 @@
                 
                       
                 <div class="main__object--buscador">
-                    <form th:action="@{/administradores/proceso-buscar-nombre(id=__${session.usuariosession.id}__)}" method="post" enctype="application/x-www-form-urlencoded">
+                    <form th:action="@{/administradores/proceso-buscar-nombre(id=__${session.usuariosession.id}__)}" method="post" enctype="multipart/form-data">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
                         <div class="form__container__buscar">
                             <input type="text" placeholder="Ingrese el nombre del usuario" name="qUsuario" required>
@@ -55,16 +55,16 @@
                         <button type="submit">Update</button>
                     </div>
                 </form>
-                
-<!--                <h2>Modifique el rol de</h2>
+
+                <h2>Modifique el rol del Usuario</h2>
                 <div class="main__object--buscador">
-                    <form th:action="@{/administradores/proceso-modificar-rol(id=__${session.usuariosession.id}__, usuarioId=__${perfil.id}__)}">
+                    <form th:action="@{/administradores/proceso-modificar-rol(id=__${session.usuariosession.id}__, usuarioId=__${perfil.id}__)}" method="post" enctype="multipart/form-data">
                         <select name="rol">
-                            <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.nombre}" th:selected="${perfil.roll !=null && rol.id == perfil.rol.id}"></option>
+                            <option th:each="rol : ${roles}" th:value="${rol.id}" th:text="${rol.cargo}" th:selected="${perfil.rol !=null && rol.id == perfil.rol.id}"></option>
                         </select>            
-                        <button type="submit">Buscar</button>
+                        <button type="submit">Mofidicar</button>
                     </form>
-                </div>-->
+                </div>
                 
                 </div>
                

@@ -328,7 +328,10 @@ OrdenRepositorio ordenRepo;
         
         List <Usuario> usuarios = usuarioRepo.findAll();       
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+        List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
+        roles.remove(Rol.ADMIN);
         
+        modelo.put("roles", roles);
         modelo.put("generos", generos);
         modelo.put("perfil",usuario);
         modelo.put("usuarios",usuarios);
@@ -357,7 +360,11 @@ OrdenRepositorio ordenRepo;
                 throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
             }
             
+            
             List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+            List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
+            roles.remove(Rol.ADMIN);
+            modelo.put("roles", roles);
             modelo.put("generos", generos);
             modelo.put("perfil",usuario);
             modelo.put("usuarios",usuarios);

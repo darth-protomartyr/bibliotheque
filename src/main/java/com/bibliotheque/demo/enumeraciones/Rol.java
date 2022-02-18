@@ -10,10 +10,16 @@ package com.bibliotheque.demo.enumeraciones;
  * @author Gonzalo
  */
 public enum Rol {
-    ADMIN(1), EDITOR(2), USUARIO(3);
+    ADMIN("Admin", 1), EDITOR("Editor", 2), USUARIO("Usuario", 3);
+    String cargo;
     int id;
-    private Rol(int id) {
+    private Rol(String cargo, int id) {
+        this.cargo = cargo; 
         this.id = id;
+    }
+
+    public String getCargo() {
+        return cargo;
     }
 
     public int getId() {
