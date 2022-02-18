@@ -33,9 +33,9 @@ public class Usuario {
    private String pass;
    @Column(unique = true)
    private String mail;
-   @Enumerated(EnumType.ORDINAL)
+   @Enumerated(EnumType.STRING)
    private Genero genero;
-   @Enumerated(EnumType.ORDINAL)
+   @Enumerated(EnumType.STRING)
    private Rol rol;
    private Boolean solicitudBaja;
    private Boolean penalidad;
@@ -44,9 +44,9 @@ public class Usuario {
    @OneToOne
    private Foto foto;
    private Boolean alta;
-
+       
    public Usuario() {
-   
+       
    }
 
     public Usuario(String id, String nombre, String pass, String mail, Genero genero, Rol rol, Boolean solicitudBaja, Boolean penalidad, Date fechaPenalidad, Foto foto, Boolean alta) {
@@ -138,30 +138,18 @@ public class Usuario {
                 + "     Alta: " + alta;
     }
 
-    /**
-     * @return the foto
-     */
     public Foto getFoto() {
         return foto;
     }
 
-    /**
-     * @param foto the foto to set
-     */
     public void setFoto(Foto foto) {
         this.foto = foto;
     }
 
-    /**
-     * @return the mail
-     */
     public String getMail() {
         return mail;
     }
 
-    /**
-     * @param mail the mail to set
-     */
     public void setMail(String mail) {
         this.mail = mail;
     }
@@ -173,7 +161,4 @@ public class Usuario {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-    
-    
-    
 }

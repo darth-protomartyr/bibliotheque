@@ -381,7 +381,7 @@ OrdenRepositorio ordenRepo;
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-modificar-rol")
-    public String modificarRol(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, @RequestParam int rol) throws ErrorServicio {
+    public String modificarRol(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, @RequestParam String rol) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";

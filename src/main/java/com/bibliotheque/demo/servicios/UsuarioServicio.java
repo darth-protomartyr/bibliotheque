@@ -382,18 +382,22 @@ public class UsuarioServicio implements UserDetailsService {
         return date;
     } 
 
-    public Usuario modificarRol(String id, int rol) {
+    public Usuario modificarRol(String id, String rol) {
+        rol = cleanString(rol);
         Usuario usuario = null;
         Optional<Usuario> rta1 = usuarioRepo.findById(id);
         if(rta1.isPresent()) {
             usuario = rta1.get();
         }
         
-        if(rol==1) {
+        if(rol.equals("editor")) {
             usuario.setRol(Rol.EDITOR);
-        } else {
+        }
+        
+        if(rol.equals("usuario")) {
             usuario.setRol(Rol.USUARIO);
         }
+        
         return usuarioRepo.save(usuario);
     }
 }
