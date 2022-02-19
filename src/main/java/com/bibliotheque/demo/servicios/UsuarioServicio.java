@@ -97,7 +97,7 @@ public class UsuarioServicio implements UserDetailsService {
         usuario.setAlta(true);
         usuario.setPenalidad(Boolean.FALSE);
         usuario.setMail(validarMail(mail));
-        usuario.setRol(Rol.EDITOR);
+        usuario.setRol(Rol.USUARIO);
         usuario.setSolicitudBaja(Boolean.FALSE);
         //notServ.enviar("Bienvenido a Librodepository", "Librodepository", usuario.getMail());
         return usuarioRepo.save(usuario);
