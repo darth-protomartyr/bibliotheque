@@ -41,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/administradores")
 public class AdministradorControlador {
 
+    
 @Autowired
 AdministradorServicio adminServ;
 @Autowired
@@ -56,6 +57,7 @@ UsuarioServicio usuarioServ;
 @Autowired
 OrdenRepositorio ordenRepo;
 
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/administrador")
     public String administradores(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
@@ -63,7 +65,6 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-
         ordenServ.limpiezaOrden();
         List <Usuario> solicitantes = adminServ.listarSolicitantes();
         modelo.put("solicitantes", solicitantes);
@@ -87,11 +88,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
-        
        ordenServ.limpiezaOrden();
-
-        
         Usuario solicit = null;
         Optional <Usuario> rta = usuarioRepo.findById(solicitId);
         if(rta.isPresent()) {
@@ -99,19 +96,14 @@ OrdenRepositorio ordenRepo;
         }
         modelo.put("perfil", solicit);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
-        
         List<Prestamo> solicitados = new ArrayList();
         Optional <List<Prestamo>> rta1 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
         if(rta1.isPresent()) {
             solicitados = rta1.get();
         }
-        
         modelo.put("solicitados", solicitados);
-        
         Orden orden = ordenServ.iniciarOrden(solicit);       
         modelo.put("order", orden);
-
         return "orden.html";
     }
     
@@ -123,22 +115,15 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-        
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
         if (rta.isPresent()) {
             orden = rta.get();
         }
-        
         modelo.put("order", orden);
         Prestamo prestamo = prestamoServ.completarPrestamo(prestamoId, ordenId);
-        
         orden.agregarPrestamo(prestamo);
-        
-        
-        
         Usuario usuario = prestamo.getUsuario();
         String solicitId = usuario.getId();
         List<Prestamo> solicitados = new ArrayList();
@@ -164,9 +149,7 @@ OrdenRepositorio ordenRepo;
             return "succes.html";
         }
     }
-    
-    
-    
+
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/baja-orden")
@@ -176,22 +159,17 @@ OrdenRepositorio ordenRepo;
             return "redirect:/inicio";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.findById(ordenId);
         if (rta.isPresent()) {
             orden = rta.get();
         }
-        
         Usuario usuario = orden.getUsuario();
-        
         List<Prestamo>activos = orden.getPrestamos();
         modelo.put("activos", activos);
         modelo.put("perfil", usuario);        
         modelo.put("order", orden);        
-
         return "orden-baja.html";
-
     }
     
     
@@ -203,25 +181,18 @@ OrdenRepositorio ordenRepo;
             return "redirect:/inicio";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-        
         prestamoServ.bajaPrestamo(prestamoId, ordenId);
-        
-        
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
         if (rta.isPresent()) {
             orden = rta.get();
         }
-        
-        
         List<Prestamo> activos = new ArrayList();
         Optional <List<Prestamo>> rta2 = prestamoRepo.listarPrestamoByOrden(ordenId);
         if(rta2.isPresent()) {
             activos = rta2.get();
         }
-        
         Usuario usuario = orden.getUsuario();
-        
         if (activos.size() > 0) {
             modelo.put("perfil", usuario);
             modelo.put("activos", activos);
@@ -235,6 +206,7 @@ OrdenRepositorio ordenRepo;
         }
     }
     
+    
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/finalizar-proceso-baja-cuenta")
     public String finalizarBajaCuenta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String solicitId) throws ErrorServicio {
@@ -242,11 +214,8 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         modelo.addAttribute("perfil", login);
-        
         adminServ.completarBajaDeUsuario(solicitId);
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La baja del usuario es efectiva.");
@@ -261,10 +230,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         usuarioServ.eliminarPenalidad(penalizadoId);
-        
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.addAttribute("perfil", login);
         modelo.put("tit", "Operación Exitosa");
@@ -281,9 +247,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-
         usuarioServ.modificarPenalidad(penalizadoId, newPen);
-
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.addAttribute("perfil", login);
         modelo.put("tit", "Operación Exitosa");
@@ -299,38 +263,33 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         List <Usuario> usuarios = null;
         Optional <List<Usuario>> rta = usuarioRepo.listarUsuarios();
         if (rta.isPresent()) {
             usuarios = rta.get();
         }
-        
         modelo.put("usuarios",usuarios);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "usuarios.html";
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-buscar-id")
     public String buscarId(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String user) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.findById(user);
         if (rta.isPresent()) {
             usuario = rta.get();
         }
-        
         List <Usuario> usuarios = usuarioRepo.findAll();       
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
         roles.remove(Rol.ADMIN);
-        
         modelo.put("roles", roles);
         modelo.put("generos", generos);
         modelo.put("perfil",usuario);
@@ -340,17 +299,14 @@ OrdenRepositorio ordenRepo;
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-buscar-nombre")
     public String buscarNom(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String qUsuario) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         List <Usuario> usuarios = usuarioRepo.findAll();
-
-        
         try {
             Usuario usuario = null;
             Optional <Usuario> rta = usuarioRepo.buscaUsuarioNomTot(qUsuario);
@@ -359,8 +315,6 @@ OrdenRepositorio ordenRepo;
             } else {
                 throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
             }
-            
-            
             List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
             List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
             roles.remove(Rol.ADMIN);
@@ -379,18 +333,15 @@ OrdenRepositorio ordenRepo;
     }
     
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-modificar-rol")
     public String modificarRol(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, @RequestParam String rol) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         Usuario usuario = usuarioServ.modificarRol(usuarioId, rol);
-
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("tit", "Operación Exitosa");
         if (usuario.getRol().equals(Rol.EDITOR)) {
@@ -402,22 +353,16 @@ OrdenRepositorio ordenRepo;
     }
 
 
-
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/editar-perfil")
-    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
-        
+    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) { 
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
-        
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         Usuario usuario = null;
-
-        
         try {
             usuario = usuarioServ.buscarPorId(usuarioId);
             usuarioServ.modificar(usuarioId, name, pass1, pass2, generoId, mail, archivo);

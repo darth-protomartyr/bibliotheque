@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/foto")
 public class FotoControlador {
    
+    
     @Autowired
     private UsuarioServicio usuarioServ;
     @Autowired
@@ -35,6 +36,7 @@ public class FotoControlador {
     @Autowired
     private LibroServicio libroServ;
 
+    
     @GetMapping("/perfil/{id}")
     public ResponseEntity<byte[]> fotoPartner(@PathVariable String id) {
         try {
@@ -43,10 +45,8 @@ public class FotoControlador {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
             byte[] foto = usuario.getFoto().getContenido();
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
-
             return new ResponseEntity<>(foto, headers, HttpStatus.OK);
         } catch (ErrorServicio ex) {
             Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -63,10 +63,8 @@ public class FotoControlador {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
             byte[] foto = autor.getFoto().getContenido();
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
-
             return new ResponseEntity<>(foto, headers, HttpStatus.OK);
         } catch (ErrorServicio ex) {
             Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,10 +80,8 @@ public class FotoControlador {
                 throw new ErrorServicio("El usuario no tiene una foto asignada.");
             }
             byte[] foto = libro.getFoto().getContenido();
-
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.IMAGE_JPEG);
-
             return new ResponseEntity<>(foto, headers, HttpStatus.OK);
         } catch (ErrorServicio ex) {
             Logger.getLogger(FotoControlador.class.getName()).log(Level.SEVERE, null, ex);

@@ -35,10 +35,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/")
 public class PortalControlador {
+    
+    
     @Autowired
     private UsuarioServicio usuarioServ;
     @Autowired
     private UsuarioRepositorio usuarioRepo;
+    
     
     @GetMapping("/")
     public String index(ModelMap modelo) throws ErrorServicio{    
@@ -98,7 +101,6 @@ public class PortalControlador {
             modelo.put("generos", generos);
             modelo.put("generoId", generoId);
             modelo.put("archivo", archivo);
-            
             return "registrar.html";
         }
         modelo.put("tit", "Operación Exitosa");

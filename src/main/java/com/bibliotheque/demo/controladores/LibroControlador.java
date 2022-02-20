@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/libros")
 public class LibroControlador {
 
+    
     @Autowired
     private UsuarioServicio usuarioServ;    
     @Autowired
@@ -46,27 +47,25 @@ public class LibroControlador {
     @Autowired
     private EditorialRepositorio ediRepo;
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @GetMapping("/libro")
     public String libros(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-        
         return "libros.html";
     }
     
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @PostMapping("/proceso-buscar")
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
-        }
-            
+        }  
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         
         Libro libro= null;
@@ -107,13 +106,9 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         try {
-            
             libroServ.crearLibro(isbn, titulo, ejemplaresTotales, autorId, editorialId, archivo);
-            
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "El Libro fue ingresado a la base de datos correctamente.");
             return "succes.html";
@@ -126,7 +121,6 @@ public class LibroControlador {
             modelo.put("autorId", autorId);
             modelo.put("editorialId", editorialId);
             modelo.put("archivo", archivo);
-
             return "libro-ingresar.html";
         }
     }
@@ -142,14 +136,12 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("libro", libro);
         modelo.put("autores", autores);
         modelo.put("editoriales", editoriales);
         return "libro-actualizar.html";
     }
-
     
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
@@ -159,9 +151,7 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         List<Autor> autores = autorRepo.findAll();
         List<Editorial> editoriales = ediRepo.findAll();
         Libro libro = null;
@@ -171,8 +161,6 @@ public class LibroControlador {
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
             return "succes.html";
-            
-            
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
             modelo.put("libro", libro);
@@ -184,7 +172,8 @@ public class LibroControlador {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         List<Libro> libros = libroServ.listarLibrosActivos();
@@ -193,9 +182,7 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         return "libros-lista-activos.html";
     }
     
@@ -209,9 +196,7 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         return "libros-lista-completa.html";
     }
     
@@ -224,9 +209,7 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         } 
-
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         try {      
             libroServ.darBajaLibro(libroId);
             modelo.put("tit", "Operación Exitosa");
@@ -247,7 +230,6 @@ public class LibroControlador {
             return "redirect:/inicio";
         }             
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-           
         try {     
             libroServ.darAltaLibro(libroId);
             modelo.put("tit", "Operación Exitosa");
