@@ -45,7 +45,7 @@ public class PerfilControlador {
         modelo.put("generos", generos);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {
@@ -63,7 +63,7 @@ public class PerfilControlador {
     public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
@@ -90,7 +90,7 @@ public class PerfilControlador {
     public String iniciarBajaCuenta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String nombre) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {

@@ -42,7 +42,7 @@ public class PrestamoControlador {
     public String prestamos(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         listas(modelo,id);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -55,7 +55,7 @@ public class PrestamoControlador {
     public String generarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String libroId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {                       
@@ -78,7 +78,7 @@ public class PrestamoControlador {
     public String eliminarPrestamo( ModelMap modelo, @RequestParam String id , HttpSession session, @RequestParam String solicitId) throws ErrorServicio {   
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         prestamoServ.bajaSolicitud(solicitId);

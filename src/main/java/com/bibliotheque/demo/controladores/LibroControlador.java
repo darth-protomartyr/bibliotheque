@@ -53,7 +53,7 @@ public class LibroControlador {
     public String libros(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros.html";
@@ -64,7 +64,7 @@ public class LibroControlador {
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qlibro, ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }  
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         
@@ -88,7 +88,7 @@ public class LibroControlador {
         List<Editorial> editoriales = ediRepo.findAll();
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("autores", autores);
@@ -104,7 +104,7 @@ public class LibroControlador {
         List<Editorial> editoriales = ediRepo.findAll();
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {
@@ -134,7 +134,7 @@ public class LibroControlador {
         Libro libro = libroRepo.getById(libroId);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("libro", libro);
@@ -149,7 +149,7 @@ public class LibroControlador {
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List<Autor> autores = autorRepo.findAll();
@@ -180,7 +180,7 @@ public class LibroControlador {
         modelo.put("libros", libros);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros-lista-activos.html";
@@ -194,7 +194,7 @@ public class LibroControlador {
         modelo.put("libros", libros);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros-lista-completa.html";
@@ -207,7 +207,7 @@ public class LibroControlador {
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         } 
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {      
@@ -227,7 +227,7 @@ public class LibroControlador {
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String libroId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }             
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {     

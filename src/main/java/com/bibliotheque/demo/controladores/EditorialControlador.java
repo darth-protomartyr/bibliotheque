@@ -45,7 +45,7 @@ public class EditorialControlador {
     public String editoriales(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "editoriales.html";
@@ -57,7 +57,7 @@ public class EditorialControlador {
     public String buscar(HttpSession session, @RequestParam String id, @RequestParam String qeditorial, ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         Editorial editorial= null;
@@ -77,7 +77,7 @@ public class EditorialControlador {
     public String ingresar(HttpSession session, @RequestParam String id, ModelMap modelo){
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "editorial-ingresar.html";
@@ -87,12 +87,12 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar(HttpSession session, @RequestParam String id, @RequestParam String nombre, ModelMap modelo) throws ErrorServicio {
-        try {
             Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
+                return "redirect:/login";
             }
-            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");   
+    try {
             editorialServ.crearEditorial(nombre);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La Editorial fue ingresada a la base de datos correctamente.");
@@ -112,7 +112,7 @@ public class EditorialControlador {
         modelo.put("editoriales", editoriales);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "editoriales-lista-activas.html";
@@ -126,7 +126,7 @@ public class EditorialControlador {
         modelo.put("editoriales", editoriales);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "editoriales-lista-completa.html";
@@ -139,7 +139,7 @@ public class EditorialControlador {
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String ediId,  ModelMap modelo) throws ErrorServicio{
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");        
         Editorial editorial = editorialServ.consultaEditorialId(ediId);
@@ -152,12 +152,12 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-modificar")
     public String procesoModificar(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId, @RequestParam String nombre) throws ErrorServicio {
-        try {
             Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
+                return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        try {
             editorialServ.modificarEditorial(ediId, nombre);
             //session.setAttribute("usuariosession", usuario);
             modelo.put("tit", "Operación Exitosa");
@@ -173,12 +173,12 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-baja")
     public String procesoBaja(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
-        try {
             Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
+                return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        try {
             editorialServ.bajaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");
@@ -193,12 +193,12 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-alta")
     public String procesoAlta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String ediId) throws ErrorServicio {
-        try {
             Usuario login = (Usuario) session.getAttribute("usuariosession");
             if (login == null || !login.getId().equals(id)) {
-                return "redirect:/inicio";
+                return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        try {
             editorialServ.altaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue modificada correctamente.");

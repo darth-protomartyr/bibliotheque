@@ -63,7 +63,7 @@ OrdenRepositorio ordenRepo;
     public String administradores(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         ordenServ.limpiezaOrden();
         List <Usuario> solicitantes = adminServ.listarSolicitantes();
@@ -86,7 +86,7 @@ OrdenRepositorio ordenRepo;
     public String iniciarOrden(HttpSession session, @RequestParam String id, @RequestParam String solicitId, ModelMap modelo) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
        ordenServ.limpiezaOrden();
         Usuario solicit = null;
@@ -113,7 +113,7 @@ OrdenRepositorio ordenRepo;
     public String completarOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, @RequestParam String prestamoId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         Orden orden = null;
@@ -156,7 +156,7 @@ OrdenRepositorio ordenRepo;
     public String bajaOrden(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         Orden orden = null;
@@ -178,7 +178,7 @@ OrdenRepositorio ordenRepo;
     public String ProcesoBajaPrestamo(@RequestParam(required=false) String error, HttpSession session, @RequestParam String id, @RequestParam String prestamoId, @RequestParam String ordenId, ModelMap modelo) throws ErrorServicio, ParseException {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         prestamoServ.bajaPrestamo(prestamoId, ordenId);
@@ -212,7 +212,7 @@ OrdenRepositorio ordenRepo;
     public String finalizarBajaCuenta(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String solicitId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.addAttribute("perfil", login);
@@ -228,7 +228,7 @@ OrdenRepositorio ordenRepo;
     public String eliminarPenalidad(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String penalizadoId) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         usuarioServ.eliminarPenalidad(penalizadoId);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -245,7 +245,7 @@ OrdenRepositorio ordenRepo;
     public String modificarPenalidad(ModelMap modelo, HttpSession session, String id, String penalizadoId, String newPen) throws ErrorServicio, Exception {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         usuarioServ.modificarPenalidad(penalizadoId, newPen);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -261,7 +261,7 @@ OrdenRepositorio ordenRepo;
     public String usuarios(ModelMap modelo, HttpSession session, @RequestParam String id) {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         List <Usuario> usuarios = usuarioRepo.findAll();
         modelo.put("usuarios",usuarios);
@@ -275,7 +275,7 @@ OrdenRepositorio ordenRepo;
     public String buscarId(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String user) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         List <Usuario> usuarios = usuarioRepo.findAll();
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
@@ -309,7 +309,7 @@ OrdenRepositorio ordenRepo;
     public String buscarNom(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String qUsuario) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List <Usuario> usuarios = usuarioRepo.findAll();
@@ -347,7 +347,7 @@ OrdenRepositorio ordenRepo;
     public String modificarRol(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, @RequestParam String rol) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         Usuario usuario = usuarioServ.modificarRol(usuarioId, rol);
@@ -367,7 +367,7 @@ OrdenRepositorio ordenRepo;
     public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) throws ErrorServicio { 
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
-            return "redirect:/inicio";
+            return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
