@@ -263,11 +263,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
-        List <Usuario> usuarios = null;
-        Optional <List<Usuario>> rta = usuarioRepo.listarUsuarios();
-        if (rta.isPresent()) {
-            usuarios = rta.get();
-        }
+        List <Usuario> usuarios = usuarioRepo.findAll();
         modelo.put("usuarios",usuarios);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "usuarios.html";
@@ -276,26 +272,35 @@ OrdenRepositorio ordenRepo;
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/proceso-buscar-id")
-    public String buscarId(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String user) {
+    public String buscarId(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String user) throws ErrorServicio {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        List <Usuario> usuarios = usuarioRepo.findAll();
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.findById(user);
         if (rta.isPresent()) {
             usuario = rta.get();
         }
-        List <Usuario> usuarios = usuarioRepo.findAll();       
-        List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
-        List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
-        roles.remove(Rol.ADMIN);
-        modelo.put("roles", roles);
-        modelo.put("generos", generos);
-        modelo.put("perfil",usuario);
-        modelo.put("usuarios",usuarios);
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-        return "usuarios.html";
+        try {
+        if(usuario.getRol().equals(Rol.ADMIN)) {
+            throw new ErrorServicio("El usuario es administrador por lo que no puede ser modificado desde este formulario");
+        }
+            List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
+            List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
+            roles.remove(Rol.ADMIN);
+            modelo.put("roles", roles);
+            modelo.put("generos", generos);
+            modelo.put("perfil",usuario);
+            modelo.put("usuarios",usuarios);
+            return "usuarios.html";
+        } catch (ErrorServicio e) {
+            modelo.put("error", e.getMessage());
+            modelo.put("usuarios",usuarios);
+            return "usuarios.html";
+        }
     }
     
     
@@ -306,6 +311,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
         }
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List <Usuario> usuarios = usuarioRepo.findAll();
         try {
             Usuario usuario = null;
@@ -315,6 +321,11 @@ OrdenRepositorio ordenRepo;
             } else {
                 throw new ErrorServicio("El Usuario no se encuantra en la base de datos");
             }
+            
+            if(usuario.getRol().equals(Rol.ADMIN)) {
+                throw new ErrorServicio("El usuario es administrador por lo que no puede ser modificado desde este formulario");
+            }
+            
             List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
             List<Rol> roles = new ArrayList<Rol>(Arrays.asList(Rol.values()));
             roles.remove(Rol.ADMIN);
@@ -322,12 +333,10 @@ OrdenRepositorio ordenRepo;
             modelo.put("generos", generos);
             modelo.put("perfil",usuario);
             modelo.put("usuarios",usuarios);
-            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
             return "usuarios.html";
         } catch (ErrorServicio e) {
             modelo.put("error", e.getMessage());
             modelo.put("usuarios",usuarios);
-            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
             return "usuarios.html";
         }
     }
@@ -355,7 +364,7 @@ OrdenRepositorio ordenRepo;
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PostMapping("/editar-perfil")
-    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) { 
+    public String modificarUsuario(ModelMap modelo, HttpSession session, @RequestParam String id, @RequestParam String usuarioId, String name, String pass1, String pass2, int generoId, String mail, MultipartFile archivo) throws ErrorServicio { 
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/inicio";
@@ -363,8 +372,8 @@ OrdenRepositorio ordenRepo;
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         Usuario usuario = null;
-        try {
-            usuario = usuarioServ.buscarPorId(usuarioId);
+        usuario = usuarioServ.buscarPorId(usuarioId);
+        try {        
             usuarioServ.modificar(usuarioId, name, pass1, pass2, generoId, mail, archivo);
             modelo.put("tit", "Operación Exitosa");
             modelo.put("subTit", "La información fue ingresada al base de datos correctamente.");
