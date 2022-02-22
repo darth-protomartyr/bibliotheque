@@ -65,6 +65,7 @@ OrdenRepositorio ordenRepo;
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        
         ordenServ.limpiezaOrden();
         List <Usuario> solicitantes = adminServ.listarSolicitantes();
         modelo.put("solicitantes", solicitantes);
@@ -77,6 +78,8 @@ OrdenRepositorio ordenRepo;
         List <Usuario> penalizados = adminServ.listarActualizarPenalidades();
         modelo.put("penalizados", penalizados);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "administrador.html";
     }
 
