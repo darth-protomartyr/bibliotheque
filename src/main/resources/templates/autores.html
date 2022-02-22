@@ -23,7 +23,7 @@
                     </div>
                     <div class="object__button__container">
                         <div class="object__btn">
-                            <a th:href="@{/autores/ingresar(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Registrar Autor</a>
+                            <a th:href="@{/autores/ingresar(id=__${session.usuariosession.id}__)}" th:if="${role != 'USUARIO'}">Registrar Autor</a>
                         </div>
                         
                         <div class="object__btn">
@@ -31,7 +31,7 @@
                         </div>
                         
                         <div class="object__btn">
-                            <a th:href="@{/autores/listar-todas(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Lista Autores</a>
+                            <a th:href="@{/autores/listar-todas(id=__${session.usuariosession.id}__)}" th:if="${role != 'USUARIO'}">Lista Autores</a>
                         </div>
                     </div>
                 </div>

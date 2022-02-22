@@ -44,7 +44,9 @@ public class AutorControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "autores.html";
     }
     
@@ -58,6 +60,8 @@ public class AutorControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {         
             autor = autorServ.consultaAutorNomCompl(qautor);
             modelo.put("autor", autor);
@@ -106,13 +110,16 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Autor> autores = autorRepo.listarAutorActiva();
-        modelo.put("autores", autores);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
+        List<Autor> autores = autorRepo.listarAutorActiva();
+        modelo.put("autores", autores);
+
         return "autores-lista-activos.html";
     }
     
@@ -120,15 +127,13 @@ public class AutorControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Autor> autores = autorRepo.listarAutorCompleta();
-        modelo.put("autores", autores);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
-        
+        List<Autor> autores = autorRepo.listarAutorCompleta();
+        modelo.put("autores", autores);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
-
         return "autores-lista-completa.html";
     }
     

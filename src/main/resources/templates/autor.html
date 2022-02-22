@@ -23,13 +23,13 @@
                             </div>
                             <div class="object__button__container">
                                 <div class="object__btn object__btn-2">
-                                    <a th:href="@{/autores/modificar(id=__${session.usuariosession.id}__, autorId=__${autor.id}__)}" th:if="${session.usuariosession != null}">Modificar Autor</a>
+                                    <a th:href="@{/autores/modificar(id=__${session.usuariosession.id}__, autorId=__${autor.id}__)}" th:if="${role != 'USUARIO'}">Modificar Autor</a>
                                 </div>
                                 <div th:if="${autor.alta == true}">
                                     <form th:action="@{/autores/proceso-baja(id=__${session.usuariosession.id}__, autorId=__${autor.id}__)}" method="post" enctype="multipart/form-data">
                                         <div class="form__container object__btn object__btn-2">
                                             <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
-                                            <button type="submit">Baja Autor</button>
+                                            <button type="submit" th:if="${role != 'USUARIO'}">Baja Autor</button>
                                         </div>
                                     </form>
                                 </div>
@@ -37,7 +37,7 @@
                                     <form th:action="@{/autores/proceso-alta(id=__${session.usuariosession.id}__, autorId=__${autor.id}__)}" method="post" enctype="multipart/form-data">
                                         <div class="form__container object__btn object__btn-2">
                                             <p th:if="${error != null}" th:text="${error}" class="warn"></p>                                       
-                                            <button type="submit">Alta Autor</button>
+                                            <button type="submit" th:if="${role != 'USUARIO'}">Alta Autor</button>
                                         </div>
                                     </form>
                                 </div>
