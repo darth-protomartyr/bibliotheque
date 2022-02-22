@@ -55,9 +55,12 @@ public class LibroControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros.html";
     }
+    
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @PostMapping("/proceso-buscar")
@@ -65,7 +68,9 @@ public class LibroControlador {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
-        }  
+        }
+        String role = login.getRol().toString();
+        modelo.put("role", role);  
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         
         Libro libro= null;
@@ -79,7 +84,6 @@ public class LibroControlador {
         }
     }
     
-
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/ingresar")
@@ -100,12 +104,12 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @PostMapping("/proceso-ingresar")
     public String procesoIngresar( ModelMap modelo, @RequestParam String id, HttpSession session, String titulo, Long isbn, Integer ejemplaresTotales, String autorId, String editorialId, MultipartFile archivo) throws ErrorServicio {
-        List<Autor> autores = autorRepo.findAll();
-        List<Editorial> editoriales = ediRepo.findAll();
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        List<Autor> autores = autorRepo.findAll();
+        List<Editorial> editoriales = ediRepo.findAll();
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {
             libroServ.crearLibro(isbn, titulo, ejemplaresTotales, autorId, editorialId, archivo);
@@ -129,13 +133,13 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/modificar")
     public String modificar(HttpSession session, @RequestParam String id, @RequestParam String libroId,  ModelMap modelo){
-        List<Autor> autores = autorRepo.findAll();
-        List<Editorial> editoriales = ediRepo.findAll();
-        Libro libro = libroRepo.getById(libroId);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        List<Autor> autores = autorRepo.findAll();
+        List<Editorial> editoriales = ediRepo.findAll();
+        Libro libro = libroRepo.getById(libroId);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("libro", libro);
         modelo.put("autores", autores);
@@ -176,12 +180,15 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Libro> libros = libroServ.listarLibrosActivos();
-        modelo.put("libros", libros);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        String role = login.getRol().toString();
+        modelo.put("role", role);
+        List<Libro> libros = libroServ.listarLibrosActivos();
+        modelo.put("libros", libros);
+        
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros-lista-activos.html";
     }
@@ -190,16 +197,15 @@ public class LibroControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
     @GetMapping("/listar-todas")
     public String ListarTodas(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Libro> libros = libroRepo.listarLibrosCompleta();
-        modelo.put("libros", libros);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
+        List<Libro> libros = libroRepo.listarLibrosCompleta();
+        modelo.put("libros", libros);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         return "libros-lista-completa.html";
     }
-    
     
         
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR')")
@@ -208,7 +214,9 @@ public class LibroControlador {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
-        } 
+        }
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {      
             libroServ.darBajaLibro(libroId);
@@ -217,7 +225,7 @@ public class LibroControlador {
             return "succes.html";
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
-            return "autores.html";
+            return "libros.html";
         }
     }
     
@@ -228,7 +236,9 @@ public class LibroControlador {
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
-        }             
+        }
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         try {     
             libroServ.darAltaLibro(libroId);
@@ -237,7 +247,7 @@ public class LibroControlador {
             return "succes.html";
         } catch (ErrorServicio ex) {
             modelo.put("error", ex.getMessage());
-            return "autores.html";
+            return "libros.html";
         }
     }
 }
