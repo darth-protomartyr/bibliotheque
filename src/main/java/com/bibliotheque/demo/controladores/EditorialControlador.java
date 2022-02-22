@@ -48,6 +48,8 @@ public class EditorialControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "editoriales.html";
     }
     
@@ -60,6 +62,8 @@ public class EditorialControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         Editorial editorial= null;
         try {
         editorial = editorialServ.consultaEditorialNomCompl(qeditorial);
@@ -108,13 +112,15 @@ public class EditorialControlador {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_EDITOR', 'ROLE_USUARIO')")
     @GetMapping("/listar-activas")
     public String ListarActiva(HttpSession session, @RequestParam String id, ModelMap modelo) throws ErrorServicio {
-        List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
-        modelo.put("editoriales", editoriales);
         Usuario login = (Usuario) session.getAttribute("usuariosession");
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
+        List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
+        modelo.put("editoriales", editoriales);
         return "editoriales-lista-activas.html";
     }
     
