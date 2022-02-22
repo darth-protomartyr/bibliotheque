@@ -48,6 +48,8 @@ public class PerfilControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {
             Usuario usuario = usuarioServ.buscarPorId(id);
             modelo.addAttribute("perfil", usuario);
@@ -66,6 +68,8 @@ public class PerfilControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         Usuario usuario = null;
         modelo.addAttribute("perfil", login);        
@@ -93,6 +97,8 @@ public class PerfilControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {
             //Evita que se dé de baja un usuario con prestamos en curso.
             if (prestamoServ.verificarPrestamosEnCurso(login.getId())) {

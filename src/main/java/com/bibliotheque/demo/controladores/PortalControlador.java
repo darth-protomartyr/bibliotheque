@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,6 +72,8 @@ public class PortalControlador {
             usuario = rta.get();
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         session.setAttribute("usuariosession", usuario);
         modelo.addAttribute("perfil", usuario);
         return "inicio.html";

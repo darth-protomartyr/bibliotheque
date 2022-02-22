@@ -80,6 +80,8 @@ OrdenRepositorio ordenRepo;
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         String role = login.getRol().toString();
         modelo.put("role", role);
+        
+        
         return "administrador.html";
     }
 
@@ -99,6 +101,8 @@ OrdenRepositorio ordenRepo;
         }
         modelo.put("perfil", solicit);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         List<Prestamo> solicitados = new ArrayList();
         Optional <List<Prestamo>> rta1 = prestamoRepo.listarPrestamoSolicitadosUsuarioID(solicitId);
         if(rta1.isPresent()) {
@@ -119,6 +123,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
         if (rta.isPresent()) {
@@ -162,6 +168,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.findById(ordenId);
         if (rta.isPresent()) {
@@ -184,6 +192,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         prestamoServ.bajaPrestamo(prestamoId, ordenId);
         Orden orden = null;
         Optional <Orden> rta = ordenRepo.buscaOrdenIdAlta(ordenId);
@@ -218,6 +228,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.addAttribute("perfil", login);
         adminServ.completarBajaDeUsuario(solicitId);
         modelo.put("tit", "Operación Exitosa");
@@ -235,6 +247,8 @@ OrdenRepositorio ordenRepo;
         }
         usuarioServ.eliminarPenalidad(penalizadoId);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.addAttribute("perfil", login);
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La baja del usuario es efectiva.");
@@ -252,6 +266,8 @@ OrdenRepositorio ordenRepo;
         }
         usuarioServ.modificarPenalidad(penalizadoId, newPen);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         modelo.addAttribute("perfil", login);
         modelo.put("tit", "Operación Exitosa");
         modelo.put("subTit", "La baja del usuario es efectiva.");
@@ -269,6 +285,8 @@ OrdenRepositorio ordenRepo;
         List <Usuario> usuarios = usuarioRepo.findAll();
         modelo.put("usuarios",usuarios);
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "usuarios.html";
     }
     
@@ -282,6 +300,8 @@ OrdenRepositorio ordenRepo;
         }
         List <Usuario> usuarios = usuarioRepo.findAll();
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         Usuario usuario = null;
         Optional <Usuario> rta = usuarioRepo.findById(user);
         if (rta.isPresent()) {
@@ -315,6 +335,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         List <Usuario> usuarios = usuarioRepo.findAll();
         try {
             Usuario usuario = null;
@@ -353,8 +375,9 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         Usuario usuario = usuarioServ.modificarRol(usuarioId, rol);
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         modelo.put("tit", "Operación Exitosa");
         if (usuario.getRol().equals(Rol.EDITOR)) {
             modelo.put("subTit", "El usuario ahora tiene el rol de Editor");
@@ -373,6 +396,8 @@ OrdenRepositorio ordenRepo;
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         List<Genero> generos = new ArrayList<Genero>(Arrays.asList(Genero.values()));
         Usuario usuario = null;
         usuario = usuarioServ.buscarPorId(usuarioId);

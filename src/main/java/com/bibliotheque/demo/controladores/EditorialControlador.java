@@ -50,6 +50,8 @@ public class EditorialControlador {
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         String role = login.getRol().toString();
         modelo.put("role", role);
+        
+        
         return "editoriales.html";
     }
     
@@ -64,6 +66,8 @@ public class EditorialControlador {
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         String role = login.getRol().toString();
         modelo.put("role", role);
+        
+        
         Editorial editorial= null;
         try {
         editorial = editorialServ.consultaEditorialNomCompl(qeditorial);
@@ -84,6 +88,8 @@ public class EditorialControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "editorial-ingresar.html";
     }
     
@@ -95,7 +101,9 @@ public class EditorialControlador {
             if (login == null || !login.getId().equals(id)) {
                 return "redirect:/login";
             }
-            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");   
+            modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);   
     try {
             editorialServ.crearEditorial(nombre);
             modelo.put("tit", "Operación Exitosa");
@@ -119,6 +127,8 @@ public class EditorialControlador {
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
         String role = login.getRol().toString();
         modelo.put("role", role);
+        
+        
         List<Editorial> editoriales = editorialRepo.listarEditorialActiva();
         modelo.put("editoriales", editoriales);
         return "editoriales-lista-activas.html";
@@ -135,6 +145,8 @@ public class EditorialControlador {
             return "redirect:/login";
         }
         modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         return "editoriales-lista-completa.html";
     }
     
@@ -147,7 +159,9 @@ public class EditorialControlador {
         if (login == null || !login.getId().equals(id)) {
             return "redirect:/login";
         }
-        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");        
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);        
         Editorial editorial = editorialServ.consultaEditorialId(ediId);
         modelo.put("editorial", editorial);
         return "editorial-actualizar.html";
@@ -163,6 +177,8 @@ public class EditorialControlador {
                 return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {
             editorialServ.modificarEditorial(ediId, nombre);
             //session.setAttribute("usuariosession", usuario);
@@ -184,6 +200,8 @@ public class EditorialControlador {
                 return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {
             editorialServ.bajaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
@@ -204,6 +222,8 @@ public class EditorialControlador {
                 return "redirect:/login";
             }
             modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+        String role = login.getRol().toString();
+        modelo.put("role", role);
         try {
             editorialServ.altaEditorial(ediId);
             modelo.put("tit", "Operación Exitosa");
