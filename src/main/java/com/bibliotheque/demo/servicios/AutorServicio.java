@@ -83,7 +83,6 @@ public class AutorServicio {
         if (buk.getFoto() != null){
             idFoto = buk.getFoto().getId();
         }
-
         Foto foto = picServ.actualizar(idFoto, archivo);
         buk.setFoto(foto);
         autorRepo.save(buk);

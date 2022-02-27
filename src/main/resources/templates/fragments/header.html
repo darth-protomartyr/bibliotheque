@@ -4,20 +4,20 @@
                 <a href="/" th:if="${session.usuariosession == null}" class="lnk"><h1>BOOKDEPOT</h1></a>
                 <a href="/inicio"  th:if="${session.usuariosession != null}" class="lnk" ><h1>BOOKDEPOT</h1></a> 
             </div>
-            <div class="header__nav" th:if="${role == 'USUARIO'}">
-                <!--<nav th:replace="/fragments/nav :: nav" th:if="${role != 'USUARIO'}"></nav>-->
-                <nav th:replace="/fragments/nav_1 :: nav" ></nav>
-            </div>
             
             <div class="header__nav"  th:if="${role != 'USUARIO'}">
                 <nav th:replace="/fragments/nav :: nav"></nav>
-                <!--<nav th:replace="/fragments/nav_1 :: nav" th:if="${role == 'USUARIO'}"></nav>-->
+            </div>
+            
+            <div class="header__nav" th:if="${role == 'USUARIO'}">
+                <nav th:replace="/fragments/nav_1 :: nav" ></nav>
             </div>
             
             <div class="header__session">
                 <div class="header__session__name">
                     <p th:if="${session.usuariosession != null}" th:text="${session.usuariosession.nombre}"></p> 
                 </div>
+            
                 <div class="header__session__link">
                     <a th:href="@{/perfiles/perfil(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}">Actualizar Perfil</a>
                     <a href="/logout" th:if="${session.usuariosession != null}">SALIR</a>

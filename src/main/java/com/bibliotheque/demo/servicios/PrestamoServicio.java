@@ -135,24 +135,11 @@ public class PrestamoServicio {
         Optional <Prestamo> rta = prestamoRepo.findById(idPrestamo);
         if (rta.isPresent()) {
             prestamo = rta.get();
-        }
-        
-//        Orden orden = null;
-//        Optional <Orden> rta1 = ordenRepo.buscaOrdenIdAlta(idPrestamo);
-//        if (rta.isPresent()) {
-//            orden = rta1.get();
-//        }
-        
-        
+        }        
         Usuario usuario = prestamo.getUsuario();
-        Libro libro = prestamo.getLibro();
-        
-//        orden.quitarPrestamo(prestamo);
+        Libro libro = prestamo.getLibro();      
         prestamo.setAlta(false);
         prestamo.setFechaBaja(new Date());
-
-        
-        
         Date dateBaja = prestamo.getFechaBaja();
         Date dateVenc = prestamo.getFechaDevolucion();
         Date datePen = usuario.getFechaPenalidad();
@@ -160,7 +147,6 @@ public class PrestamoServicio {
             usuario.setPenalidad(Boolean.TRUE);
             usuario.setFechaPenalidad(diasPenalidad(dateBaja, dateVenc, datePen));
         }
-        
         libro.setEjemplaresPrestados(libro.getEjemplaresPrestados() - 1);
         libro.setEjemplaresRestantes(libro.getEjemplaresRestantes() + 1);
     }
@@ -170,12 +156,12 @@ public class PrestamoServicio {
         return Instant.ofEpochMilli(dateToConvert.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
     }
     
+    
     @Transactional(readOnly = true)
     public boolean verificarPrestamosEnCurso(String id) {
         boolean prestamo = false;
         Usuario usuario = null;
         List <Orden> ordenes = null;
-        
         Optional <Usuario> rta = usuarioRepo.buscaUsuarioIdAlta(id);
         if (rta.isPresent()) {
             usuario = rta.get();

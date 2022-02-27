@@ -1,8 +1,26 @@
-                <nav>
-                    <button class="nav__button" onclick="nav-action()">MENÚ</button>
-                    <a th:href="@{/inicio}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Inicio</a>
-                    <a th:href="@{/libros/libro(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Libros</a>
-                    <a th:href="@{/autores/autor(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Autores</a>
-                    <a th:href="@{/editoriales/editorial(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Editoriales</a>
-                    <a th:href="@{/prestamos/prestamo(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace link--disappear">Prestamos</a>
-                </nav>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid nav__button__container">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a th:href="@{/inicio}" th:if="${session.usuariosession != null}" class="header__nav__enlace">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/libros/libro(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace">Libros</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/autores/autor(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace">Autores</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/editoriales/editorial(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace">Editoriales</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/prestamos/prestamo(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace">Prestamos</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+ </nav>
