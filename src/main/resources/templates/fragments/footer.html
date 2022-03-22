@@ -4,8 +4,13 @@
             <h3>By Gonzalo Di Nasso</h3>
         </div>
         
-        <div class="footer__perfil">
+<!--        <div class="footer__perfil">
             <p th:if="${session.usuariosession.penalidad != false}" class ="sub-tit" th:text = ${pen}></p>
+        </div>-->
+        
+        <div>
+            <a th:href="@{/contactos/contacto(id=__${session.usuariosession.id}__)}" th:if="${session.usuariosession != null}" class="header__nav__enlace">CONTACTO</a>
         </div>
+        
     </div>
 </footer>

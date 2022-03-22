@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es-AR" xmlns:th="https://www.thymeleaf.org">
+
+<head th:replace="/fragments/head :: head"></head>
+
+<body>
+
+    <header th:replace="/fragments/header :: header"> </header>
+
+    <main>
+        <div class= "main">
+            <div class ="main__card">
+                <h2>Enviar e-mail</h2>         
+<!--                <div class="card">-->
+                    <form method="POST" th:action="@{/contactos/enviar-mail(id=__${session.usuariosession.id}__)}" id="emailForm" class="container">
+                        <div class="form__container">
+
+                            <label>Nombre</label>
+                            <input type="text" name="name" placeholder="Nombre"/>
+
+                            <label>Correo</label>                       
+                            <input type="text" name="mail" placeholder="Correo electónico"/>
+
+                            <label>Asunto</label>
+                            <input type="text" name="subject" placeholder="Asunto"/>
+
+                            <label>Mensaje</label>
+                            <textarea rows="5" name="body"></textarea>
+
+                            <button type="submit">ACTUALIZAR</button>
+
+                        </div>
+                    </form>
+                <!--</div>-->   
+            </div>
+        </div>
+    </main>
+
+
+    <footer th:replace="/fragments/footer :: footer"></footer>
+
+<!--    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/5b5fa05dbf.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>-->
+
+</body>
+</html>

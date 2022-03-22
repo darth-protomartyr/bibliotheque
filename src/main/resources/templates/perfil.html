@@ -14,7 +14,7 @@
                 <form th:action="@{/perfiles/editar-perfil}" method="post" enctype="multipart/form-data">
                     <div class="form__container">
                         <p th:if="${error != null}" th:text="${error}" class="warn"></p>
-                        <input type="hidden" name="id" th:value="${perfil.id}"/>
+                        <input type="hidden" name="id" th:value="${session.usuariosession.id}"/>
                         <input type="text" placeholder="Nombre de Usuario" name="name" th:value="${perfil.nombre}">
                         <input type="password" placeholder="Ingrese su Password" name=pass1 th:value="${pass1}">
                         <input type="password" placeholder="Confirme su Password" name=pass2 th:value="${pass2}">
@@ -43,9 +43,6 @@
     </main>
 
     <footer th:replace="/fragments/footer :: footer"></footer>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
 </body>
 </html>

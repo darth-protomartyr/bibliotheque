@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,7 @@ public class ErrorControlador implements ErrorController {
 
     
     @RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
+    public ModelAndView renderErrorPage(HttpServletRequest httpRequest, ModelMap modelo) {
         ModelAndView errorPage = new ModelAndView("error");
         String errorMsg = "";
         int httpErrorCode = getErrorCode(httpRequest);
@@ -47,6 +48,8 @@ public class ErrorControlador implements ErrorController {
         }
         errorPage.addObject("codigo", httpErrorCode);
         errorPage.addObject("mensaje", errorMsg);
+        modelo.put("pen", "La cuenta se encuentra penalizada para realizar préstamos");
+
         return errorPage;
     }
 
