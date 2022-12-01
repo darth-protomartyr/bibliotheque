@@ -8,6 +8,7 @@ package com.bibliotheque.demo.entidades;
 
 import com.bibliotheque.demo.enumeraciones.Genero;
 import com.bibliotheque.demo.enumeraciones.Rol;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
